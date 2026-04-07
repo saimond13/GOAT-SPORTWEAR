@@ -1,0 +1,13 @@
+import { ProductForm } from "@/components/admin/ProductForm";
+
+export default function NewProductPage() {
+  return (
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-white font-black text-2xl">Nuevo producto</h1>
+        <p className="text-gray-500 text-sm mt-1">Completá los datos del nuevo producto</p>
+      </div>
+      <ProductForm />
+    </div>
+  );
+}
