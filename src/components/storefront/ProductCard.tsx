@@ -29,11 +29,11 @@ export function ProductCard({ product }: { product: Product }) {
   return (
     <motion.div className="product-card bg-white border border-gray-100 rounded-2xl overflow-hidden group"
       initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-40px" }}>
-      {/* Image */}
+      {/* Image — molde fijo 3:4, todas las imágenes se ajustan igual */}
       <div className="relative overflow-hidden bg-gray-50 aspect-[3/4]">
         {product.image_url ? (
           <img src={product.image_url} alt={product.name}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+            className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500" />
         ) : (
           <div className="w-full h-full flex items-center justify-center bg-gray-100">
             <span className="text-gray-300 text-5xl">👕</span>

@@ -33,9 +33,10 @@ export function ProductForm({ product }: { product?: Product }) {
   const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (file.size > 3 * 1024 * 1024) { setError("La imagen no puede superar 3MB"); return; }
+    if (file.size > 10 * 1024 * 1024) { setError("La imagen no puede superar 10MB"); return; }
     setImageFile(file);
     setImagePreview(URL.createObjectURL(file));
+    setError("");
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -96,17 +97,25 @@ export function ProductForm({ product }: { product?: Product }) {
         <div className="relative border-2 border-dashed border-white/10 rounded-2xl overflow-hidden hover:border-green-600/50 transition-colors">
           {imagePreview ? (
             <div className="relative">
-              <img src={imagePreview} alt="Preview" className="w-full h-48 object-cover" />
+              {/* Molde fijo 3:4 — mismo que la tarjeta de producto */}
+              <div className="aspect-[3/4] w-full overflow-hidden">
+                <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+              </div>
               <button type="button" onClick={() => { setImagePreview(""); setImageFile(null); }}
                 className="absolute top-3 right-3 w-8 h-8 bg-black/60 rounded-full flex items-center justify-center hover:bg-red-600/80 transition-colors">
                 <X className="w-4 h-4 text-white" />
               </button>
+              <label className="absolute bottom-3 right-3 cursor-pointer bg-black/60 hover:bg-black/80 text-white text-xs px-3 py-1.5 rounded-lg transition-colors">
+                Cambiar
+                <input type="file" accept="image/*" onChange={handleImage} className="hidden" />
+              </label>
             </div>
           ) : (
-            <label className="flex flex-col items-center justify-center h-36 cursor-pointer">
+            <label className="flex flex-col items-center justify-center h-44 cursor-pointer">
               <Upload className="w-8 h-8 text-gray-600 mb-2" />
-              <span className="text-gray-500 text-sm">Clic para subir imagen</span>
-              <span className="text-gray-700 text-xs mt-1">JPG, PNG, WebP · Máx 3MB</span>
+              <span className="text-gray-500 text-sm font-medium">Clic para subir imagen</span>
+              <span className="text-gray-700 text-xs mt-1">JPG, PNG, WebP · Sin límite de tamaño</span>
+              <span className="text-gray-700 text-xs">Se recorta automáticamente a 3:4</span>
               <input type="file" accept="image/*" onChange={handleImage} className="hidden" />
             </label>
           )}
