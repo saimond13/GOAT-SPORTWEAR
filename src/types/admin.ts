@@ -15,6 +15,10 @@ export interface Campaign {
   description?: string;
   image_url?: string;
   image_path?: string;
+  images?: string[];
+  cta_url?: string;
+  cta_label?: string;
+  countdown_ends_at?: string;
   starts_at: string;
   ends_at: string;
   is_active: boolean;
