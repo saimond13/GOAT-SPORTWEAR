@@ -1,12 +1,20 @@
 "use client";
 import { ShoppingCart, Menu, X } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useCart } from "@/context/CartContext";
 import { GoatLogo } from "@/components/ui/GoatLogo";
 
 export function Header() {
   const { itemCount, setIsOpen } = useCart();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 40);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   const scrollTo = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
@@ -16,58 +24,103 @@ export function Header() {
   const navLinks = [
     { label: "Inicio", id: "hero" },
     { label: "Productos", id: "products" },
-    { label: "Novedades", id: "campaigns" },
+    { label: "Drops", id: "campaigns" },
     { label: "Contacto", id: "contact" },
   ];
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100 shadow-sm">
+    <header
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        scrolled
+          ? "bg-[#09090b]/95 backdrop-blur-md border-b border-white/5"
+          : "bg-transparent border-b border-transparent"
+      }`}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          <button className="flex items-center gap-2.5" onClick={() => scrollTo("hero")}>
-            <GoatLogo size={36} variant="black" />
+          {/* Logo */}
+          <button
+            className="flex items-center gap-2.5 group"
+            onClick={() => scrollTo("hero")}
+          >
+            <GoatLogo size={34} variant="white" />
             <div className="flex flex-col leading-none">
-              <span className="font-black text-lg tracking-tight text-black">GOAT</span>
-              <span className="font-bold text-[10px] tracking-[0.2em] text-green-600 uppercase">Sportwear</span>
+              <span
+                className="text-white text-lg tracking-tight"
+                style={{ fontFamily: "'Anton', sans-serif" }}
+              >
+                GOAT
+              </span>
+              <span className="font-bold text-[9px] tracking-[0.25em] text-green-500 uppercase">
+                Sportwear
+              </span>
             </div>
           </button>
 
+          {/* Desktop nav */}
           <nav className="hidden md:flex items-center gap-8">
             {navLinks.map((item) => (
-              <button key={item.id} onClick={() => scrollTo(item.id)}
-                className="text-sm font-medium text-gray-600 hover:text-black transition-colors">
+              <button
+                key={item.id}
+                onClick={() => scrollTo(item.id)}
+                className="text-xs font-semibold text-gray-400 hover:text-white uppercase tracking-[0.15em] transition-colors duration-200"
+              >
                 {item.label}
               </button>
             ))}
           </nav>
 
+          {/* Cart + mobile toggle */}
           <div className="flex items-center gap-2">
-            <button onClick={() => setIsOpen(true)}
-              className="relative flex items-center justify-center w-10 h-10 rounded-full hover:bg-gray-100 transition-colors">
-              <ShoppingCart className="w-5 h-5 text-black" />
+            <button
+              onClick={() => setIsOpen(true)}
+              className="relative flex items-center justify-center w-10 h-10 hover:bg-white/5 transition-colors"
+            >
+              <ShoppingCart className="w-5 h-5 text-white" />
               {itemCount > 0 && (
-                <span className="absolute -top-1 -right-1 w-5 h-5 bg-black text-white text-xs font-bold rounded-full flex items-center justify-center">
+                <motion.span
+                  key={itemCount}
+                  initial={{ scale: 0.5, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-green-500 text-black text-[10px] font-black flex items-center justify-center"
+                >
                   {itemCount}
-                </span>
+                </motion.span>
               )}
             </button>
-            <button onClick={() => setMenuOpen(!menuOpen)} className="md:hidden w-10 h-10 flex items-center justify-center">
+            <button
+              onClick={() => setMenuOpen(!menuOpen)}
+              className="md:hidden w-10 h-10 flex items-center justify-center text-white hover:text-green-500 transition-colors"
+            >
               {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
         </div>
       </div>
 
-      {menuOpen && (
-        <div className="md:hidden bg-white border-t border-gray-100 px-4 py-3">
-          {navLinks.map((item) => (
-            <button key={item.id} onClick={() => scrollTo(item.id)}
-              className="block w-full text-left text-sm font-medium text-gray-700 py-3 border-b border-gray-50 last:border-0">
-              {item.label}
-            </button>
-          ))}
-        </div>
-      )}
+      {/* Mobile menu */}
+      <AnimatePresence>
+        {menuOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="md:hidden bg-[#09090b] border-t border-white/5 overflow-hidden"
+          >
+            <div className="px-4 py-4 space-y-1">
+              {navLinks.map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => scrollTo(item.id)}
+                  className="block w-full text-left text-sm font-semibold text-gray-400 hover:text-white uppercase tracking-[0.2em] py-3 border-b border-white/5 last:border-0 transition-colors"
+                >
+                  {item.label}
+                </button>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 }

@@ -8,44 +8,71 @@ import { ProductCard } from "./ProductCard";
 export function ProductsSection({ products }: { products: Product[] }) {
   const [activeCategory, setActiveCategory] = useState("Todos");
 
-  const filtered = activeCategory === "Todos"
-    ? products : products.filter((p) => p.category === activeCategory);
+  const filtered =
+    activeCategory === "Todos"
+      ? products
+      : products.filter((p) => p.category === activeCategory);
 
   return (
-    <section id="products" className="bg-white py-24">
+    <section id="products" className="bg-[#09090b] py-24">
       <div className="max-w-7xl mx-auto px-4">
-        <motion.div className="mb-12" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-          <p className="text-[10px] font-bold tracking-[0.4em] text-gray-400 uppercase mb-3">Catálogo</p>
-          <h2 className="text-5xl md:text-6xl font-black text-black tracking-tight leading-none">
-            NUESTROS<br /><span className="text-green-600">PRODUCTOS</span>
+        {/* Header */}
+        <motion.div
+          className="mb-14"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+        >
+          <p className="text-[9px] font-bold tracking-[0.5em] text-gray-600 uppercase mb-4">
+            Catálogo
+          </p>
+          <h2
+            className="text-[60px] md:text-[80px] text-white tracking-tight leading-none"
+            style={{ fontFamily: "'Anton', sans-serif" }}
+          >
+            NUESTROS
+            <br />
+            <span className="text-green-500">PRODUCTOS</span>
           </h2>
         </motion.div>
 
         {/* Category filter */}
         <div className="flex gap-2 flex-wrap mb-10">
           {["Todos", ...CATEGORIES].map((cat) => (
-            <button key={cat} onClick={() => setActiveCategory(cat)}
-              className={`px-4 py-2 rounded-full text-xs font-bold border transition-all ${
+            <button
+              key={cat}
+              onClick={() => setActiveCategory(cat)}
+              className={`px-4 py-2 text-xs font-bold border uppercase tracking-[0.15em] transition-all ${
                 activeCategory === cat
-                  ? "bg-black text-white border-black"
-                  : "border-gray-200 text-gray-600 hover:border-black hover:text-black"
-              }`}>{cat}
+                  ? "bg-green-500 text-black border-green-500"
+                  : "border-white/10 text-gray-500 hover:border-white/30 hover:text-white"
+              }`}
+            >
+              {cat}
             </button>
           ))}
         </div>
 
-        <div className="h-px w-full bg-gradient-to-r from-transparent via-green-500 to-transparent mb-10" />
+        {/* Divider */}
+        <div className="h-px w-full bg-gradient-to-r from-transparent via-green-500/30 to-transparent mb-10" />
 
+        {/* Grid */}
         {products.length === 0 ? (
-          <div className="text-center py-24">
-            <p className="text-gray-300 text-lg font-medium">No hay productos disponibles aún</p>
-            <p className="text-gray-400 text-sm mt-2">Volvé pronto, estamos cargando el catálogo</p>
+          <div className="text-center py-32">
+            <p className="text-gray-600 text-base font-medium uppercase tracking-widest">
+              Catálogo en preparación
+            </p>
+            <p className="text-gray-700 text-sm mt-2">Volvé pronto</p>
           </div>
         ) : filtered.length === 0 ? (
-          <div className="text-center py-16 text-gray-400">Sin productos en esta categoría</div>
+          <div className="text-center py-16 text-gray-600 text-sm uppercase tracking-widest">
+            Sin productos en esta categoría
+          </div>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-            {filtered.map((p) => <ProductCard key={p.id} product={p} />)}
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
+            {filtered.map((p) => (
+              <ProductCard key={p.id} product={p} />
+            ))}
           </div>
         )}
       </div>

@@ -1,13 +1,11 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Epilogue:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,700&display=swap');
 @import "tailwindcss";
 
 @theme {
-  --color-green-50: #f0fdf4;
-  --color-green-100: #dcfce7;
+  --color-green-400: #4ade80;
   --color-green-500: #22c55e;
   --color-green-600: #16a34a;
-  --color-green-700: #15803d;
-  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-sans: 'Epilogue', system-ui, sans-serif;
 }
 
 * { box-sizing: border-box; }
@@ -15,27 +13,18 @@ html { scroll-behavior: smooth; }
 
 body {
   margin: 0;
-  font-family: 'Inter', system-ui, sans-serif;
-  background: #ffffff;
-  color: #000000;
+  font-family: 'Epilogue', system-ui, sans-serif;
+  background: #09090b;
+  color: #f8fafc;
   -webkit-font-smoothing: antialiased;
 }
 
-::-webkit-scrollbar { width: 5px; }
-::-webkit-scrollbar-track { background: #f1f1f1; }
-::-webkit-scrollbar-thumb { background: #16a34a; border-radius: 3px; }
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: #09090b; }
+::-webkit-scrollbar-thumb { background: #22c55e; border-radius: 0; }
 
-.product-card {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-.product-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 20px 40px rgba(0,0,0,0.12);
-}
-
-.green-line {
-  background: linear-gradient(90deg, #15803d, #22c55e, #15803d);
-}
+.product-card { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+.product-card:hover { transform: translateY(-3px); box-shadow: 0 0 30px rgba(34,197,94,0.08); }
 
 .admin-sidebar {
   background: #0a0a0a;
