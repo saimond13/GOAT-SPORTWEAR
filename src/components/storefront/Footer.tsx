@@ -15,19 +15,8 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
           {/* Brand col */}
           <div className="md:col-span-2">
-            <div className="flex items-center gap-3 mb-6">
-              <GoatLogo size={38} variant="white" />
-              <div className="flex flex-col leading-none">
-                <span
-                  className="text-white text-xl tracking-tight"
-                  style={{ fontFamily: "'Anton', sans-serif" }}
-                >
-                  GOAT
-                </span>
-                <span className="font-bold text-[9px] tracking-[0.25em] text-green-500 uppercase">
-                  Sportwear
-                </span>
-              </div>
+            <div className="mb-6">
+              <GoatLogo size={120} variant="white" />
             </div>
 
             <p className="text-gray-600 text-sm leading-relaxed max-w-xs mb-6">

@@ -40,21 +40,10 @@ export function Header() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <button
-            className="flex items-center gap-2.5 group"
+            className="flex items-center"
             onClick={() => scrollTo("hero")}
           >
-            <GoatLogo size={34} variant="white" />
-            <div className="flex flex-col leading-none">
-              <span
-                className="text-white text-lg tracking-tight"
-                style={{ fontFamily: "'Anton', sans-serif" }}
-              >
-                GOAT
-              </span>
-              <span className="font-bold text-[9px] tracking-[0.25em] text-green-500 uppercase">
-                Sportwear
-              </span>
-            </div>
+            <GoatLogo size={90} variant="white" />
           </button>
 
           {/* Desktop nav */}

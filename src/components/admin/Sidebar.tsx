@@ -30,11 +30,8 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
       {/* Header */}
       <div className="flex items-center justify-between px-5 py-5 border-b border-white/5">
         <div className="flex items-center gap-2.5">
-          <GoatLogo size={32} variant="white" />
-          <div>
-            <p className="font-black text-sm text-white leading-none">GOAT</p>
-            <p className="text-green-500 text-[9px] font-bold tracking-[0.2em] uppercase">Admin</p>
-          </div>
+          <GoatLogo size={80} variant="white" />
+          <p className="text-green-500 text-[9px] font-bold tracking-[0.2em] uppercase">Admin</p>
         </div>
         {onClose && (
           <button onClick={onClose} className="text-gray-500 hover:text-white md:hidden">
