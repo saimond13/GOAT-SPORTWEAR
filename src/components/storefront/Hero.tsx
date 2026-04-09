@@ -208,7 +208,7 @@ export function Hero() {
 
         {/* Tagline */}
         <motion.p
-          className="text-gray-500 text-sm md:text-base max-w-xs mx-auto mb-12 leading-relaxed"
+          className="text-gray-300 text-sm md:text-base max-w-xs mx-auto mb-12 leading-relaxed"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.58, duration: 0.5 }}
@@ -256,7 +256,7 @@ export function Hero() {
               >
                 {s.v}
               </div>
-              <div className="text-[9px] text-gray-600 uppercase tracking-[0.3em] mt-1">{s.l}</div>
+              <div className="text-[9px] text-gray-400 uppercase tracking-[0.3em] mt-1">{s.l}</div>
             </div>
           ))}
         </motion.div>

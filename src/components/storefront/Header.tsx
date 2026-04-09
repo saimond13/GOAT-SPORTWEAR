@@ -2,14 +2,15 @@
 import { ShoppingCart, Menu, X, ChevronDown } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
 import { useCart } from "@/context/CartContext";
 
 const infoLinks = [
-  "Cómo comprar",
-  "Métodos de pago",
-  "Envíos y plazos",
-  "Cambios y devoluciones",
-  "Preguntas frecuentes",
+  { label: "Cómo comprar", slug: "como-comprar" },
+  { label: "Métodos de pago", slug: "metodos-de-pago" },
+  { label: "Envíos y plazos", slug: "envios-y-plazos" },
+  { label: "Cambios y devoluciones", slug: "cambios-y-devoluciones" },
+  { label: "Preguntas frecuentes", slug: "preguntas-frecuentes" },
 ];
 
 export function Header() {
@@ -105,12 +106,14 @@ export function Header() {
                     className="absolute top-full right-0 mt-2 w-52 bg-[#111113] border border-white/[0.08] py-1"
                   >
                     {infoLinks.map((item) => (
-                      <button
-                        key={item}
+                      <Link
+                        key={item.slug}
+                        href={`/info/${item.slug}`}
+                        onClick={() => setInfoOpen(false)}
                         className="block w-full text-left px-4 py-2.5 text-sm text-gray-300 hover:text-white hover:bg-white/5 transition-colors"
                       >
-                        {item}
-                      </button>
+                        {item.label}
+                      </Link>
                     ))}
                   </motion.div>
                 )}
@@ -168,12 +171,14 @@ export function Header() {
               <div className="pt-1 pb-2 border-b border-white/[0.05]">
                 <p className="text-[10px] font-bold text-gray-600 uppercase tracking-widest mb-2">Info</p>
                 {infoLinks.map((item) => (
-                  <button
-                    key={item}
+                  <Link
+                    key={item.slug}
+                    href={`/info/${item.slug}`}
+                    onClick={() => setMenuOpen(false)}
                     className="block w-full text-left text-sm text-gray-400 hover:text-white py-2 transition-colors"
                   >
-                    {item}
-                  </button>
+                    {item.label}
+                  </Link>
                 ))}
               </div>
             </div>

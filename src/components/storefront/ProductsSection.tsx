@@ -59,13 +59,13 @@ export function ProductsSection({ products }: { products: Product[] }) {
         {/* Grid */}
         {products.length === 0 ? (
           <div className="text-center py-32">
-            <p className="text-gray-600 text-base font-medium uppercase tracking-widest">
+            <p className="text-gray-400 text-base font-medium uppercase tracking-widest">
               Catálogo en preparación
             </p>
             <p className="text-gray-700 text-sm mt-2">Volvé pronto</p>
           </div>
         ) : filtered.length === 0 ? (
-          <div className="text-center py-16 text-gray-600 text-sm uppercase tracking-widest">
+          <div className="text-center py-16 text-gray-400 text-sm uppercase tracking-widest">
             Sin productos en esta categoría
           </div>
         ) : (

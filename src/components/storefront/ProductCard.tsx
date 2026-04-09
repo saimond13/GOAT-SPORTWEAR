@@ -88,7 +88,7 @@ export function ProductCard({ product }: { product: Product }) {
 
       {/* Info */}
       <div className="p-4">
-        <p className="text-[9px] font-bold text-gray-600 uppercase tracking-[0.3em] mb-1">
+        <p className="text-[9px] font-bold text-gray-400 uppercase tracking-[0.3em] mb-1">
           {product.category}
         </p>
         <Link href={`/productos/${product.id}`}>
@@ -99,7 +99,7 @@ export function ProductCard({ product }: { product: Product }) {
         <div className="flex items-center gap-2 mb-3">
           <span className="font-black text-white text-base">{formatPrice(product.price)}</span>
           {product.original_price && (
-            <span className="text-gray-600 text-xs line-through">
+            <span className="text-gray-400 text-xs line-through">
               {formatPrice(product.original_price)}
             </span>
           )}
@@ -114,7 +114,7 @@ export function ProductCard({ product }: { product: Product }) {
           >
             {/* Sizes */}
             <div>
-              <p className="text-[9px] font-bold text-gray-600 uppercase tracking-[0.3em] mb-1.5">
+              <p className="text-[9px] font-bold text-gray-400 uppercase tracking-[0.3em] mb-1.5">
                 Talle
               </p>
               <div className="flex flex-wrap gap-1">
@@ -136,7 +136,7 @@ export function ProductCard({ product }: { product: Product }) {
 
             {/* Quantity */}
             <div>
-              <p className="text-[9px] font-bold text-gray-600 uppercase tracking-[0.3em] mb-1.5">
+              <p className="text-[9px] font-bold text-gray-400 uppercase tracking-[0.3em] mb-1.5">
                 Cantidad
               </p>
               <div className="flex items-center gap-3">
@@ -158,7 +158,7 @@ export function ProductCard({ product }: { product: Product }) {
 
             {/* Payment */}
             <div>
-              <p className="text-[9px] font-bold text-gray-600 uppercase tracking-[0.3em] mb-1.5">
+              <p className="text-[9px] font-bold text-gray-400 uppercase tracking-[0.3em] mb-1.5">
                 Pago
               </p>
               <div className="relative">
@@ -172,7 +172,7 @@ export function ProductCard({ product }: { product: Product }) {
                     <option key={m} value={m}>{m}</option>
                   ))}
                 </select>
-                <ChevronDown className="absolute right-2 top-2.5 w-3 h-3 text-gray-600 pointer-events-none" />
+                <ChevronDown className="absolute right-2 top-2.5 w-3 h-3 text-gray-400 pointer-events-none" />
               </div>
             </div>
           </motion.div>
@@ -185,7 +185,7 @@ export function ProductCard({ product }: { product: Product }) {
             added
               ? "bg-green-500 text-black"
               : expanded && (!selectedSize || !payment)
-              ? "bg-white/5 text-gray-600 cursor-not-allowed"
+              ? "bg-white/5 text-gray-400 cursor-not-allowed"
               : "bg-white text-black hover:bg-green-500 hover:text-black"
           }`}
         >

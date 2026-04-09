@@ -1,6 +1,15 @@
 "use client";
 import { MapPin, MessageCircle, Mail } from "lucide-react";
 import { GoatLogo } from "@/components/ui/GoatLogo";
+import Link from "next/link";
+
+const infoLinks = [
+  { label: "Cómo comprar", slug: "como-comprar" },
+  { label: "Métodos de pago", slug: "metodos-de-pago" },
+  { label: "Envíos y plazos", slug: "envios-y-plazos" },
+  { label: "Cambios y devoluciones", slug: "cambios-y-devoluciones" },
+  { label: "Preguntas frecuentes", slug: "preguntas-frecuentes" },
+];
 
 export function Footer() {
   const scrollTo = (id: string) =>
@@ -8,25 +17,28 @@ export function Footer() {
 
   return (
     <footer id="contact" className="bg-[#060608] border-t border-white/5">
-      {/* Top accent */}
       <div className="h-[1px] bg-gradient-to-r from-transparent via-green-500/40 to-transparent" />
 
       <div className="max-w-7xl mx-auto px-4 py-16">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
-          {/* Brand col */}
+          {/* Brand */}
           <div className="md:col-span-2">
             <div className="mb-6">
               <GoatLogo size={120} variant="white" />
             </div>
 
-            <p className="text-gray-600 text-sm leading-relaxed max-w-xs mb-6">
+            <p className="text-gray-300 text-sm leading-relaxed max-w-xs mb-6">
               Gymwear de calidad premium. Envíos a todo el país por Correo Argentino.
             </p>
 
             <div className="space-y-2 mb-6">
-              <div className="flex items-center gap-2 text-gray-600 text-sm">
-                <MapPin className="w-3.5 h-3.5 text-green-600 flex-shrink-0" />
-                <span>25 de Mayo 115, Sa Pereira, Entre Ríos</span>
+              <div className="flex items-start gap-2 text-gray-300 text-sm">
+                <MapPin className="w-3.5 h-3.5 text-green-500 flex-shrink-0 mt-0.5" />
+                <div>
+                  <span>25 de Mayo 115, S3011 Sa Pereira</span>
+                  <br />
+                  <span className="text-gray-400">Provincia de Santa Fe, Argentina</span>
+                </div>
               </div>
             </div>
 
@@ -58,7 +70,7 @@ export function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={s.label}
-                  className="w-9 h-9 border border-white/10 flex items-center justify-center text-gray-600 hover:border-green-500/50 hover:text-green-500 transition-all"
+                  className="w-9 h-9 border border-white/10 flex items-center justify-center text-gray-400 hover:border-green-500/50 hover:text-green-500 transition-all"
                 >
                   {s.icon}
                 </a>
@@ -69,8 +81,7 @@ export function Footer() {
           {/* Categories */}
           <div>
             <h4
-              className="text-[9px] uppercase tracking-[0.35em] text-gray-600 mb-5"
-              style={{ fontFamily: "'Anton', sans-serif" }}
+              className="text-xs uppercase tracking-[0.3em] text-gray-300 font-bold mb-5"
             >
               Categorías
             </h4>
@@ -79,7 +90,7 @@ export function Footer() {
                 <li key={c}>
                   <button
                     onClick={() => scrollTo("products")}
-                    className="text-gray-600 hover:text-white text-sm transition-colors"
+                    className="text-gray-400 hover:text-white text-sm transition-colors"
                   >
                     {c}
                   </button>
@@ -90,36 +101,29 @@ export function Footer() {
 
           {/* Info */}
           <div>
-            <h4
-              className="text-[9px] uppercase tracking-[0.35em] text-gray-600 mb-5"
-              style={{ fontFamily: "'Anton', sans-serif" }}
-            >
+            <h4 className="text-xs uppercase tracking-[0.3em] text-gray-300 font-bold mb-5">
               Info
             </h4>
             <ul className="space-y-2.5">
-              {[
-                "Cómo comprar",
-                "Métodos de pago",
-                "Envíos y plazos",
-                "Cambios y devoluciones",
-                "Preguntas frecuentes",
-              ].map((item) => (
-                <li key={item}>
-                  <a href="#" className="text-gray-600 hover:text-white text-sm transition-colors">
-                    {item}
-                  </a>
+              {infoLinks.map((item) => (
+                <li key={item.slug}>
+                  <Link
+                    href={`/info/${item.slug}`}
+                    className="text-gray-400 hover:text-white text-sm transition-colors"
+                  >
+                    {item.label}
+                  </Link>
                 </li>
               ))}
             </ul>
           </div>
         </div>
 
-        {/* Bottom bar */}
         <div className="border-t border-white/5 mt-14 pt-6 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-gray-700 text-xs uppercase tracking-widest">
+          <p className="text-gray-500 text-xs uppercase tracking-widest">
             © 2026 GOAT SPORTWEAR
           </p>
-          <p className="text-gray-700 text-xs">Sa Pereira, Entre Ríos, Argentina</p>
+          <p className="text-gray-500 text-xs">Sa Pereira, Santa Fe, Argentina</p>
         </div>
       </div>
     </footer>
