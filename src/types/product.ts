@@ -9,6 +9,7 @@ export interface Product {
   badge?: string;
   image_url?: string;
   image_path?: string;
+  images?: string[];
   is_active: boolean;
   sort_order?: number;
   created_at?: string;

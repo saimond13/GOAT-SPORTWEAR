@@ -1,14 +1,23 @@
 "use client";
-import { ShoppingCart, Menu, X } from "lucide-react";
-import { useState, useEffect } from "react";
+import { ShoppingCart, Menu, X, ChevronDown } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useCart } from "@/context/CartContext";
-import { GoatLogo } from "@/components/ui/GoatLogo";
+
+const infoLinks = [
+  "Cómo comprar",
+  "Métodos de pago",
+  "Envíos y plazos",
+  "Cambios y devoluciones",
+  "Preguntas frecuentes",
+];
 
 export function Header() {
   const { itemCount, setIsOpen } = useCart();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [infoOpen, setInfoOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const infoRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -16,9 +25,20 @@ export function Header() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (infoRef.current && !infoRef.current.contains(e.target as Node)) {
+        setInfoOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
   const scrollTo = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
     setMenuOpen(false);
+    setInfoOpen(false);
   };
 
   const navLinks = [
@@ -32,31 +52,70 @@ export function Header() {
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
-          ? "bg-[#09090b]/95 backdrop-blur-md border-b border-white/5"
+          ? "bg-[#09090b]/95 backdrop-blur-md border-b border-white/[0.07]"
           : "bg-transparent border-b border-transparent"
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          {/* Logo */}
+
+          {/* Logo — just "GOAT" text, clean and readable small */}
           <button
             className="flex items-center"
             onClick={() => scrollTo("hero")}
           >
-            <GoatLogo size={90} variant="white" />
+            <span
+              className="text-white text-2xl leading-none tracking-tight"
+              style={{ fontFamily: "'Anton', sans-serif" }}
+            >
+              GOAT
+            </span>
           </button>
 
           {/* Desktop nav */}
-          <nav className="hidden md:flex items-center gap-8">
+          <nav className="hidden md:flex items-center gap-7">
             {navLinks.map((item) => (
               <button
                 key={item.id}
                 onClick={() => scrollTo(item.id)}
-                className="text-xs font-semibold text-gray-400 hover:text-white uppercase tracking-[0.15em] transition-colors duration-200"
+                className="text-xs font-semibold text-gray-300 hover:text-white uppercase tracking-[0.15em] transition-colors duration-200"
               >
                 {item.label}
               </button>
             ))}
+
+            {/* Info dropdown */}
+            <div ref={infoRef} className="relative">
+              <button
+                onClick={() => setInfoOpen(!infoOpen)}
+                className="flex items-center gap-1 text-xs font-semibold text-gray-300 hover:text-white uppercase tracking-[0.15em] transition-colors duration-200"
+              >
+                Info
+                <ChevronDown
+                  className={`w-3 h-3 transition-transform ${infoOpen ? "rotate-180" : ""}`}
+                />
+              </button>
+              <AnimatePresence>
+                {infoOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 6 }}
+                    transition={{ duration: 0.15 }}
+                    className="absolute top-full right-0 mt-2 w-52 bg-[#111113] border border-white/[0.08] py-1"
+                  >
+                    {infoLinks.map((item) => (
+                      <button
+                        key={item}
+                        className="block w-full text-left px-4 py-2.5 text-sm text-gray-300 hover:text-white hover:bg-white/5 transition-colors"
+                      >
+                        {item}
+                      </button>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           </nav>
 
           {/* Cart + mobile toggle */}
@@ -94,18 +153,29 @@ export function Header() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-[#09090b] border-t border-white/5 overflow-hidden"
+            className="md:hidden bg-[#09090b] border-t border-white/[0.07] overflow-hidden"
           >
-            <div className="px-4 py-4 space-y-1">
+            <div className="px-4 py-3 space-y-1">
               {navLinks.map((item) => (
                 <button
                   key={item.id}
                   onClick={() => scrollTo(item.id)}
-                  className="block w-full text-left text-sm font-semibold text-gray-400 hover:text-white uppercase tracking-[0.2em] py-3 border-b border-white/5 last:border-0 transition-colors"
+                  className="block w-full text-left text-sm font-semibold text-gray-300 hover:text-white uppercase tracking-[0.2em] py-3 border-b border-white/[0.05] last:border-0 transition-colors"
                 >
                   {item.label}
                 </button>
               ))}
+              <div className="pt-1 pb-2 border-b border-white/[0.05]">
+                <p className="text-[10px] font-bold text-gray-600 uppercase tracking-widest mb-2">Info</p>
+                {infoLinks.map((item) => (
+                  <button
+                    key={item}
+                    className="block w-full text-left text-sm text-gray-400 hover:text-white py-2 transition-colors"
+                  >
+                    {item}
+                  </button>
+                ))}
+              </div>
             </div>
           </motion.div>
         )}

@@ -265,7 +265,7 @@ export function Hero() {
       {/* Scroll indicator */}
       <motion.button
         onClick={() => document.getElementById("products")?.scrollIntoView({ behavior: "smooth" })}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 text-white/25 hover:text-green-500 transition-colors"
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 text-white/60 hover:text-green-500 transition-colors"
         animate={{ y: [0, 8, 0] }}
         transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
       >

@@ -120,7 +120,7 @@ export function CampaignsBanner({ campaigns }: { campaigns: Campaign[] }) {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
         >
-          <p className="text-[9px] font-bold tracking-[0.5em] text-gray-600 uppercase mb-4">
+          <p className="text-xs font-bold tracking-[0.4em] text-gray-400 uppercase mb-4">
             Lanzamientos
           </p>
           <h2

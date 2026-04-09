@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { ShoppingCart, Plus, Minus, ChevronDown } from "lucide-react";
+import Link from "next/link";
 import type { Product } from "@/types/product";
 import { PAYMENT_METHODS } from "@/types/product";
 import { useCart } from "@/context/CartContext";
@@ -34,7 +35,8 @@ export function ProductCard({ product }: { product: Product }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-40px" }}
     >
-      {/* Image — molde fijo 3:4 */}
+      {/* Image — molde fijo 3:4, click → página de producto */}
+      <Link href={`/productos/${product.id}`} className="block">
       <div className="relative overflow-hidden bg-[#1a1a1e] aspect-[3/4]">
         {product.image_url ? (
           <img
@@ -76,21 +78,24 @@ export function ProductCard({ product }: { product: Product }) {
 
         {/* Quick add hover button */}
         <button
-          onClick={() => setExpanded(!expanded)}
+          onClick={(e) => { e.preventDefault(); setExpanded(!expanded); }}
           className="absolute bottom-3 right-3 w-8 h-8 bg-green-500 text-black flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:bg-green-400"
         >
           <Plus className="w-4 h-4" />
         </button>
       </div>
+      </Link>
 
       {/* Info */}
       <div className="p-4">
         <p className="text-[9px] font-bold text-gray-600 uppercase tracking-[0.3em] mb-1">
           {product.category}
         </p>
-        <h3 className="font-bold text-white text-sm leading-tight mb-2 line-clamp-2">
-          {product.name}
-        </h3>
+        <Link href={`/productos/${product.id}`}>
+          <h3 className="font-bold text-white text-sm leading-tight mb-2 line-clamp-2 hover:text-green-400 transition-colors">
+            {product.name}
+          </h3>
+        </Link>
         <div className="flex items-center gap-2 mb-3">
           <span className="font-black text-white text-base">{formatPrice(product.price)}</span>
           {product.original_price && (

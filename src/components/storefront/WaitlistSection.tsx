@@ -30,18 +30,18 @@ export function WaitlistSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
         >
-          <p className="text-[9px] font-bold tracking-[0.5em] text-gray-600 uppercase mb-4">
+          <p className="text-xs font-bold tracking-[0.4em] text-gray-400 uppercase mb-4">
             Newsletter
           </p>
           <h2
-            className="text-[56px] md:text-[72px] text-white tracking-tight leading-none mb-6"
+            className="text-[64px] md:text-[90px] text-white tracking-tight leading-none mb-6"
             style={{ fontFamily: "'Anton', sans-serif" }}
           >
             SÉ EL
             <br />
             <span className="text-green-500">PRIMERO</span>
           </h2>
-          <p className="text-gray-500 text-sm mb-10 max-w-sm mx-auto leading-relaxed">
+          <p className="text-gray-300 text-base mb-10 max-w-sm mx-auto leading-relaxed font-semibold">
             Enterate antes que nadie de los nuevos drops, ofertas exclusivas y colecciones limitadas.
           </p>
 
