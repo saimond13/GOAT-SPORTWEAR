@@ -213,7 +213,7 @@ export function Hero() {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.58, duration: 0.5 }}
         >
-          Local en Sa Pereira, Entre Ríos.<br />Envíos a todo el país.
+          Local en Sa Pereira, Santa Fe.<br />Envíos a todo el país.
         </motion.p>
 
         {/* CTAs */}
