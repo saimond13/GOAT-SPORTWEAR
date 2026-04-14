@@ -54,8 +54,8 @@ export function Cart() {
         const data = await res.json();
         if (!res.ok) throw new Error(data.error ?? "Error al cotizar");
         setRates(data.rates ?? []);
-      } catch (err) {
-        setQuoteError(err instanceof Error ? err.message : "Error al cotizar envío");
+      } catch {
+        setQuoteError("");
         setRates([]);
       } finally {
         setQuotingShipping(false);
@@ -256,7 +256,7 @@ export function Cart() {
                             placeholder="Nombre y apellido"
                             value={shipping.recipientName}
                             onChange={(e) => setShipping({ recipientName: e.target.value })}
-                            className="w-full pl-8 pr-3 py-2 border border-gray-200 rounded-lg text-xs focus:outline-none focus:border-black placeholder-gray-400"
+                            className="w-full pl-8 pr-3 py-2 border border-gray-200 rounded-lg text-xs text-gray-900 bg-white focus:outline-none focus:border-black placeholder-gray-400"
                           />
                         </div>
                         <div className="relative">
@@ -266,7 +266,7 @@ export function Cart() {
                             placeholder="Teléfono"
                             value={shipping.recipientPhone}
                             onChange={(e) => setShipping({ recipientPhone: e.target.value })}
-                            className="w-full pl-8 pr-3 py-2 border border-gray-200 rounded-lg text-xs focus:outline-none focus:border-black placeholder-gray-400"
+                            className="w-full pl-8 pr-3 py-2 border border-gray-200 rounded-lg text-xs text-gray-900 bg-white focus:outline-none focus:border-black placeholder-gray-400"
                           />
                         </div>
                         {/* Address */}
@@ -277,7 +277,7 @@ export function Cart() {
                             placeholder="Dirección (calle y número)"
                             value={shipping.address}
                             onChange={(e) => setShipping({ address: e.target.value })}
-                            className="w-full pl-8 pr-3 py-2 border border-gray-200 rounded-lg text-xs focus:outline-none focus:border-black placeholder-gray-400"
+                            className="w-full pl-8 pr-3 py-2 border border-gray-200 rounded-lg text-xs text-gray-900 bg-white focus:outline-none focus:border-black placeholder-gray-400"
                           />
                         </div>
                         <div className="grid grid-cols-2 gap-2">
@@ -286,14 +286,14 @@ export function Cart() {
                             placeholder="Localidad"
                             value={shipping.city}
                             onChange={(e) => setShipping({ city: e.target.value })}
-                            className="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs focus:outline-none focus:border-black placeholder-gray-400"
+                            className="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs text-gray-900 bg-white focus:outline-none focus:border-black placeholder-gray-400"
                           />
                           <input
                             type="text"
                             placeholder="Cód. postal"
                             value={shipping.postalCode}
                             onChange={(e) => setShipping({ postalCode: e.target.value })}
-                            className="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs focus:outline-none focus:border-black placeholder-gray-400"
+                            className="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs text-gray-900 bg-white focus:outline-none focus:border-black placeholder-gray-400"
                           />
                         </div>
                         <ShippingQuote quoting={quotingShipping} rates={rates} error={quoteError} isFree={isFreeShipping} />
@@ -316,7 +316,7 @@ export function Cart() {
                             placeholder="Nombre y apellido"
                             value={shipping.recipientName}
                             onChange={(e) => setShipping({ recipientName: e.target.value })}
-                            className="w-full pl-8 pr-3 py-2 border border-gray-200 rounded-lg text-xs focus:outline-none focus:border-black placeholder-gray-400"
+                            className="w-full pl-8 pr-3 py-2 border border-gray-200 rounded-lg text-xs text-gray-900 bg-white focus:outline-none focus:border-black placeholder-gray-400"
                           />
                         </div>
                         <div className="relative">
@@ -326,7 +326,7 @@ export function Cart() {
                             placeholder="Teléfono"
                             value={shipping.recipientPhone}
                             onChange={(e) => setShipping({ recipientPhone: e.target.value })}
-                            className="w-full pl-8 pr-3 py-2 border border-gray-200 rounded-lg text-xs focus:outline-none focus:border-black placeholder-gray-400"
+                            className="w-full pl-8 pr-3 py-2 border border-gray-200 rounded-lg text-xs text-gray-900 bg-white focus:outline-none focus:border-black placeholder-gray-400"
                           />
                         </div>
                         <div className="grid grid-cols-2 gap-2">
@@ -335,14 +335,14 @@ export function Cart() {
                             placeholder="Localidad"
                             value={shipping.city}
                             onChange={(e) => setShipping({ city: e.target.value })}
-                            className="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs focus:outline-none focus:border-black placeholder-gray-400"
+                            className="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs text-gray-900 bg-white focus:outline-none focus:border-black placeholder-gray-400"
                           />
                           <input
                             type="text"
                             placeholder="Cód. postal"
                             value={shipping.postalCode}
                             onChange={(e) => setShipping({ postalCode: e.target.value })}
-                            className="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs focus:outline-none focus:border-black placeholder-gray-400"
+                            className="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs text-gray-900 bg-white focus:outline-none focus:border-black placeholder-gray-400"
                           />
                         </div>
 
