@@ -3,7 +3,7 @@
  * Docs: MiCorreo REST API (Correo Argentino)
  */
 
-const MICORREO_BASE = "https://api.micorreo.com.ar";
+const MICORREO_BASE = "https://api.correoargentino.com.ar/micorreo/v1";
 
 interface TokenCache {
   token: string;
