@@ -1,10 +1,9 @@
 "use client";
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { ShoppingCart, Plus, Minus, ChevronDown } from "lucide-react";
+import { ShoppingCart, Plus, Minus } from "lucide-react";
 import Link from "next/link";
 import type { Product } from "@/types/product";
-import { PAYMENT_METHODS } from "@/types/product";
 import { useCart } from "@/context/CartContext";
 import { formatPrice } from "@/lib/utils";
 
@@ -12,7 +11,6 @@ export function ProductCard({ product }: { product: Product }) {
   const { addItem } = useCart();
   const [selectedSize, setSelectedSize] = useState("");
   const [quantity, setQuantity] = useState(1);
-  const [payment, setPayment] = useState("");
   const [expanded, setExpanded] = useState(false);
   const [added, setAdded] = useState(false);
 
@@ -22,8 +20,8 @@ export function ProductCard({ product }: { product: Product }) {
 
   const handleAdd = () => {
     if (!expanded) { setExpanded(true); return; }
-    if (!selectedSize || !payment) return;
-    addItem(product, selectedSize, quantity, payment);
+    if (!selectedSize) return;
+    addItem(product, selectedSize, quantity, "Mercado Pago");
     setAdded(true);
     setTimeout(() => { setAdded(false); setExpanded(false); }, 1800);
   };
@@ -156,35 +154,22 @@ export function ProductCard({ product }: { product: Product }) {
               </div>
             </div>
 
-            {/* Payment */}
-            <div>
-              <p className="text-[9px] font-bold text-gray-400 uppercase tracking-[0.3em] mb-1.5">
-                Pago
-              </p>
-              <div className="relative">
-                <select
-                  value={payment}
-                  onChange={(e) => setPayment(e.target.value)}
-                  className="w-full text-xs border border-white/10 px-2.5 py-2 appearance-none focus:outline-none focus:border-green-500/50 bg-[#1a1a1e] text-gray-300 pr-7 transition-colors"
-                >
-                  <option value="">Seleccionar...</option>
-                  {PAYMENT_METHODS.map((m) => (
-                    <option key={m} value={m}>{m}</option>
-                  ))}
-                </select>
-                <ChevronDown className="absolute right-2 top-2.5 w-3 h-3 text-gray-400 pointer-events-none" />
-              </div>
+            {/* MP badge */}
+            <div className="flex items-center gap-1.5 bg-[#009EE3]/10 border border-[#009EE3]/20 rounded px-2.5 py-1.5">
+              <div className="w-2 h-2 rounded-full bg-[#009EE3]" />
+              <span className="text-[10px] font-bold text-[#009EE3]">Mercado Pago</span>
+              <span className="text-[9px] text-gray-500 ml-auto">💳 débito · crédito · cuenta</span>
             </div>
           </motion.div>
         )}
 
         <button
           onClick={handleAdd}
-          disabled={expanded && (!selectedSize || !payment)}
+          disabled={expanded && !selectedSize}
           className={`w-full py-2.5 text-xs font-black flex items-center justify-center gap-2 transition-all uppercase tracking-[0.15em] ${
             added
               ? "bg-green-500 text-black"
-              : expanded && (!selectedSize || !payment)
+              : expanded && !selectedSize
               ? "bg-white/5 text-gray-400 cursor-not-allowed"
               : "bg-white text-black hover:bg-green-500 hover:text-black"
           }`}

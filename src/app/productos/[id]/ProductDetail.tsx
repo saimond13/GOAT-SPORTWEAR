@@ -1,10 +1,9 @@
 "use client";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronLeft, ChevronRight, ArrowLeft, ShoppingCart, Minus, Plus, ChevronDown } from "lucide-react";
+import { ChevronLeft, ChevronRight, ArrowLeft, ShoppingCart, Minus, Plus } from "lucide-react";
 import Link from "next/link";
 import type { Product } from "@/types/product";
-import { PAYMENT_METHODS } from "@/types/product";
 import { useCart } from "@/context/CartContext";
 import { formatPrice } from "@/lib/utils";
 import { Header } from "@/components/storefront/Header";
@@ -83,7 +82,6 @@ export function ProductDetail({ product }: { product: Product }) {
   const { addItem, setIsOpen } = useCart();
   const [selectedSize, setSelectedSize] = useState("");
   const [quantity, setQuantity] = useState(1);
-  const [payment, setPayment] = useState("");
   const [added, setAdded] = useState(false);
 
   const discount = product.original_price
@@ -97,11 +95,6 @@ export function ProductDetail({ product }: { product: Product }) {
     ? [product.image_url]
     : [];
 
-  // Available payment methods for this product
-  const availablePayments = product.payment_methods?.length
-    ? product.payment_methods
-    : PAYMENT_METHODS;
-
   // Stock helpers
   const getStock = (s: string) => product.stock_by_size?.[s] ?? null; // null = unlimited
   const isOutOfStock = (s: string) => {
@@ -113,8 +106,8 @@ export function ProductDetail({ product }: { product: Product }) {
     : 99;
 
   const handleAdd = () => {
-    if (!selectedSize || !payment) return;
-    addItem(product, selectedSize, quantity, payment);
+    if (!selectedSize) return;
+    addItem(product, selectedSize, quantity, "Mercado Pago");
     setAdded(true);
     setIsOpen(true);
     setTimeout(() => setAdded(false), 2000);
@@ -255,34 +248,41 @@ export function ProductDetail({ product }: { product: Product }) {
                 </div>
               </div>
 
-              {/* Payment */}
-              <div>
-                <p className="text-xs font-bold text-gray-400 uppercase tracking-[0.3em] mb-3">
-                  Método de pago
+              {/* Mercado Pago badge */}
+              <div className="border border-white/10 rounded-xl p-4 bg-white/[0.03]">
+                <p className="text-[10px] font-bold text-gray-500 uppercase tracking-[0.25em] mb-3">
+                  Medios de pago
                 </p>
-                <div className="relative">
-                  <select
-                    value={payment}
-                    onChange={(e) => setPayment(e.target.value)}
-                    className="w-full border border-white/15 bg-[#1a1a1e] text-gray-300 px-4 py-3 appearance-none focus:outline-none focus:border-green-500/50 text-sm transition-colors pr-10"
-                  >
-                    <option value="">Seleccionar método...</option>
-                    {availablePayments.map((m) => (
-                      <option key={m} value={m}>{m}</option>
-                    ))}
-                  </select>
-                  <ChevronDown className="absolute right-3 top-3.5 w-4 h-4 text-gray-600 pointer-events-none" />
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="flex items-center gap-2 bg-[#009EE3] px-3 py-1.5 rounded-lg">
+                    <svg viewBox="0 0 24 24" className="w-4 h-4 fill-white">
+                      <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.5 8.5l-3 3-2-2-2 2-3-3 5-5 5 5z"/>
+                    </svg>
+                    <span className="text-white text-xs font-black tracking-wide">Mercado Pago</span>
+                  </div>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {[
+                    { label: "Tarjeta de crédito", icon: "💳" },
+                    { label: "Tarjeta de débito", icon: "🏦" },
+                    { label: "Dinero en cuenta", icon: "💰" },
+                  ].map((m) => (
+                    <span key={m.label} className="flex items-center gap-1.5 text-[11px] text-gray-400 bg-white/5 px-2.5 py-1 rounded-full">
+                      <span>{m.icon}</span>
+                      {m.label}
+                    </span>
+                  ))}
                 </div>
               </div>
 
               {/* CTA */}
               <button
                 onClick={handleAdd}
-                disabled={!selectedSize || !payment}
+                disabled={!selectedSize}
                 className={`w-full py-4 text-sm font-black uppercase tracking-[0.2em] flex items-center justify-center gap-3 transition-all ${
                   added
                     ? "bg-green-500 text-black"
-                    : !selectedSize || !payment
+                    : !selectedSize
                     ? "bg-white/5 text-gray-600 cursor-not-allowed"
                     : "bg-white text-black hover:bg-green-500"
                 }`}
@@ -291,10 +291,8 @@ export function ProductDetail({ product }: { product: Product }) {
                 {added ? "¡Agregado al carrito!" : "Agregar al carrito"}
               </button>
 
-              {(!selectedSize || !payment) && (
-                <p className="text-gray-600 text-xs text-center">
-                  {!selectedSize ? "Seleccioná un talle" : "Seleccioná un método de pago"}
-                </p>
+              {!selectedSize && (
+                <p className="text-gray-600 text-xs text-center">Seleccioná un talle</p>
               )}
             </div>
           </motion.div>
