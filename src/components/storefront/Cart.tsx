@@ -184,13 +184,13 @@ export function Cart() {
                           className="w-6 h-6 rounded-full bg-white border border-gray-200 flex items-center justify-center hover:border-black">
                           <Minus className="w-3 h-3" />
                         </button>
-                        <span className="font-black text-sm w-4 text-center">{item.quantity}</span>
+                        <span className="font-black text-sm w-4 text-center text-gray-900">{item.quantity}</span>
                         <button onClick={() => updateQuantity(item.product.id, item.size, item.quantity + 1)}
                           className="w-6 h-6 rounded-full bg-white border border-gray-200 flex items-center justify-center hover:border-black">
                           <Plus className="w-3 h-3" />
                         </button>
                       </div>
-                      <span className="font-black text-sm">{formatPrice(item.product.price * item.quantity)}</span>
+                      <span className="font-black text-sm text-gray-900">{formatPrice(item.product.price * item.quantity)}</span>
                     </div>
                   </div>
                   <button onClick={() => removeItem(item.product.id, item.size)}
@@ -377,14 +377,14 @@ export function Cart() {
                 <div className="p-5 space-y-3">
                   <div className="flex justify-between items-center">
                     <span className="text-gray-500 font-medium text-sm">Subtotal</span>
-                    <span className="font-black text-xl">{formatPrice(total)}</span>
+                    <span className="font-black text-xl text-gray-900">{formatPrice(total)}</span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-gray-500 font-medium text-sm">Envío</span>
                     {isFreeShipping ? (
                       <span className="text-green-600 font-black text-sm">GRATIS 🎉</span>
                     ) : rates.length > 0 ? (
-                      <span className="font-black text-sm">{formatPrice(rates[0].price)}</span>
+                      <span className="font-black text-sm text-gray-900">{formatPrice(rates[0].price)}</span>
                     ) : (
                       <span className="text-gray-400 text-sm">A cotizar</span>
                     )}

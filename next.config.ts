@@ -18,9 +18,9 @@ const securityHeaders = [
       // Google Fonts + Supabase storage images
       "font-src 'self' https://fonts.gstatic.com",
       // Supabase storage + same origin images
-      `img-src 'self' data: blob: ${process.env.NEXT_PUBLIC_SUPABASE_URL ?? "*"}.supabase.co`,
-      // Supabase API
-      `connect-src 'self' ${process.env.NEXT_PUBLIC_SUPABASE_URL ?? "https://*.supabase.co"} https://wa.me wss://*.supabase.co`,
+      "img-src 'self' data: blob: https://*.supabase.co https://*.supabase.in https://supabase.co",
+      // Supabase API + MiCorreo
+      "connect-src 'self' https://*.supabase.co https://*.supabase.in wss://*.supabase.co https://wa.me https://api.micorreo.com.ar https://api.paq.ar",
       "frame-ancestors 'none'",
     ].join("; "),
   },
