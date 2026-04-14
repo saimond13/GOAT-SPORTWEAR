@@ -13,8 +13,9 @@ interface RateOption {
   serviceId: string;
   serviceName: string;
   price: number;
-  currency: string;
-  deliveryDays?: number;
+  deliveryType: "D" | "S";
+  deliveryTimeMin?: string;
+  deliveryTimeMax?: string;
 }
 
 export function Cart() {
@@ -430,11 +431,11 @@ function ShippingQuote({ quoting, rates, error, isFree }: {
   return (
     <div className="space-y-1 pt-1">
       {rates.map((r) => (
-        <div key={r.serviceId} className="flex justify-between items-center bg-gray-100 rounded-lg px-3 py-1.5">
+        <div key={r.serviceId + r.deliveryType} className="flex justify-between items-center bg-gray-100 rounded-lg px-3 py-1.5">
           <div>
             <span className="text-[11px] font-bold text-gray-700">{r.serviceName}</span>
-            {r.deliveryDays != null && (
-              <span className="text-[10px] text-gray-400 ml-1">({r.deliveryDays}d)</span>
+            {r.deliveryTimeMin && r.deliveryTimeMax && (
+              <span className="text-[10px] text-gray-400 ml-1">({r.deliveryTimeMin}-{r.deliveryTimeMax}d)</span>
             )}
           </div>
           <span className="text-[11px] font-black text-black">{formatPrice(r.price)}</span>
