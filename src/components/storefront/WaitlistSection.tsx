@@ -2,24 +2,29 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { CheckCircle, Loader2 } from "lucide-react";
-import { createClient } from "@/lib/supabase/client";
 
 export function WaitlistSection() {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
-  const [status, setStatus] = useState<"idle" | "loading" | "success" | "duplicate" | "error">("idle");
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "duplicate" | "error" | "rate_limited">("idle");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) return;
     setStatus("loading");
-    const supabase = createClient();
-    const { error } = await supabase
-      .from("waitlist")
-      .insert({ email, name: name || null, source: "storefront" });
-    if (!error) { setStatus("success"); setEmail(""); setName(""); }
-    else if (error.code === "23505") setStatus("duplicate");
-    else setStatus("error");
+    try {
+      const res = await fetch("/api/waitlist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, name: name || undefined }),
+      });
+      if (res.ok) { setStatus("success"); setEmail(""); setName(""); }
+      else if (res.status === 409) setStatus("duplicate");
+      else if (res.status === 429) setStatus("rate_limited");
+      else setStatus("error");
+    } catch {
+      setStatus("error");
+    }
   };
 
   return (
@@ -84,6 +89,9 @@ export function WaitlistSection() {
 
           {status === "duplicate" && (
             <p className="text-yellow-500 text-xs mt-4 uppercase tracking-widest">Ya estás suscripto ✓</p>
+          )}
+          {status === "rate_limited" && (
+            <p className="text-yellow-500 text-xs mt-4 uppercase tracking-widest">Demasiados intentos. Esperá unos minutos.</p>
           )}
           {status === "error" && (
             <p className="text-red-400 text-xs mt-4 uppercase tracking-widest">Algo salió mal, intentá de nuevo</p>

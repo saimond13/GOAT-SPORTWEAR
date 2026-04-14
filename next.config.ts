@@ -1,9 +1,42 @@
 import type { NextConfig } from "next";
 import path from "path";
 
+const securityHeaders = [
+  { key: "X-DNS-Prefetch-Control", value: "on" },
+  { key: "X-Frame-Options", value: "SAMEORIGIN" },
+  { key: "X-Content-Type-Options", value: "nosniff" },
+  { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+  { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
+  {
+    key: "Content-Security-Policy",
+    value: [
+      "default-src 'self'",
+      // Next.js inline scripts + framer-motion
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+      // Tailwind inline styles + framer-motion
+      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+      // Google Fonts + Supabase storage images
+      "font-src 'self' https://fonts.gstatic.com",
+      // Supabase storage + same origin images
+      `img-src 'self' data: blob: ${process.env.NEXT_PUBLIC_SUPABASE_URL ?? "*"}.supabase.co`,
+      // Supabase API
+      `connect-src 'self' ${process.env.NEXT_PUBLIC_SUPABASE_URL ?? "https://*.supabase.co"} https://wa.me wss://*.supabase.co`,
+      "frame-ancestors 'none'",
+    ].join("; "),
+  },
+];
+
 const nextConfig: NextConfig = {
   turbopack: {
     root: path.resolve(__dirname),
+  },
+  async headers() {
+    return [
+      {
+        source: "/(.*)",
+        headers: securityHeaders,
+      },
+    ];
   },
 };
 

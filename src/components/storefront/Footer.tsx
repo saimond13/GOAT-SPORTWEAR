@@ -54,12 +54,12 @@ export function Footer() {
                   ),
                 },
                 {
-                  href: `https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "5493491406188"}`,
+                  href: `https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER}`,
                   label: "WhatsApp",
                   icon: <MessageCircle className="w-4 h-4" />,
                 },
                 {
-                  href: "mailto:goatsportwear@gmail.com",
+                  href: `mailto:${process.env.NEXT_PUBLIC_CONTACT_EMAIL}`,
                   label: "Email",
                   icon: <Mail className="w-4 h-4" />,
                 },

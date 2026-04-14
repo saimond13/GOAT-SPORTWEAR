@@ -6,6 +6,10 @@ export interface Product {
   original_price?: number;
   category: string;
   sizes: string[];
+  /** Stock por talle: { S: 5, M: 10, L: 0 }. Si está vacío/undefined, stock ilimitado */
+  stock_by_size?: Record<string, number>;
+  /** Métodos de pago habilitados. Si es null/undefined, se usan todos */
+  payment_methods?: string[];
   badge?: string;
   image_url?: string;
   image_path?: string;

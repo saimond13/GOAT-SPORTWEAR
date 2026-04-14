@@ -3,7 +3,7 @@ import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2, Upload, X, Plus } from "lucide-react";
 import type { Product } from "@/types/product";
-import { CATEGORIES, SIZES, BADGES } from "@/types/product";
+import { CATEGORIES, SIZES, BADGES, PAYMENT_METHODS } from "@/types/product";
 import { createClient } from "@/lib/supabase/client";
 
 export function ProductForm({ product }: { product?: Product }) {
@@ -21,6 +21,16 @@ export function ProductForm({ product }: { product?: Product }) {
     is_active: product?.is_active ?? true,
   });
 
+  // Stock por talle: { S: 5, M: 3, ... }
+  const [stockBySize, setStockBySize] = useState<Record<string, number>>(
+    product?.stock_by_size ?? {}
+  );
+
+  // Métodos de pago habilitados (null = todos)
+  const [enabledPayments, setEnabledPayments] = useState<string[]>(
+    product?.payment_methods ?? PAYMENT_METHODS
+  );
+
   // All product images: images[] array takes priority, fallback to image_url
   const initialImages = product?.images?.length
     ? product.images
@@ -35,10 +45,20 @@ export function ProductForm({ product }: { product?: Product }) {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const toggleSize = (s: string) => {
-    setForm((f) => ({
-      ...f,
-      sizes: f.sizes.includes(s) ? f.sizes.filter((x) => x !== s) : [...f.sizes, s],
-    }));
+    setForm((f) => {
+      const hasSz = f.sizes.includes(s);
+      if (hasSz) {
+        // Remove size and its stock entry
+        setStockBySize((prev) => { const n = { ...prev }; delete n[s]; return n; });
+      }
+      return { ...f, sizes: hasSz ? f.sizes.filter((x) => x !== s) : [...f.sizes, s] };
+    });
+  };
+
+  const togglePayment = (m: string) => {
+    setEnabledPayments((prev) =>
+      prev.includes(m) ? prev.filter((x) => x !== m) : [...prev, m]
+    );
   };
 
   const uploadImage = async (file: File): Promise<string | null> => {
@@ -104,6 +124,8 @@ export function ProductForm({ product }: { product?: Product }) {
       is_active: form.is_active,
       image_url: images[0] ?? null,
       images: images,
+      stock_by_size: stockBySize,
+      payment_methods: enabledPayments.length > 0 ? enabledPayments : PAYMENT_METHODS,
     };
 
     if (isEdit) {
@@ -297,22 +319,70 @@ export function ProductForm({ product }: { product?: Product }) {
         </div>
       </div>
 
-      {/* Sizes */}
+      {/* Sizes + stock */}
       <div>
-        <label className={labelClass}>Talles * (seleccioná los disponibles)</label>
+        <label className={labelClass}>Talles y stock *</label>
+        <div className="space-y-2">
+          {SIZES.map((s) => {
+            const active = form.sizes.includes(s);
+            return (
+              <div key={s} className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => toggleSize(s)}
+                  className={`w-14 py-1.5 rounded-lg text-xs font-bold border transition-colors flex-shrink-0 ${
+                    active
+                      ? "bg-green-600 text-white border-green-600"
+                      : "bg-white/5 border-white/10 text-gray-400 hover:border-green-600/50"
+                  }`}
+                >
+                  {s}
+                </button>
+                {active && (
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="number"
+                      min={0}
+                      value={stockBySize[s] ?? ""}
+                      onChange={(e) =>
+                        setStockBySize((prev) => ({
+                          ...prev,
+                          [s]: e.target.value === "" ? 0 : parseInt(e.target.value, 10),
+                        }))
+                      }
+                      placeholder="Stock"
+                      className="w-24 bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-white text-xs focus:outline-none focus:border-green-500 placeholder-gray-600"
+                    />
+                    <span className="text-gray-600 text-xs">
+                      {(stockBySize[s] ?? 0) === 0
+                        ? "sin stock"
+                        : `${stockBySize[s]} unidades`}
+                    </span>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+        <p className="text-gray-600 text-xs mt-2">Stock = 0 deshabilita el talle en la tienda</p>
+      </div>
+
+      {/* Payment methods */}
+      <div>
+        <label className={labelClass}>Métodos de pago habilitados *</label>
         <div className="flex flex-wrap gap-2">
-          {SIZES.map((s) => (
+          {PAYMENT_METHODS.map((m) => (
             <button
               type="button"
-              key={s}
-              onClick={() => toggleSize(s)}
+              key={m}
+              onClick={() => togglePayment(m)}
               className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-colors ${
-                form.sizes.includes(s)
+                enabledPayments.includes(m)
                   ? "bg-green-600 text-white border-green-600"
                   : "bg-white/5 border-white/10 text-gray-400 hover:border-green-600/50"
               }`}
             >
-              {s}
+              {m}
             </button>
           ))}
         </div>

@@ -85,7 +85,7 @@ export default async function InfoPage({ params }: { params: Promise<{ slug: str
             <div className="mt-12 p-6 border border-white/[0.06] bg-white/[0.02]">
               <p className="text-gray-300 text-sm mb-3">¿Tenés alguna duda más?</p>
               <a
-                href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "5493491406188"}`}
+                href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-[0.2em] px-5 py-3 transition-colors"

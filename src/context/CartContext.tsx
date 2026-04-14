@@ -2,6 +2,18 @@
 import { createContext, useContext, useState, type ReactNode } from "react";
 import type { Product, CartItem } from "@/types/product";
 
+export type DeliveryType = "domicilio" | "sucursal" | "";
+
+export interface ShippingInfo {
+  type: DeliveryType;
+  address: string;       // domicilio: calle + número + piso/depto
+  postalCode: string;    // ambos tipos
+  city: string;          // ciudad/localidad
+  recipientName: string;
+  recipientPhone: string;
+  agencyId: string;      // selected PAQ.AR agency (sucursal mode)
+}
+
 interface CartContextType {
   items: CartItem[];
   addItem: (product: Product, size: string, quantity: number, paymentMethod: string) => void;
@@ -12,13 +24,21 @@ interface CartContextType {
   itemCount: number;
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
+  shipping: ShippingInfo;
+  setShipping: (info: Partial<ShippingInfo>) => void;
 }
 
 const CartContext = createContext<CartContextType | null>(null);
 
+const defaultShipping: ShippingInfo = {
+  type: "", address: "", postalCode: "", city: "",
+  recipientName: "", recipientPhone: "", agencyId: "",
+};
+
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [isOpen, setIsOpen] = useState(false);
+  const [shipping, setShippingState] = useState<ShippingInfo>(defaultShipping);
 
   const addItem = (product: Product, size: string, quantity: number, paymentMethod: string) => {
     setItems((prev) => {
@@ -48,11 +68,18 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const clearCart = () => setItems([]);
 
+  const setShipping = (info: Partial<ShippingInfo>) =>
+    setShippingState((prev) => ({ ...prev, ...info }));
+
   const total = items.reduce((sum, i) => sum + i.product.price * i.quantity, 0);
   const itemCount = items.reduce((sum, i) => sum + i.quantity, 0);
 
   return (
-    <CartContext.Provider value={{ items, addItem, removeItem, updateQuantity, clearCart, total, itemCount, isOpen, setIsOpen }}>
+    <CartContext.Provider value={{
+      items, addItem, removeItem, updateQuantity, clearCart,
+      total, itemCount, isOpen, setIsOpen,
+      shipping, setShipping,
+    }}>
       {children}
     </CartContext.Provider>
   );

@@ -3,6 +3,7 @@ import { ShoppingCart, Menu, X, ChevronDown } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useCart } from "@/context/CartContext";
 
 const infoLinks = [
@@ -15,6 +16,7 @@ const infoLinks = [
 
 export function Header() {
   const { itemCount, setIsOpen } = useCart();
+  const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
   const [infoOpen, setInfoOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -37,9 +39,14 @@ export function Header() {
   }, []);
 
   const scrollTo = (id: string) => {
-    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
     setMenuOpen(false);
     setInfoOpen(false);
+    if (pathname !== "/") {
+      // Navigate to homepage with anchor — browser handles the scroll
+      window.location.href = `/#${id}`;
+      return;
+    }
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
   };
 
   const navLinks = [

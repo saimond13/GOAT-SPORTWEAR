@@ -1,6 +1,13 @@
 import { NextResponse } from "next/server";
 import { createClient as createServerClient } from "@/lib/supabase/server";
 import { createClient as createAdminClient } from "@supabase/supabase-js";
+import { z } from "zod";
+
+const inviteSchema = z.object({
+  email: z.string().email("Email inválido").max(254),
+  full_name: z.string().max(100).optional(),
+  role: z.enum(["owner", "editor"]).default("editor"),
+});
 
 export async function POST(req: Request) {
   // Verify the caller is an authenticated owner
@@ -11,8 +18,20 @@ export async function POST(req: Request) {
   const { data: profile } = await supabase.from("admin_profiles").select("role").eq("id", user.id).single();
   if (profile?.role !== "owner") return NextResponse.json({ error: "Solo el owner puede invitar admins" }, { status: 403 });
 
-  const { email, full_name, role } = await req.json();
-  if (!email) return NextResponse.json({ error: "Email requerido" }, { status: 400 });
+  let body: unknown;
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: "Cuerpo inválido" }, { status: 400 });
+  }
+
+  const parsed = inviteSchema.safeParse(body);
+  if (!parsed.success) {
+    const message = parsed.error.issues[0]?.message ?? "Datos inválidos";
+    return NextResponse.json({ error: message }, { status: 400 });
+  }
+
+  const { email, full_name, role } = parsed.data;
 
   // Use service role for admin operations (never exposed client-side)
   const adminClient = createAdminClient(

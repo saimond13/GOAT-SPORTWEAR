@@ -1,12 +1,79 @@
 "use client";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Minus, Plus, Trash2, MessageCircle, ShoppingBag } from "lucide-react";
+import { X, Minus, Plus, Trash2, MessageCircle, ShoppingBag, Truck, Building2, MapPin, User, Phone, Loader2 } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { buildWhatsAppMessage, getWhatsAppUrl } from "@/lib/whatsapp";
 import { formatPrice } from "@/lib/utils";
+import { useState, useEffect, useRef } from "react";
+import type { Agency } from "@/lib/paqar";
+
+const FREE_SHIPPING_THRESHOLD = 100_000;
+
+interface RateOption {
+  serviceId: string;
+  serviceName: string;
+  price: number;
+  currency: string;
+  deliveryDays?: number;
+}
 
 export function Cart() {
-  const { items, isOpen, setIsOpen, removeItem, updateQuantity, clearCart, total } = useCart();
+  const { items, isOpen, setIsOpen, removeItem, updateQuantity, clearCart, total, shipping, setShipping } = useCart();
+
+  const remaining = Math.max(0, FREE_SHIPPING_THRESHOLD - total);
+  const progress = Math.min(100, (total / FREE_SHIPPING_THRESHOLD) * 100);
+  const isFreeShipping = total >= FREE_SHIPPING_THRESHOLD;
+
+  // Shipping quote state
+  const [rates, setRates] = useState<RateOption[]>([]);
+  const [quotingShipping, setQuotingShipping] = useState(false);
+  const [quoteError, setQuoteError] = useState("");
+  const quoteTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Agencies state (for sucursal mode)
+  const [agencies, setAgencies] = useState<Agency[]>([]);
+  const [loadingAgencies, setLoadingAgencies] = useState(false);
+
+  // Debounced quote fetch when postalCode changes
+  useEffect(() => {
+    if (!shipping.type || shipping.postalCode.length < 4) {
+      setRates([]);
+      setQuoteError("");
+      return;
+    }
+    if (quoteTimer.current) clearTimeout(quoteTimer.current);
+    quoteTimer.current = setTimeout(async () => {
+      setQuotingShipping(true);
+      setQuoteError("");
+      try {
+        const res = await fetch("/api/shipping/quote", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ postalCode: shipping.postalCode, deliveryType: shipping.type }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error ?? "Error al cotizar");
+        setRates(data.rates ?? []);
+      } catch (err) {
+        setQuoteError(err instanceof Error ? err.message : "Error al cotizar envío");
+        setRates([]);
+      } finally {
+        setQuotingShipping(false);
+      }
+    }, 800);
+    return () => { if (quoteTimer.current) clearTimeout(quoteTimer.current); };
+  }, [shipping.postalCode, shipping.type]);
+
+  // Fetch agencies when switching to sucursal mode
+  useEffect(() => {
+    if (shipping.type !== "sucursal") { setAgencies([]); return; }
+    setLoadingAgencies(true);
+    fetch("/api/shipping/agencies")
+      .then((r) => r.json())
+      .then((d) => setAgencies(d.agencies ?? []))
+      .catch(() => setAgencies([]))
+      .finally(() => setLoadingAgencies(false));
+  }, [shipping.type]);
 
   const handleWhatsApp = () => {
     if (!items.length) return;
@@ -16,7 +83,21 @@ export function Cart() {
       quantity: i.quantity,
       paymentMethod: i.paymentMethod,
     }));
-    window.open(getWhatsAppUrl(buildWhatsAppMessage(whatsappItems, total)), "_blank");
+
+    // Best rate for WhatsApp message
+    const bestRate = rates[0];
+    const shippingData = shipping.type
+      ? {
+          ...shipping,
+          quotedPrice: bestRate?.price,
+          quotedService: bestRate?.serviceName,
+        }
+      : undefined;
+
+    window.open(
+      getWhatsAppUrl(buildWhatsAppMessage(whatsappItems, total, shippingData as Parameters<typeof buildWhatsAppMessage>[2])),
+      "_blank"
+    );
   };
 
   return (
@@ -46,6 +127,30 @@ export function Cart() {
                 <X className="w-4 h-4" />
               </button>
             </div>
+
+            {/* Free shipping bar */}
+            {items.length > 0 && (
+              <div className="px-5 py-3 border-b border-gray-100 bg-gray-50">
+                <div className="flex items-center justify-between mb-1.5">
+                  <span className="text-[11px] font-bold text-gray-500">
+                    {isFreeShipping ? (
+                      <span className="text-green-600">🚚 ¡Envío gratis desbloqueado!</span>
+                    ) : (
+                      <>Te faltan <span className="text-black font-black">{formatPrice(remaining)}</span> para envío gratis</>
+                    )}
+                  </span>
+                  <span className="text-[10px] font-bold text-gray-400">{formatPrice(FREE_SHIPPING_THRESHOLD)}</span>
+                </div>
+                <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                  <motion.div
+                    className={`h-full rounded-full transition-colors ${isFreeShipping ? "bg-green-500" : "bg-black"}`}
+                    initial={{ width: 0 }}
+                    animate={{ width: `${progress}%` }}
+                    transition={{ duration: 0.5, ease: "easeOut" }}
+                  />
+                </div>
+              </div>
+            )}
 
             {/* Items */}
             <div className="flex-1 overflow-y-auto p-4 space-y-3">
@@ -98,27 +203,243 @@ export function Cart() {
 
             {/* Footer */}
             {items.length > 0 && (
-              <div className="p-5 border-t border-gray-100 space-y-4">
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-500 font-medium text-sm">Total</span>
-                  <span className="font-black text-xl">{formatPrice(total)}</span>
+              <div className="border-t border-gray-100 flex flex-col">
+                {/* Delivery type */}
+                <div className="px-5 pt-4 pb-3 border-b border-gray-100">
+                  <p className="text-xs font-black text-gray-700 uppercase tracking-wider mb-2.5">Tipo de envío</p>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      onClick={() => setShipping({ type: "domicilio", agencyId: "" })}
+                      className={`flex items-center gap-2 px-3 py-2.5 border rounded-xl text-left transition-all ${
+                        shipping.type === "domicilio"
+                          ? "border-black bg-black text-white"
+                          : "border-gray-200 hover:border-gray-400 text-gray-700"
+                      }`}
+                    >
+                      <Truck className="w-4 h-4 flex-shrink-0" />
+                      <div>
+                        <p className="text-[11px] font-black">A domicilio</p>
+                        <p className="text-[9px] opacity-60">Correo Argentino</p>
+                      </div>
+                    </button>
+                    <button
+                      onClick={() => setShipping({ type: "sucursal", address: "" })}
+                      className={`flex items-center gap-2 px-3 py-2.5 border rounded-xl text-left transition-all ${
+                        shipping.type === "sucursal"
+                          ? "border-black bg-black text-white"
+                          : "border-gray-200 hover:border-gray-400 text-gray-700"
+                      }`}
+                    >
+                      <Building2 className="w-4 h-4 flex-shrink-0" />
+                      <div>
+                        <p className="text-[11px] font-black">A sucursal</p>
+                        <p className="text-[9px] opacity-60">Correo Argentino</p>
+                      </div>
+                    </button>
+                  </div>
+
+                  {/* Address / agency fields */}
+                  <AnimatePresence mode="wait">
+                    {shipping.type === "domicilio" && (
+                      <motion.div
+                        key="domicilio"
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        className="mt-3 space-y-2 overflow-hidden"
+                      >
+                        {/* Recipient info */}
+                        <div className="relative">
+                          <User className="absolute left-3 top-2.5 w-3.5 h-3.5 text-gray-400" />
+                          <input
+                            type="text"
+                            placeholder="Nombre y apellido"
+                            value={shipping.recipientName}
+                            onChange={(e) => setShipping({ recipientName: e.target.value })}
+                            className="w-full pl-8 pr-3 py-2 border border-gray-200 rounded-lg text-xs focus:outline-none focus:border-black placeholder-gray-400"
+                          />
+                        </div>
+                        <div className="relative">
+                          <Phone className="absolute left-3 top-2.5 w-3.5 h-3.5 text-gray-400" />
+                          <input
+                            type="tel"
+                            placeholder="Teléfono"
+                            value={shipping.recipientPhone}
+                            onChange={(e) => setShipping({ recipientPhone: e.target.value })}
+                            className="w-full pl-8 pr-3 py-2 border border-gray-200 rounded-lg text-xs focus:outline-none focus:border-black placeholder-gray-400"
+                          />
+                        </div>
+                        {/* Address */}
+                        <div className="relative">
+                          <MapPin className="absolute left-3 top-2.5 w-3.5 h-3.5 text-gray-400" />
+                          <input
+                            type="text"
+                            placeholder="Dirección (calle y número)"
+                            value={shipping.address}
+                            onChange={(e) => setShipping({ address: e.target.value })}
+                            className="w-full pl-8 pr-3 py-2 border border-gray-200 rounded-lg text-xs focus:outline-none focus:border-black placeholder-gray-400"
+                          />
+                        </div>
+                        <div className="grid grid-cols-2 gap-2">
+                          <input
+                            type="text"
+                            placeholder="Localidad"
+                            value={shipping.city}
+                            onChange={(e) => setShipping({ city: e.target.value })}
+                            className="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs focus:outline-none focus:border-black placeholder-gray-400"
+                          />
+                          <input
+                            type="text"
+                            placeholder="Cód. postal"
+                            value={shipping.postalCode}
+                            onChange={(e) => setShipping({ postalCode: e.target.value })}
+                            className="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs focus:outline-none focus:border-black placeholder-gray-400"
+                          />
+                        </div>
+                        <ShippingQuote quoting={quotingShipping} rates={rates} error={quoteError} isFree={isFreeShipping} />
+                      </motion.div>
+                    )}
+
+                    {shipping.type === "sucursal" && (
+                      <motion.div
+                        key="sucursal"
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        className="mt-3 space-y-2 overflow-hidden"
+                      >
+                        {/* Recipient info */}
+                        <div className="relative">
+                          <User className="absolute left-3 top-2.5 w-3.5 h-3.5 text-gray-400" />
+                          <input
+                            type="text"
+                            placeholder="Nombre y apellido"
+                            value={shipping.recipientName}
+                            onChange={(e) => setShipping({ recipientName: e.target.value })}
+                            className="w-full pl-8 pr-3 py-2 border border-gray-200 rounded-lg text-xs focus:outline-none focus:border-black placeholder-gray-400"
+                          />
+                        </div>
+                        <div className="relative">
+                          <Phone className="absolute left-3 top-2.5 w-3.5 h-3.5 text-gray-400" />
+                          <input
+                            type="tel"
+                            placeholder="Teléfono"
+                            value={shipping.recipientPhone}
+                            onChange={(e) => setShipping({ recipientPhone: e.target.value })}
+                            className="w-full pl-8 pr-3 py-2 border border-gray-200 rounded-lg text-xs focus:outline-none focus:border-black placeholder-gray-400"
+                          />
+                        </div>
+                        <div className="grid grid-cols-2 gap-2">
+                          <input
+                            type="text"
+                            placeholder="Localidad"
+                            value={shipping.city}
+                            onChange={(e) => setShipping({ city: e.target.value })}
+                            className="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs focus:outline-none focus:border-black placeholder-gray-400"
+                          />
+                          <input
+                            type="text"
+                            placeholder="Cód. postal"
+                            value={shipping.postalCode}
+                            onChange={(e) => setShipping({ postalCode: e.target.value })}
+                            className="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs focus:outline-none focus:border-black placeholder-gray-400"
+                          />
+                        </div>
+
+                        {/* Agency selector */}
+                        {loadingAgencies ? (
+                          <div className="flex items-center gap-2 text-gray-400 text-xs py-1">
+                            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                            Cargando sucursales…
+                          </div>
+                        ) : agencies.length > 0 && (
+                          <select
+                            value={shipping.agencyId}
+                            onChange={(e) => setShipping({ agencyId: e.target.value })}
+                            className="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs focus:outline-none focus:border-black text-gray-700"
+                          >
+                            <option value="">Seleccionar sucursal…</option>
+                            {agencies.map((a) => (
+                              <option key={a.id} value={a.id}>
+                                {a.name} — {a.address}, {a.city}
+                              </option>
+                            ))}
+                          </select>
+                        )}
+
+                        <ShippingQuote quoting={quotingShipping} rates={rates} error={quoteError} isFree={isFreeShipping} />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
-                <div className="bg-gray-50 rounded-xl p-3 text-center">
-                  <p className="text-gray-500 text-xs">📦 Coordinamos entrega y pago por WhatsApp</p>
+
+                {/* Total + actions */}
+                <div className="p-5 space-y-3">
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-500 font-medium text-sm">Subtotal</span>
+                    <span className="font-black text-xl">{formatPrice(total)}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-500 font-medium text-sm">Envío</span>
+                    {isFreeShipping ? (
+                      <span className="text-green-600 font-black text-sm">GRATIS 🎉</span>
+                    ) : rates.length > 0 ? (
+                      <span className="font-black text-sm">{formatPrice(rates[0].price)}</span>
+                    ) : (
+                      <span className="text-gray-400 text-sm">A cotizar</span>
+                    )}
+                  </div>
+                  <button onClick={handleWhatsApp}
+                    className="w-full bg-[#25D366] hover:bg-[#20bc5b] text-white font-black py-4 rounded-xl flex items-center justify-center gap-3 transition-colors text-sm uppercase tracking-wide">
+                    <MessageCircle className="w-5 h-5" />
+                    Hacer Pedido por WhatsApp
+                  </button>
+                  <button onClick={clearCart} className="w-full text-gray-300 text-xs hover:text-red-400 transition-colors">
+                    Vaciar carrito
+                  </button>
                 </div>
-                <button onClick={handleWhatsApp}
-                  className="w-full bg-[#25D366] hover:bg-[#20bc5b] text-white font-black py-4 rounded-xl flex items-center justify-center gap-3 transition-colors text-sm uppercase tracking-wide">
-                  <MessageCircle className="w-5 h-5" />
-                  Hacer Pedido por WhatsApp
-                </button>
-                <button onClick={clearCart} className="w-full text-gray-300 text-xs hover:text-red-400 transition-colors">
-                  Vaciar carrito
-                </button>
               </div>
             )}
           </motion.div>
         </>
       )}
     </AnimatePresence>
+  );
+}
+
+function ShippingQuote({ quoting, rates, error, isFree }: {
+  quoting: boolean;
+  rates: RateOption[];
+  error: string;
+  isFree: boolean;
+}) {
+  if (isFree) return null;
+  if (quoting) {
+    return (
+      <div className="flex items-center gap-2 text-gray-400 text-xs py-1">
+        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+        Cotizando envío…
+      </div>
+    );
+  }
+  if (error) {
+    return <p className="text-red-400 text-[10px]">{error}</p>;
+  }
+  if (!rates.length) return null;
+
+  return (
+    <div className="space-y-1 pt-1">
+      {rates.map((r) => (
+        <div key={r.serviceId} className="flex justify-between items-center bg-gray-100 rounded-lg px-3 py-1.5">
+          <div>
+            <span className="text-[11px] font-bold text-gray-700">{r.serviceName}</span>
+            {r.deliveryDays != null && (
+              <span className="text-[10px] text-gray-400 ml-1">({r.deliveryDays}d)</span>
+            )}
+          </div>
+          <span className="text-[11px] font-black text-black">{formatPrice(r.price)}</span>
+        </div>
+      ))}
+    </div>
   );
 }

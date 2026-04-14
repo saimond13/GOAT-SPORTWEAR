@@ -97,6 +97,21 @@ export function ProductDetail({ product }: { product: Product }) {
     ? [product.image_url]
     : [];
 
+  // Available payment methods for this product
+  const availablePayments = product.payment_methods?.length
+    ? product.payment_methods
+    : PAYMENT_METHODS;
+
+  // Stock helpers
+  const getStock = (s: string) => product.stock_by_size?.[s] ?? null; // null = unlimited
+  const isOutOfStock = (s: string) => {
+    const stock = getStock(s);
+    return stock !== null && stock <= 0;
+  };
+  const maxQty = selectedSize
+    ? (getStock(selectedSize) ?? 99)
+    : 99;
+
   const handleAdd = () => {
     if (!selectedSize || !payment) return;
     addItem(product, selectedSize, quantity, payment);
@@ -187,19 +202,30 @@ export function ProductDetail({ product }: { product: Product }) {
                   Talle
                 </p>
                 <div className="flex flex-wrap gap-2">
-                  {product.sizes.map((s) => (
-                    <button
-                      key={s}
-                      onClick={() => setSelectedSize(s)}
-                      className={`w-12 h-12 text-sm font-bold border transition-all ${
-                        selectedSize === s
-                          ? "bg-green-500 text-black border-green-500"
-                          : "border-white/15 text-gray-300 hover:border-white/40 hover:text-white"
-                      }`}
-                    >
-                      {s}
-                    </button>
-                  ))}
+                  {product.sizes.map((s) => {
+                    const oos = isOutOfStock(s);
+                    const stock = getStock(s);
+                    const lowStock = stock !== null && stock > 0 && stock <= 3;
+                    return (
+                      <div key={s} className="flex flex-col items-center gap-1">
+                        <button
+                          onClick={() => { if (!oos) { setSelectedSize(s); setQuantity(1); } }}
+                          disabled={oos}
+                          className={`w-12 h-12 text-sm font-bold border transition-all relative ${
+                            oos
+                              ? "border-white/5 text-white/20 cursor-not-allowed line-through"
+                              : selectedSize === s
+                              ? "bg-green-500 text-black border-green-500"
+                              : "border-white/15 text-gray-300 hover:border-white/40 hover:text-white"
+                          }`}
+                        >
+                          {s}
+                        </button>
+                        {oos && <span className="text-[9px] text-red-500 font-bold uppercase">Agotado</span>}
+                        {lowStock && !oos && <span className="text-[9px] text-yellow-500 font-bold">¡{stock} left!</span>}
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
 
@@ -217,11 +243,15 @@ export function ProductDetail({ product }: { product: Product }) {
                   </button>
                   <span className="text-white font-black text-lg w-6 text-center">{quantity}</span>
                   <button
-                    onClick={() => setQuantity(quantity + 1)}
-                    className="w-10 h-10 border border-white/15 flex items-center justify-center text-gray-300 hover:border-white/40 hover:text-white transition-colors"
+                    onClick={() => setQuantity(Math.min(maxQty, quantity + 1))}
+                    disabled={quantity >= maxQty}
+                    className="w-10 h-10 border border-white/15 flex items-center justify-center text-gray-300 hover:border-white/40 hover:text-white transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                   >
                     <Plus className="w-4 h-4" />
                   </button>
+                  {maxQty < 99 && (
+                    <span className="text-gray-600 text-xs">máx {maxQty}</span>
+                  )}
                 </div>
               </div>
 
@@ -237,7 +267,7 @@ export function ProductDetail({ product }: { product: Product }) {
                     className="w-full border border-white/15 bg-[#1a1a1e] text-gray-300 px-4 py-3 appearance-none focus:outline-none focus:border-green-500/50 text-sm transition-colors pr-10"
                   >
                     <option value="">Seleccionar método...</option>
-                    {PAYMENT_METHODS.map((m) => (
+                    {availablePayments.map((m) => (
                       <option key={m} value={m}>{m}</option>
                     ))}
                   </select>
