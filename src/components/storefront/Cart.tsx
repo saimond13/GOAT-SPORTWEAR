@@ -6,6 +6,7 @@ import { buildWhatsAppMessage, getWhatsAppUrl } from "@/lib/whatsapp";
 import { formatPrice } from "@/lib/utils";
 import { useState, useEffect, useRef } from "react";
 import type { Agency } from "@/lib/paqar";
+import Image from "next/image";
 
 const FREE_SHIPPING_THRESHOLD = 100_000;
 
@@ -75,6 +76,38 @@ export function Cart() {
       .catch(() => setAgencies([]))
       .finally(() => setLoadingAgencies(false));
   }, [shipping.type]);
+
+  const [loadingMP, setLoadingMP] = useState(false);
+
+  const handleMercadoPago = async () => {
+    if (!items.length) return;
+    setLoadingMP(true);
+    try {
+      const res = await fetch("/api/payments/create-preference", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          items: items.map((i) => ({
+            id: i.product.id,
+            name: i.product.name,
+            price: i.product.price,
+            quantity: i.quantity,
+            size: i.size,
+          })),
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? "Error al iniciar pago");
+
+      const isTest = process.env.NEXT_PUBLIC_MP_ENV === "test";
+      const url = isTest ? data.sandboxInitPoint : data.initPoint;
+      window.location.href = url;
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Error al conectar con Mercado Pago");
+    } finally {
+      setLoadingMP(false);
+    }
+  };
 
   const handleWhatsApp = () => {
     if (!items.length) return;
@@ -390,11 +423,34 @@ export function Cart() {
                       <span className="text-gray-400 text-sm">A cotizar</span>
                     )}
                   </div>
-                  <button onClick={handleWhatsApp}
-                    className="w-full bg-[#25D366] hover:bg-[#20bc5b] text-white font-black py-4 rounded-xl flex items-center justify-center gap-3 transition-colors text-sm uppercase tracking-wide">
-                    <MessageCircle className="w-5 h-5" />
-                    Hacer Pedido por WhatsApp
+                  {/* Mercado Pago */}
+                  <button
+                    onClick={handleMercadoPago}
+                    disabled={loadingMP}
+                    className="w-full bg-[#009EE3] hover:bg-[#0088c7] disabled:opacity-60 text-white font-black py-4 rounded-xl flex items-center justify-center gap-3 transition-colors text-sm uppercase tracking-wide"
+                  >
+                    {loadingMP ? (
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                    ) : (
+                      <Image src="/mp-logo.svg" alt="Mercado Pago" width={20} height={20} />
+                    )}
+                    Pagar con Mercado Pago
                   </button>
+
+                  {/* Separador */}
+                  <div className="flex items-center gap-2">
+                    <div className="flex-1 h-px bg-gray-200" />
+                    <span className="text-[10px] text-gray-400 uppercase tracking-wider">o</span>
+                    <div className="flex-1 h-px bg-gray-200" />
+                  </div>
+
+                  {/* WhatsApp */}
+                  <button onClick={handleWhatsApp}
+                    className="w-full bg-[#25D366] hover:bg-[#20bc5b] text-white font-black py-3 rounded-xl flex items-center justify-center gap-3 transition-colors text-sm uppercase tracking-wide">
+                    <MessageCircle className="w-5 h-5" />
+                    Coordinar por WhatsApp
+                  </button>
+
                   <button onClick={clearCart} className="w-full text-gray-300 text-xs hover:text-red-400 transition-colors">
                     Vaciar carrito
                   </button>
