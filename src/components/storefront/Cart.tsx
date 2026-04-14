@@ -94,6 +94,8 @@ export function Cart() {
             quantity: i.quantity,
             size: i.size,
           })),
+          total,
+          shipping: shipping.type ? shipping : undefined,
         }),
       });
       const data = await res.json();

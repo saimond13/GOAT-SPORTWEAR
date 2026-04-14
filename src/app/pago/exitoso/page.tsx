@@ -1,15 +1,40 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useCart } from "@/context/CartContext";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { CheckCircle2 } from "lucide-react";
+import { CheckCircle2, Loader2 } from "lucide-react";
+import { Suspense } from "react";
 
-export default function PagoExitoso() {
+function ExitosoContent() {
   const { clearCart } = useCart();
+  const searchParams = useSearchParams();
+  const [confirmed, setConfirmed] = useState(false);
 
   useEffect(() => {
+    const externalRef = searchParams.get("external_reference");
+    const status = searchParams.get("status");
+
+    if (externalRef && status === "approved") {
+      fetch("/api/payments/confirm", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ orderId: externalRef }),
+      }).finally(() => setConfirmed(true));
+    } else {
+      setConfirmed(true);
+    }
+
     clearCart();
-  }, [clearCart]);
+  }, [clearCart, searchParams]);
+
+  if (!confirmed) {
+    return (
+      <div className="min-h-screen bg-black flex items-center justify-center">
+        <Loader2 className="w-8 h-8 text-green-500 animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-black flex items-center justify-center px-4">
@@ -22,13 +47,23 @@ export default function PagoExitoso() {
         <p className="text-gray-500 text-sm mb-8">
           Nos ponemos en contacto para coordinar el envío.
         </p>
-        <Link
-          href="/"
-          className="inline-block bg-green-500 text-black font-black px-8 py-3 hover:bg-green-400 transition-colors uppercase tracking-wide"
-        >
+        <Link href="/"
+          className="inline-block bg-green-500 text-black font-black px-8 py-3 hover:bg-green-400 transition-colors uppercase tracking-wide">
           Volver a la tienda
         </Link>
       </div>
     </div>
+  );
+}
+
+export default function PagoExitoso() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-black flex items-center justify-center">
+        <Loader2 className="w-8 h-8 text-green-500 animate-spin" />
+      </div>
+    }>
+      <ExitosoContent />
+    </Suspense>
   );
 }
