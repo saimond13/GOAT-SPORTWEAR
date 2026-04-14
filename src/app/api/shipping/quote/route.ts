@@ -28,7 +28,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ rates });
   } catch (err) {
     const message = err instanceof Error ? err.message : "Error al cotizar envío";
-    console.error("[shipping/quote]", message);
+    console.error("[shipping/quote] ERROR:", message);
     return NextResponse.json({ error: message }, { status: 502 });
   }
 }

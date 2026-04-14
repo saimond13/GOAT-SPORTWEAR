@@ -55,8 +55,8 @@ export function Cart() {
         const data = await res.json();
         if (!res.ok) throw new Error(data.error ?? "Error al cotizar");
         setRates(data.rates ?? []);
-      } catch {
-        setQuoteError("");
+      } catch (err) {
+        setQuoteError(err instanceof Error ? err.message : "Error al cotizar");
         setRates([]);
       } finally {
         setQuotingShipping(false);
