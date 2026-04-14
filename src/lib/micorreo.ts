@@ -102,6 +102,7 @@ export async function getRates(params: RatesParams): Promise<RateOption[]> {
   }
 
   const data = await res.json();
+  console.log("[micorreo /rates] raw response:", JSON.stringify(data));
 
   return (data.rates ?? []).map((r: Record<string, unknown>) => ({
     serviceId: String(r.productType ?? ""),

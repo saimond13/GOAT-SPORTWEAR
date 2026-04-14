@@ -25,6 +25,7 @@ export async function POST(req: Request) {
       postalCodeDestination: parsed.data.postalCode,
       deliveryType: parsed.data.deliveryType,
     });
+    console.log("[shipping/quote] rates:", JSON.stringify(rates));
     return NextResponse.json({ rates });
   } catch (err) {
     const message = err instanceof Error ? err.message : "Error al cotizar envío";
