@@ -149,17 +149,17 @@ export function Cart() {
             transition={{ type: "spring", damping: 28, stiffness: 300 }}>
 
             {/* Header */}
-            <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+            <div className="flex items-center justify-between px-5 py-4 border-b border-gray-200 bg-white">
               <div className="flex items-center gap-2">
-                <ShoppingBag className="w-5 h-5" />
-                <span className="font-black text-base">Mi Carrito</span>
+                <ShoppingBag className="w-5 h-5 text-gray-900" />
+                <span className="font-black text-base text-gray-900">Mi Carrito</span>
                 {items.length > 0 && (
                   <span className="bg-black text-white text-xs font-bold px-2 py-0.5 rounded-full">
                     {items.reduce((s, i) => s + i.quantity, 0)}
                   </span>
                 )}
               </div>
-              <button onClick={() => setIsOpen(false)} className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100">
+              <button onClick={() => setIsOpen(false)} className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-700">
                 <X className="w-4 h-4" />
               </button>
             </div>

@@ -18,10 +18,12 @@ export function ProductCard({ product }: { product: Product }) {
     ? Math.round((1 - product.price / product.original_price) * 100)
     : 0;
 
+  const needsSize = product.has_sizes !== false && product.sizes?.length > 0;
+
   const handleAdd = () => {
     if (!expanded) { setExpanded(true); return; }
-    if (!selectedSize) return;
-    addItem(product, selectedSize, quantity, "Mercado Pago");
+    if (needsSize && !selectedSize) return;
+    addItem(product, selectedSize || "Único", quantity, "Mercado Pago");
     setAdded(true);
     setTimeout(() => { setAdded(false); setExpanded(false); }, 1800);
   };
@@ -111,7 +113,7 @@ export function ProductCard({ product }: { product: Product }) {
             className="space-y-3 border-t border-white/[0.06] pt-3 mb-3 overflow-hidden"
           >
             {/* Sizes */}
-            <div>
+            {needsSize && <div>
               <p className="text-[9px] font-bold text-gray-400 uppercase tracking-[0.3em] mb-1.5">
                 Talle
               </p>
@@ -130,7 +132,7 @@ export function ProductCard({ product }: { product: Product }) {
                   </button>
                 ))}
               </div>
-            </div>
+            </div>}
 
             {/* Quantity */}
             <div>
@@ -165,11 +167,11 @@ export function ProductCard({ product }: { product: Product }) {
 
         <button
           onClick={handleAdd}
-          disabled={expanded && !selectedSize}
+          disabled={expanded && needsSize && !selectedSize}
           className={`w-full py-2.5 text-xs font-black flex items-center justify-center gap-2 transition-all uppercase tracking-[0.15em] ${
             added
               ? "bg-green-500 text-black"
-              : expanded && !selectedSize
+              : expanded && needsSize && !selectedSize
               ? "bg-white/5 text-gray-400 cursor-not-allowed"
               : "bg-white text-black hover:bg-green-500 hover:text-black"
           }`}

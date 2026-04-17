@@ -105,9 +105,11 @@ export function ProductDetail({ product }: { product: Product }) {
     ? (getStock(selectedSize) ?? 99)
     : 99;
 
+  const needsSize = product.has_sizes !== false && product.sizes?.length > 0;
+
   const handleAdd = () => {
-    if (!selectedSize) return;
-    addItem(product, selectedSize, quantity, "Mercado Pago");
+    if (needsSize && !selectedSize) return;
+    addItem(product, selectedSize || "Único", quantity, "Mercado Pago");
     setAdded(true);
     setIsOpen(true);
     setTimeout(() => setAdded(false), 2000);
@@ -190,7 +192,7 @@ export function ProductDetail({ product }: { product: Product }) {
 
             <div className="border-t border-white/[0.06] pt-5 space-y-5">
               {/* Size */}
-              <div>
+              {needsSize && <div>
                 <p className="text-xs font-bold text-gray-400 uppercase tracking-[0.3em] mb-3">
                   Talle
                 </p>
@@ -220,7 +222,7 @@ export function ProductDetail({ product }: { product: Product }) {
                     );
                   })}
                 </div>
-              </div>
+              </div>}
 
               {/* Quantity */}
               <div>
@@ -278,11 +280,11 @@ export function ProductDetail({ product }: { product: Product }) {
               {/* CTA */}
               <button
                 onClick={handleAdd}
-                disabled={!selectedSize}
+                disabled={needsSize && !selectedSize}
                 className={`w-full py-4 text-sm font-black uppercase tracking-[0.2em] flex items-center justify-center gap-3 transition-all ${
                   added
                     ? "bg-green-500 text-black"
-                    : !selectedSize
+                    : needsSize && !selectedSize
                     ? "bg-white/5 text-gray-600 cursor-not-allowed"
                     : "bg-white text-black hover:bg-green-500"
                 }`}
@@ -291,7 +293,7 @@ export function ProductDetail({ product }: { product: Product }) {
                 {added ? "¡Agregado al carrito!" : "Agregar al carrito"}
               </button>
 
-              {!selectedSize && (
+              {needsSize && !selectedSize && (
                 <p className="text-gray-600 text-xs text-center">Seleccioná un talle</p>
               )}
             </div>

@@ -17,6 +17,7 @@ export function ProductForm({ product }: { product?: Product }) {
     original_price: product?.original_price?.toString() ?? "",
     category: product?.category ?? CATEGORIES[0],
     sizes: product?.sizes ?? [],
+    has_sizes: product?.has_sizes !== false,
     badge: product?.badge ?? "",
     is_active: product?.is_active ?? true,
   });
@@ -104,7 +105,7 @@ export function ProductForm({ product }: { product?: Product }) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.name || !form.price || form.sizes.length === 0) {
+    if (!form.name || !form.price || (form.has_sizes && form.sizes.length === 0)) {
       setError("Completá nombre, precio y al menos un talle");
       return;
     }
@@ -119,7 +120,8 @@ export function ProductForm({ product }: { product?: Product }) {
       price: parseFloat(form.price),
       original_price: form.original_price ? parseFloat(form.original_price) : null,
       category: form.category,
-      sizes: form.sizes,
+      sizes: form.has_sizes ? form.sizes : [],
+      has_sizes: form.has_sizes,
       badge: form.badge || null,
       is_active: form.is_active,
       image_url: images[0] ?? null,
@@ -321,8 +323,19 @@ export function ProductForm({ product }: { product?: Product }) {
 
       {/* Sizes + stock */}
       <div>
-        <label className={labelClass}>Talles y stock *</label>
-        <div className="space-y-2">
+        <div className="flex items-center justify-between mb-1">
+          <label className={labelClass}>Talles y stock</label>
+          <label className="flex items-center gap-2 cursor-pointer">
+            <span className="text-[10px] text-gray-500">Requiere talle</span>
+            <div
+              onClick={() => setForm((f) => ({ ...f, has_sizes: !f.has_sizes }))}
+              className={`w-10 h-5 rounded-full transition-colors relative cursor-pointer ${form.has_sizes ? "bg-green-600" : "bg-white/10"}`}
+            >
+              <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-all ${form.has_sizes ? "left-5" : "left-0.5"}`} />
+            </div>
+          </label>
+        </div>
+        {form.has_sizes && <div className="space-y-2">
           {SIZES.map((s) => {
             const active = form.sizes.includes(s);
             return (
@@ -363,8 +376,8 @@ export function ProductForm({ product }: { product?: Product }) {
               </div>
             );
           })}
-        </div>
-        <p className="text-gray-600 text-xs mt-2">Stock = 0 deshabilita el talle en la tienda</p>
+        </div>}
+        {form.has_sizes && <p className="text-gray-600 text-xs mt-2">Stock = 0 deshabilita el talle en la tienda</p>}
       </div>
 
       {/* Payment methods */}
