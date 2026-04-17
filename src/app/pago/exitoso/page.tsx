@@ -14,12 +14,13 @@ function ExitosoContent() {
   useEffect(() => {
     const externalRef = searchParams.get("external_reference");
     const status = searchParams.get("status");
+    const paymentId = searchParams.get("payment_id");
 
-    if (externalRef && status === "approved") {
+    if (externalRef && paymentId && status === "approved") {
       fetch("/api/payments/confirm", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ orderId: externalRef }),
+        body: JSON.stringify({ orderId: externalRef, paymentId }),
       }).finally(() => setConfirmed(true));
     } else {
       setConfirmed(true);

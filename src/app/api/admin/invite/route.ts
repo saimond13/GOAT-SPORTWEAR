@@ -15,8 +15,10 @@ export async function POST(req: Request) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "No autorizado" }, { status: 401 });
 
-  const { data: profile } = await supabase.from("admin_profiles").select("role").eq("id", user.id).single();
-  if (profile?.role !== "owner") return NextResponse.json({ error: "Solo el owner puede invitar admins" }, { status: 403 });
+  const { data: profile, error: profileError } = await supabase.from("admin_profiles").select("role").eq("id", user.id).single();
+  if (profileError || !profile || profile.role !== "owner") {
+    return NextResponse.json({ error: "Solo el owner puede invitar admins" }, { status: 403 });
+  }
 
   let body: unknown;
   try {

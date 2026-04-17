@@ -101,9 +101,7 @@ export function Cart() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Error al iniciar pago");
 
-      const isTest = process.env.NEXT_PUBLIC_MP_ENV === "test";
-      const url = isTest ? data.sandboxInitPoint : data.initPoint;
-      window.location.href = url;
+      window.location.href = data.checkoutUrl;
     } catch (err) {
       alert(err instanceof Error ? err.message : "Error al conectar con Mercado Pago");
     } finally {
