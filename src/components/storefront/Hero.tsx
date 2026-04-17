@@ -160,16 +160,6 @@ export function Hero() {
         className="relative z-10 text-center px-6 max-w-4xl mx-auto"
         style={{ y: textY, opacity }}
       >
-        {/* Logo */}
-        <motion.div
-          className="flex justify-center mb-8"
-          initial={{ opacity: 0, scale: 0.6 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.1, duration: 0.7, ease: "easeOut" }}
-        >
-          <GoatLogo size={60} variant="white" />
-        </motion.div>
-
         {/* Eyebrow */}
         <motion.p
           className="text-green-500 text-[10px] font-bold tracking-[0.6em] uppercase mb-6"

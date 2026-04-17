@@ -18,7 +18,7 @@ export function AnnouncementBar() {
   }, []);
 
   return (
-    <div className="relative z-[60] bg-green-600 text-black h-9 overflow-hidden flex items-center justify-center">
+    <div className="fixed top-0 left-0 right-0 z-[60] bg-green-600 text-black h-9 overflow-hidden flex items-center justify-center">
       <AnimatePresence mode="wait">
         <motion.p
           key={idx}

@@ -194,7 +194,7 @@ export function Cart() {
                 <div className="flex flex-col items-center justify-center h-full gap-4 text-center">
                   <ShoppingBag className="w-14 h-14 text-gray-200" />
                   <p className="text-gray-400 font-medium">Tu carrito está vacío</p>
-                  <button onClick={() => setIsOpen(false)} className="text-sm font-bold hover:underline">
+                  <button onClick={() => setIsOpen(false)} className="text-sm font-bold text-black hover:underline">
                     Seguir comprando →
                   </button>
                 </div>
