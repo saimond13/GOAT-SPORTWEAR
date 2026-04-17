@@ -96,7 +96,7 @@ export function ProductCard({ product }: { product: Product }) {
             {product.name}
           </h3>
         </Link>
-        <div className="flex items-center gap-2 mb-3">
+        <div className="flex items-center gap-2 mb-1">
           <span className="font-black text-white text-base">{formatPrice(product.price)}</span>
           {product.original_price && (
             <span className="text-gray-400 text-xs line-through">
@@ -104,6 +104,21 @@ export function ProductCard({ product }: { product: Product }) {
             </span>
           )}
         </div>
+
+        {/* Stock urgency */}
+        {(() => {
+          if (!product.stock_by_size || !product.sizes?.length) return null;
+          const total = product.sizes.reduce((acc, s) => acc + (product.stock_by_size?.[s] ?? 0), 0);
+          if (total <= 0) return null;
+          if (total <= 5) {
+            return (
+              <p className="text-[10px] font-black text-orange-400 uppercase tracking-wider mb-2">
+                ¡Últimas {total} unidades!
+              </p>
+            );
+          }
+          return null;
+        })()}
 
         {/* Expanded options */}
         {expanded && (

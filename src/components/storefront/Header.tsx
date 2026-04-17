@@ -1,10 +1,12 @@
 "use client";
-import { ShoppingCart, Menu, X, ChevronDown } from "lucide-react";
+import { ShoppingCart, Menu, X, ChevronDown, Search } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCart } from "@/context/CartContext";
+import { useProducts } from "@/context/ProductsContext";
+import { SearchModal } from "./SearchModal";
 
 const infoLinks = [
   { label: "Cómo comprar", slug: "como-comprar" },
@@ -16,9 +18,11 @@ const infoLinks = [
 
 export function Header() {
   const { itemCount, setIsOpen } = useCart();
+  const { products } = useProducts();
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
   const [infoOpen, setInfoOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const infoRef = useRef<HTMLDivElement>(null);
 
@@ -128,8 +132,14 @@ export function Header() {
             </div>
           </nav>
 
-          {/* Cart + mobile toggle */}
+          {/* Cart + search + mobile toggle */}
           <div className="flex items-center gap-2">
+            <button
+              onClick={() => setSearchOpen(true)}
+              className="w-10 h-10 flex items-center justify-center text-gray-400 hover:text-white transition-colors"
+            >
+              <Search className="w-5 h-5" />
+            </button>
             <button
               onClick={() => setIsOpen(true)}
               className="relative flex items-center justify-center w-10 h-10 hover:bg-white/5 transition-colors"
@@ -155,6 +165,8 @@ export function Header() {
           </div>
         </div>
       </div>
+
+      <SearchModal products={products} open={searchOpen} onClose={() => setSearchOpen(false)} />
 
       {/* Mobile menu */}
       <AnimatePresence>

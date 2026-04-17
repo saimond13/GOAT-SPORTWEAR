@@ -5,6 +5,8 @@ import { CampaignsBanner } from "@/components/storefront/CampaignsBanner";
 import { WaitlistSection } from "@/components/storefront/WaitlistSection";
 import { Footer } from "@/components/storefront/Footer";
 import { Cart } from "@/components/storefront/Cart";
+import { AnnouncementBar } from "@/components/storefront/AnnouncementBar";
+import { ProductsProvider } from "@/context/ProductsContext";
 import type { Product } from "@/types/product";
 import type { Campaign } from "@/types/admin";
 
@@ -35,16 +37,19 @@ export default async function StorePage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#09090b]">
-      <Header />
-      <main>
-        <Hero />
-        <ProductsSection products={products} />
-        <CampaignsBanner campaigns={campaigns} />
-        <WaitlistSection />
-      </main>
-      <Footer />
-      <Cart />
-    </div>
+    <ProductsProvider products={products}>
+      <AnnouncementBar />
+      <div className="min-h-screen bg-[#09090b]">
+        <Header />
+        <main>
+          <Hero />
+          <ProductsSection products={products} />
+          <CampaignsBanner campaigns={campaigns} />
+          <WaitlistSection />
+        </main>
+        <Footer />
+        <Cart />
+      </div>
+    </ProductsProvider>
   );
 }
