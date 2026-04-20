@@ -197,7 +197,16 @@ export async function POST(req: Request) {
       },
     });
 
-    const checkoutUrl = isTest ? result.sandbox_init_point : result.init_point;
+    // init_point is for production, sandbox_init_point for test
+    const checkoutUrl = (isTest ? result.sandbox_init_point : result.init_point)
+      ?? result.init_point  // fallback to init_point in any case
+      ?? result.sandbox_init_point; // last resort
+
+    if (!checkoutUrl) {
+      console.error("[create-preference] MP devolvió preferencia sin URL:", JSON.stringify({ id: result.id, init_point: result.init_point, sandbox: result.sandbox_init_point }));
+      await supabase.from("orders").delete().eq("id", order.id);
+      return NextResponse.json({ error: "Mercado Pago no devolvió un enlace de pago. Intentá de nuevo." }, { status: 502 });
+    }
 
     return NextResponse.json({
       preferenceId: result.id,

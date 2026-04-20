@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const messages = [
   "🚚 Envío gratis en compras mayores a $100.000",
-  "💳 3 y 6 cuotas sin interés con Mercado Pago",
+  "🏦 15% de descuento pagando por transferencia",
   "⚡ Despacho en 24hs hábiles",
   "✅ Productos 100% originales garantizados",
 ];

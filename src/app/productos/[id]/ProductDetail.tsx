@@ -185,6 +185,17 @@ export function ProductDetail({ product }: { product: Product }) {
               )}
             </div>
 
+            {/* Transfer discount badge */}
+            <div className="flex items-center gap-2 bg-green-500/10 border border-green-500/30 px-3 py-2 w-fit">
+              <span className="text-green-400 text-sm">🏦</span>
+              <span className="text-green-400 text-xs font-black uppercase tracking-wide">
+                15% OFF pagando por transferencia
+              </span>
+              <span className="text-green-600 text-xs font-bold">
+                — {formatPrice(Math.round(product.price * 0.85))}
+              </span>
+            </div>
+
             {/* Description */}
             {product.description && (
               <p className="text-gray-400 text-sm leading-relaxed border-t border-white/[0.06] pt-5">
