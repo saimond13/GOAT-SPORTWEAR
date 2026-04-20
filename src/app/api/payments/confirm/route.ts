@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import MercadoPagoConfig, { Payment } from "mercadopago";
 
 const schema = z.object({
@@ -45,7 +45,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "No se pudo verificar el pago" }, { status: 502 });
   }
 
-  const supabase = await createClient();
+  const supabase = createAdminClient();
   const { error } = await supabase
     .from("orders")
     .update({ payment_status: "paid", status: "confirmed" })

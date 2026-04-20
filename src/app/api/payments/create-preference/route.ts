@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import MercadoPagoConfig, { Preference } from "mercadopago";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 // ── Rate limiting (simple in-memory, 5 requests / 60s per IP) ──────────────
 const RL_WINDOW = 60_000;
@@ -83,7 +83,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Configuración del servidor incompleta" }, { status: 500 });
   }
 
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   // ── Verify prices from database (prevents client-side price manipulation) ──
   const productIds = [...new Set(items.map((i) => i.id))];
