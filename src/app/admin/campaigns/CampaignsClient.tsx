@@ -1,7 +1,7 @@
 "use client";
 import { useState, useTransition, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { Plus, X, Loader2, Trash2, Edit2, Upload, Image as ImageIcon, ExternalLink, Timer } from "lucide-react";
+import { Plus, X, Loader2, Trash2, Edit2, Upload, Image as ImageIcon, ExternalLink, Timer, Tag } from "lucide-react";
 import type { Campaign } from "@/types/admin";
 import { createClient } from "@/lib/supabase/client";
 import { formatDate } from "@/lib/utils";
@@ -16,6 +16,9 @@ const empty = {
   cta_url: "",
   cta_label: "Ver más",
   countdown_ends_at: "",
+  is_preventa: false,
+  deposit_percentage: 50,
+  preventa_closes_at: "",
 };
 
 export function CampaignsClient({ campaigns }: { campaigns: Campaign[] }) {
@@ -48,6 +51,9 @@ export function CampaignsClient({ campaigns }: { campaigns: Campaign[] }) {
       cta_url: c.cta_url ?? "",
       cta_label: c.cta_label ?? "Ver más",
       countdown_ends_at: c.countdown_ends_at ? c.countdown_ends_at.slice(0, 16) : "",
+      is_preventa: c.is_preventa ?? false,
+      deposit_percentage: c.deposit_percentage ?? 50,
+      preventa_closes_at: c.preventa_closes_at ? c.preventa_closes_at.slice(0, 16) : "",
     });
     setPendingImages(c.images ?? []);
     setShowModal(true);
@@ -95,6 +101,9 @@ export function CampaignsClient({ campaigns }: { campaigns: Campaign[] }) {
       cta_url: form.cta_url || null,
       cta_label: form.cta_label || "Ver más",
       countdown_ends_at: form.countdown_ends_at ? new Date(form.countdown_ends_at).toISOString() : null,
+      is_preventa: form.is_preventa,
+      deposit_percentage: form.is_preventa ? form.deposit_percentage : null,
+      preventa_closes_at: form.is_preventa && form.preventa_closes_at ? new Date(form.preventa_closes_at).toISOString() : null,
     };
 
     if (editing) {
@@ -184,6 +193,11 @@ export function CampaignsClient({ campaigns }: { campaigns: Campaign[] }) {
                       {c.cta_url && (
                         <span className="text-[10px] text-purple-400 bg-purple-400/10 px-2 py-0.5 rounded-full flex items-center gap-1">
                           <ExternalLink className="w-2.5 h-2.5" /> {c.cta_label ?? "Ver más"}
+                        </span>
+                      )}
+                      {c.is_preventa && (
+                        <span className="text-[10px] text-yellow-400 bg-yellow-400/10 px-2 py-0.5 rounded-full flex items-center gap-1">
+                          <Tag className="w-2.5 h-2.5" /> Preventa {c.deposit_percentage}%
                         </span>
                       )}
                     </div>
@@ -368,6 +382,57 @@ export function CampaignsClient({ campaigns }: { campaigns: Campaign[] }) {
                     placeholder="Ver más"
                   />
                 </div>
+              </div>
+
+              {/* Preventa / Seña */}
+              <div className="border border-white/10 rounded-xl p-4 space-y-3">
+                <label className="flex items-center gap-3 cursor-pointer">
+                  <div
+                    className={`w-10 h-5 rounded-full relative transition-colors ${form.is_preventa ? "bg-green-600" : "bg-white/10"}`}
+                    onClick={() => setForm((f) => ({ ...f, is_preventa: !f.is_preventa }))}
+                  >
+                    <div className={`absolute top-0.5 w-4 h-4 bg-white rounded-full transition-transform ${form.is_preventa ? "translate-x-5" : "translate-x-0.5"}`} />
+                  </div>
+                  <div>
+                    <span className="text-white text-sm font-bold flex items-center gap-1.5">
+                      <Tag className="w-3.5 h-3.5 text-green-400" /> Modo preventa / seña
+                    </span>
+                    <p className="text-gray-600 text-[10px]">Registra compras con seña parcial</p>
+                  </div>
+                </label>
+
+                {form.is_preventa && (
+                  <div className="space-y-3 pt-1">
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className={labelClass}>% de seña</label>
+                        <select
+                          value={form.deposit_percentage}
+                          onChange={(e) => setForm((f) => ({ ...f, deposit_percentage: parseInt(e.target.value) }))}
+                          className={inputClass + " cursor-pointer"}
+                        >
+                          <option value={30}>30%</option>
+                          <option value={40}>40%</option>
+                          <option value={50}>50%</option>
+                          <option value={60}>60%</option>
+                          <option value={70}>70%</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className={labelClass}>Cierre de preventa</label>
+                        <input
+                          type="datetime-local"
+                          value={form.preventa_closes_at}
+                          onChange={(e) => setForm((f) => ({ ...f, preventa_closes_at: e.target.value }))}
+                          className={inputClass}
+                        />
+                      </div>
+                    </div>
+                    <p className="text-[10px] text-gray-600">
+                      Las reservas con seña quedan registradas en la sección de campañas para control interno.
+                    </p>
+                  </div>
+                )}
               </div>
 
               {/* Category */}

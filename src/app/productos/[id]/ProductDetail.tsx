@@ -95,17 +95,19 @@ export function ProductDetail({ product }: { product: Product }) {
     ? [product.image_url]
     : [];
 
+  const needsSize = product.has_sizes !== false && product.sizes?.length > 0;
+
   // Stock helpers
   const getStock = (s: string) => product.stock_by_size?.[s] ?? null; // null = unlimited
   const isOutOfStock = (s: string) => {
     const stock = getStock(s);
     return stock !== null && stock <= 0;
   };
-  const maxQty = selectedSize
-    ? (getStock(selectedSize) ?? 99)
-    : 99;
-
-  const needsSize = product.has_sizes !== false && product.sizes?.length > 0;
+  // Products without sizes store stock under "Único"
+  const noSizeStock = !needsSize ? (product.stock_by_size?.["Único"] ?? null) : null;
+  const maxQty = needsSize
+    ? (selectedSize ? (getStock(selectedSize) ?? 99) : 99)
+    : (noSizeStock ?? 99);
 
   const handleAdd = () => {
     if (needsSize && !selectedSize) return;
@@ -277,20 +279,28 @@ export function ProductDetail({ product }: { product: Product }) {
                 </div>
               </div>
 
+              {/* No-size out-of-stock indicator */}
+              {!needsSize && noSizeStock !== null && noSizeStock <= 0 && (
+                <p className="text-red-400 text-xs font-bold uppercase tracking-wider text-center">Sin stock disponible</p>
+              )}
+              {!needsSize && noSizeStock !== null && noSizeStock > 0 && noSizeStock <= 5 && (
+                <p className="text-orange-400 text-xs font-bold uppercase tracking-wider text-center">¡Últimas {noSizeStock} unidades!</p>
+              )}
+
               {/* CTA */}
               <button
                 onClick={handleAdd}
-                disabled={needsSize && !selectedSize}
+                disabled={(needsSize && !selectedSize) || (!needsSize && noSizeStock !== null && noSizeStock <= 0)}
                 className={`w-full py-4 text-sm font-black uppercase tracking-[0.2em] flex items-center justify-center gap-3 transition-all ${
                   added
                     ? "bg-green-500 text-black"
-                    : needsSize && !selectedSize
+                    : (needsSize && !selectedSize) || (!needsSize && noSizeStock !== null && noSizeStock <= 0)
                     ? "bg-white/5 text-gray-600 cursor-not-allowed"
                     : "bg-white text-black hover:bg-green-500"
                 }`}
               >
                 <ShoppingCart className="w-4 h-4" />
-                {added ? "¡Agregado al carrito!" : "Agregar al carrito"}
+                {added ? "¡Agregado al carrito!" : (!needsSize && noSizeStock !== null && noSizeStock <= 0) ? "Sin stock" : "Agregar al carrito"}
               </button>
 
               {needsSize && !selectedSize && (

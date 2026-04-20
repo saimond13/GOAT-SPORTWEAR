@@ -16,6 +16,7 @@ const SORT_OPTIONS = [
 export function ProductsSection({ products }: { products: Product[] }) {
   const [activeCategory, setActiveCategory] = useState("Todos");
   const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
+  const [priceMin, setPriceMin] = useState<number | null>(null);
   const [priceMax, setPriceMax] = useState<number | null>(null);
   const [sortBy, setSortBy] = useState("new");
   const [filtersOpen, setFiltersOpen] = useState(false);
@@ -30,9 +31,9 @@ export function ProductsSection({ products }: { products: Product[] }) {
       prev.includes(s) ? prev.filter((x) => x !== s) : [...prev, s]
     );
 
-  const hasFilters = selectedSizes.length > 0 || priceMax !== null;
+  const hasFilters = selectedSizes.length > 0 || priceMax !== null || priceMin !== null;
 
-  const clearFilters = () => { setSelectedSizes([]); setPriceMax(null); };
+  const clearFilters = () => { setSelectedSizes([]); setPriceMin(null); setPriceMax(null); };
 
   const filtered = useMemo(() => {
     let list = activeCategory === "Todos"
@@ -44,9 +45,8 @@ export function ProductsSection({ products }: { products: Product[] }) {
         p.sizes?.some((s) => selectedSizes.includes(s))
       );
     }
-    if (priceMax !== null) {
-      list = list.filter((p) => p.price <= priceMax);
-    }
+    if (priceMin !== null) list = list.filter((p) => p.price >= priceMin);
+    if (priceMax !== null) list = list.filter((p) => p.price <= priceMax);
 
     if (sortBy === "price_asc") list = [...list].sort((a, b) => a.price - b.price);
     else if (sortBy === "price_desc") list = [...list].sort((a, b) => b.price - a.price);
@@ -167,34 +167,37 @@ export function ProductsSection({ products }: { products: Product[] }) {
                   </div>
                 </div>
 
-                {/* Price range */}
+                {/* Price range — min / max editable */}
                 {maxPrice > 0 && (
                   <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">
-                        Precio máximo
-                      </p>
-                      <span className="text-xs font-black text-white">
-                        {priceMax !== null
-                          ? `$${priceMax.toLocaleString("es-AR")}`
-                          : "Sin límite"}
-                      </span>
-                    </div>
-                    <input
-                      type="range"
-                      min={0}
-                      max={maxPrice}
-                      step={Math.round(maxPrice / 20) || 100}
-                      value={priceMax ?? maxPrice}
-                      onChange={(e) => {
-                        const v = parseInt(e.target.value);
-                        setPriceMax(v >= maxPrice ? null : v);
-                      }}
-                      className="w-full accent-green-500 cursor-pointer"
-                    />
-                    <div className="flex justify-between text-[10px] text-gray-600 mt-1">
-                      <span>$0</span>
-                      <span>${maxPrice.toLocaleString("es-AR")}</span>
+                    <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-2">Rango de precio</p>
+                    <div className="flex items-center gap-2">
+                      <div className="flex-1">
+                        <p className="text-[9px] text-gray-600 mb-1">Mínimo</p>
+                        <input
+                          type="number"
+                          min={0}
+                          max={priceMax ?? maxPrice}
+                          step={1000}
+                          value={priceMin ?? ""}
+                          onChange={(e) => setPriceMin(e.target.value === "" ? null : Math.max(0, parseInt(e.target.value)))}
+                          placeholder="$0"
+                          className="w-full bg-white/5 border border-white/10 rounded-lg px-2 py-1.5 text-white text-xs focus:outline-none focus:border-green-500 placeholder-gray-600"
+                        />
+                      </div>
+                      <span className="text-gray-600 text-xs mt-4">—</span>
+                      <div className="flex-1">
+                        <p className="text-[9px] text-gray-600 mb-1">Máximo</p>
+                        <input
+                          type="number"
+                          min={priceMin ?? 0}
+                          step={1000}
+                          value={priceMax ?? ""}
+                          onChange={(e) => setPriceMax(e.target.value === "" ? null : Math.max(0, parseInt(e.target.value)))}
+                          placeholder={`$${maxPrice.toLocaleString("es-AR")}`}
+                          className="w-full bg-white/5 border border-white/10 rounded-lg px-2 py-1.5 text-white text-xs focus:outline-none focus:border-green-500 placeholder-gray-600"
+                        />
+                      </div>
                     </div>
                   </div>
                 )}

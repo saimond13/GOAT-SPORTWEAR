@@ -378,6 +378,32 @@ export function ProductForm({ product }: { product?: Product }) {
           })}
         </div>}
         {form.has_sizes && <p className="text-gray-600 text-xs mt-2">Stock = 0 deshabilita el talle en la tienda</p>}
+
+        {/* Stock for no-size products */}
+        {!form.has_sizes && (
+          <div className="mt-3">
+            <label className={labelClass}>Stock disponible</label>
+            <div className="flex items-center gap-3">
+              <input
+                type="number"
+                min={0}
+                value={stockBySize["Único"] ?? ""}
+                onChange={(e) =>
+                  setStockBySize((prev) => ({
+                    ...prev,
+                    "Único": e.target.value === "" ? 0 : parseInt(e.target.value, 10),
+                  }))
+                }
+                placeholder="Ej: 10"
+                className="w-32 bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-green-500 placeholder-gray-600"
+              />
+              <span className="text-gray-600 text-xs">
+                {(stockBySize["Único"] ?? 0) === 0 ? "sin stock" : `${stockBySize["Único"]} unidades`}
+              </span>
+            </div>
+            <p className="text-gray-600 text-xs mt-1">Stock = 0 muestra el producto como agotado</p>
+          </div>
+        )}
       </div>
 
       {/* Payment methods */}

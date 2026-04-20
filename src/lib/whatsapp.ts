@@ -22,9 +22,15 @@ export interface ShippingData {
   quotedService?: string;
 }
 
-export function buildWhatsAppMessage(items: CartItem[], total: number, shipping?: ShippingData): string {
+export function buildWhatsAppMessage(
+  items: CartItem[],
+  total: number,
+  shipping?: ShippingData,
+  transferDiscount?: number
+): string {
   const FREE_SHIPPING_THRESHOLD = 100_000;
-  const isFreeShipping = total >= FREE_SHIPPING_THRESHOLD;
+  const finalTotal = transferDiscount ? total - transferDiscount : total;
+  const isFreeShipping = finalTotal >= FREE_SHIPPING_THRESHOLD;
 
   let message = "🐐 *NUEVO PEDIDO - GOAT SPORTWEAR*\n\n";
 
@@ -39,7 +45,18 @@ export function buildWhatsAppMessage(items: CartItem[], total: number, shipping?
   });
 
   message += `━━━━━━━━━━━━━━━━\n`;
-  message += `💰 *TOTAL: $${total.toLocaleString("es-AR")}*\n`;
+  if (transferDiscount && transferDiscount > 0) {
+    message += `💰 Subtotal: $${total.toLocaleString("es-AR")}\n`;
+    message += `🎁 Descuento transferencia (15%): -$${transferDiscount.toLocaleString("es-AR")}\n`;
+    message += `💰 *TOTAL FINAL: $${finalTotal.toLocaleString("es-AR")}*\n`;
+    message += `━━━━━━━━━━━━━━━━\n`;
+    message += `🏦 *DATOS PARA TRANSFERIR:*\n`;
+    message += `• Titular: Tadeo Vanstrate\n`;
+    message += `• Alias MP: vanstrate\n`;
+    message += `• Plataforma: Mercado Pago\n`;
+  } else {
+    message += `💰 *TOTAL: $${finalTotal.toLocaleString("es-AR")}*\n`;
+  }
 
   if (isFreeShipping) {
     message += `🚚 *ENVÍO GRATIS* ✅\n`;

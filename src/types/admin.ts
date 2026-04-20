@@ -24,6 +24,25 @@ export interface Campaign {
   is_active: boolean;
   target_product_id?: string;
   target_category?: string;
+  // Preventa / seña
+  is_preventa?: boolean;
+  deposit_percentage?: number;
+  preventa_closes_at?: string;
+  created_at: string;
+}
+
+export interface PreventaRegistration {
+  id: string;
+  campaign_id: string;
+  customer_name: string;
+  customer_phone: string;
+  customer_email?: string;
+  product_name: string;
+  size: string;
+  quantity: number;
+  deposit_amount: number;
+  status: "pending" | "confirmed" | "cancelled";
+  notes?: string;
   created_at: string;
 }
 

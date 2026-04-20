@@ -77,6 +77,11 @@ export function Cart() {
       .finally(() => setLoadingAgencies(false));
   }, [shipping.type]);
 
+  const TRANSFER_DISCOUNT_PCT = 0.15;
+  const [paymentMode, setPaymentMode] = useState<"mp" | "transferencia">("mp");
+  const transferDiscount = paymentMode === "transferencia" ? Math.round(total * TRANSFER_DISCOUNT_PCT) : 0;
+  const finalTotal = total - transferDiscount;
+
   const [loadingMP, setLoadingMP] = useState(false);
 
   const handleMercadoPago = async () => {
@@ -129,7 +134,7 @@ export function Cart() {
       : undefined;
 
     window.open(
-      getWhatsAppUrl(buildWhatsAppMessage(whatsappItems, total, shippingData as Parameters<typeof buildWhatsAppMessage>[2])),
+      getWhatsAppUrl(buildWhatsAppMessage(whatsappItems, total, shippingData as Parameters<typeof buildWhatsAppMessage>[2], transferDiscount || undefined)),
       "_blank"
     );
   };
@@ -409,10 +414,62 @@ export function Cart() {
 
                 {/* Total + actions */}
                 <div className="p-5 space-y-3">
+
+                  {/* Payment mode selector */}
+                  <div>
+                    <p className="text-xs font-black text-gray-700 uppercase tracking-wider mb-2">Forma de pago</p>
+                    <div className="grid grid-cols-2 gap-2">
+                      <button
+                        onClick={() => setPaymentMode("mp")}
+                        className={`flex items-center justify-center gap-2 py-2.5 rounded-xl border text-xs font-black transition-all ${
+                          paymentMode === "mp"
+                            ? "bg-[#009EE3] border-[#009EE3] text-white"
+                            : "border-gray-200 text-gray-600 hover:border-[#009EE3]"
+                        }`}
+                      >
+                        <Image src="/mp-logo.svg" alt="" width={16} height={16} />
+                        Mercado Pago
+                      </button>
+                      <button
+                        onClick={() => setPaymentMode("transferencia")}
+                        className={`flex items-center justify-center gap-2 py-2.5 rounded-xl border text-xs font-black transition-all ${
+                          paymentMode === "transferencia"
+                            ? "bg-green-600 border-green-600 text-white"
+                            : "border-gray-200 text-gray-600 hover:border-green-600"
+                        }`}
+                      >
+                        🏦 Transferencia
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Transfer details + discount */}
+                  {paymentMode === "transferencia" && (
+                    <div className="bg-green-50 border border-green-200 rounded-xl p-3 space-y-1">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold text-green-700">🎁 Descuento 15%</span>
+                        <span className="text-xs font-black text-green-700">-{formatPrice(transferDiscount)}</span>
+                      </div>
+                      <div className="h-px bg-green-200" />
+                      <p className="text-[11px] font-bold text-gray-600 uppercase tracking-wider mb-1">Datos para transferir:</p>
+                      <p className="text-xs text-gray-700">• Titular: <strong>Tadeo Vanstrate</strong></p>
+                      <p className="text-xs text-gray-700">• Alias MP: <strong>vanstrate</strong></p>
+                      <p className="text-[10px] text-gray-500 mt-1">Coordiná el envío por WhatsApp después de transferir</p>
+                    </div>
+                  )}
+
                   <div className="flex justify-between items-center">
                     <span className="text-gray-500 font-medium text-sm">Subtotal</span>
-                    <span className="font-black text-xl text-gray-900">{formatPrice(total)}</span>
+                    <span className={`font-black text-xl ${paymentMode === "transferencia" ? "line-through text-gray-400 text-base" : "text-gray-900"}`}>
+                      {formatPrice(total)}
+                    </span>
                   </div>
+                  {paymentMode === "transferencia" && (
+                    <div className="flex justify-between items-center -mt-1">
+                      <span className="text-green-700 font-black text-sm">Total con descuento</span>
+                      <span className="font-black text-xl text-green-700">{formatPrice(finalTotal)}</span>
+                    </div>
+                  )}
                   <div className="flex justify-between items-center">
                     <span className="text-gray-500 font-medium text-sm">Envío</span>
                     {isFreeShipping ? (
@@ -423,24 +480,29 @@ export function Cart() {
                       <span className="text-gray-400 text-sm">A cotizar</span>
                     )}
                   </div>
+
                   {/* Mercado Pago */}
-                  <button
-                    onClick={handleMercadoPago}
-                    disabled={loadingMP}
-                    className="w-full bg-[#009EE3] hover:bg-[#0088c7] disabled:opacity-60 text-white font-black py-4 rounded-xl flex items-center justify-center gap-3 transition-colors text-sm uppercase tracking-wide"
-                  >
-                    {loadingMP ? (
-                      <Loader2 className="w-5 h-5 animate-spin" />
-                    ) : (
-                      <Image src="/mp-logo.svg" alt="Mercado Pago" width={20} height={20} />
-                    )}
-                    Pagar con Mercado Pago
-                  </button>
+                  {paymentMode === "mp" && (
+                    <button
+                      onClick={handleMercadoPago}
+                      disabled={loadingMP}
+                      className="w-full bg-[#009EE3] hover:bg-[#0088c7] disabled:opacity-60 text-white font-black py-4 rounded-xl flex items-center justify-center gap-3 transition-colors text-sm uppercase tracking-wide"
+                    >
+                      {loadingMP ? (
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                      ) : (
+                        <Image src="/mp-logo.svg" alt="Mercado Pago" width={20} height={20} />
+                      )}
+                      Pagar con Mercado Pago
+                    </button>
+                  )}
 
                   {/* Separador */}
                   <div className="flex items-center gap-2">
                     <div className="flex-1 h-px bg-gray-200" />
-                    <span className="text-[10px] text-gray-400 uppercase tracking-wider">o</span>
+                    <span className="text-[10px] text-gray-400 uppercase tracking-wider">
+                      {paymentMode === "mp" ? "o coordinar por" : "coordinar por"}
+                    </span>
                     <div className="flex-1 h-px bg-gray-200" />
                   </div>
 
@@ -448,7 +510,7 @@ export function Cart() {
                   <button onClick={handleWhatsApp}
                     className="w-full bg-[#25D366] hover:bg-[#20bc5b] text-white font-black py-3 rounded-xl flex items-center justify-center gap-3 transition-colors text-sm uppercase tracking-wide">
                     <MessageCircle className="w-5 h-5" />
-                    Coordinar por WhatsApp
+                    {paymentMode === "transferencia" ? "Confirmar por WhatsApp" : "Coordinar por WhatsApp"}
                   </button>
 
                   <button onClick={clearCart} className="w-full text-gray-300 text-xs hover:text-red-400 transition-colors">
