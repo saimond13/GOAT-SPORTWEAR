@@ -16,18 +16,18 @@ function ExitosoContent() {
     const status = searchParams.get("status");
     const paymentId = searchParams.get("payment_id");
 
+    // Show success immediately — confirm fires in background
+    setConfirmed(true);
+    clearCart();
+
     if (externalRef && paymentId && status === "approved") {
       fetch("/api/payments/confirm", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ orderId: externalRef, paymentId }),
-      }).finally(() => setConfirmed(true));
-    } else {
-      setConfirmed(true);
+      }).catch(() => {/* silent — order confirmed by MP webhook fallback */});
     }
-
-    clearCart();
-  }, [clearCart, searchParams]);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!confirmed) {
     return (

@@ -31,7 +31,10 @@ export async function POST(req: Request) {
   try {
     const mp = getMPClient();
     const paymentApi = new Payment(mp);
-    const mpPayment = await paymentApi.get({ id: paymentId });
+    const mpPayment = await Promise.race([
+      paymentApi.get({ id: paymentId }),
+      new Promise<never>((_, reject) => setTimeout(() => reject(new Error("MP timeout")), 7000)),
+    ]);
 
     if (mpPayment.status !== "approved") {
       return NextResponse.json({ error: "Pago no aprobado" }, { status: 402 });
