@@ -1,7 +1,7 @@
 "use client";
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { CheckCircle2, XCircle, Clock, Download } from "lucide-react";
+import { CheckCircle2, XCircle, Clock, Download, Check } from "lucide-react";
 import type { PreventaRegistration } from "@/types/admin";
 import { createClient } from "@/lib/supabase/client";
 import { formatDate, formatPrice } from "@/lib/utils";
@@ -26,6 +26,13 @@ export function PreventaClient({ registrations }: Props) {
   const totalDeposits = registrations
     .filter((r) => r.status === "deposit_paid")
     .reduce((sum, r) => sum + r.deposit_amount, 0);
+
+  const handleConfirm = async (id: string) => {
+    if (!confirm("¿Confirmar que se recibió la seña?")) return;
+    const supabase = createClient();
+    await supabase.from("preventa_registrations").update({ status: "deposit_paid" }).eq("id", id);
+    startTransition(() => router.refresh());
+  };
 
   const handleCancel = async (id: string) => {
     if (!confirm("¿Cancelar esta reserva?")) return;
@@ -153,14 +160,24 @@ export function PreventaClient({ registrations }: Props) {
                       {formatDate(r.created_at)}
                     </td>
                     <td className="px-5 py-3">
-                      {r.status !== "cancelled" && (
-                        <button
-                          onClick={() => handleCancel(r.id)}
-                          className="text-[10px] text-red-400 hover:text-red-300 font-bold uppercase tracking-wide transition-colors"
-                        >
-                          Cancelar
-                        </button>
-                      )}
+                      <div className="flex flex-col gap-1">
+                        {r.status === "pending" && (
+                          <button
+                            onClick={() => handleConfirm(r.id)}
+                            className="flex items-center gap-1 text-[10px] text-green-400 hover:text-green-300 font-black uppercase tracking-wide transition-colors"
+                          >
+                            <Check className="w-3 h-3" /> Confirmar seña
+                          </button>
+                        )}
+                        {r.status !== "cancelled" && (
+                          <button
+                            onClick={() => handleCancel(r.id)}
+                            className="text-[10px] text-red-400 hover:text-red-300 font-bold uppercase tracking-wide transition-colors"
+                          >
+                            Cancelar
+                          </button>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 );
