@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { LayoutDashboard, Package, ShoppingBag, Megaphone, Mail, Users, LogOut, X, Boxes } from "lucide-react";
+import { LayoutDashboard, Package, ShoppingBag, Megaphone, Mail, Users, LogOut, X, Boxes, Bookmark } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { GoatLogo } from "@/components/ui/GoatLogo";
 import { cn } from "@/lib/utils";
@@ -12,6 +12,7 @@ const navItems = [
   { href: "/admin/stock", icon: Boxes, label: "Stock" },
   { href: "/admin/orders", icon: ShoppingBag, label: "Pedidos" },
   { href: "/admin/campaigns", icon: Megaphone, label: "Campañas" },
+  { href: "/admin/preventa", icon: Bookmark, label: "Preventa" },
   { href: "/admin/waitlist", icon: Mail, label: "Waitlist" },
   { href: "/admin/users", icon: Users, label: "Admins" },
 ];

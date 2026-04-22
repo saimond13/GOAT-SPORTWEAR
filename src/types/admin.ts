@@ -26,6 +26,7 @@ export interface Campaign {
   target_category?: string;
   // Preventa / seña
   is_preventa?: boolean;
+  unit_price?: number;
   deposit_percentage?: number;
   preventa_closes_at?: string;
   created_at: string;

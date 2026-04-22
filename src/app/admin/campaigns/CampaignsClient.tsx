@@ -17,7 +17,8 @@ const empty = {
   cta_label: "Ver más",
   countdown_ends_at: "",
   is_preventa: false,
-  deposit_percentage: 50,
+  unit_price: 0,
+  deposit_percentage: 30,
   preventa_closes_at: "",
 };
 
@@ -52,7 +53,8 @@ export function CampaignsClient({ campaigns }: { campaigns: Campaign[] }) {
       cta_label: c.cta_label ?? "Ver más",
       countdown_ends_at: c.countdown_ends_at ? c.countdown_ends_at.slice(0, 16) : "",
       is_preventa: c.is_preventa ?? false,
-      deposit_percentage: c.deposit_percentage ?? 50,
+      unit_price: c.unit_price ?? 0,
+      deposit_percentage: c.deposit_percentage ?? 30,
       preventa_closes_at: c.preventa_closes_at ? c.preventa_closes_at.slice(0, 16) : "",
     });
     setPendingImages(c.images ?? []);
@@ -102,6 +104,7 @@ export function CampaignsClient({ campaigns }: { campaigns: Campaign[] }) {
       cta_label: form.cta_label || "Ver más",
       countdown_ends_at: form.countdown_ends_at ? new Date(form.countdown_ends_at).toISOString() : null,
       is_preventa: form.is_preventa,
+      unit_price: form.is_preventa ? form.unit_price : null,
       deposit_percentage: form.is_preventa ? form.deposit_percentage : null,
       preventa_closes_at: form.is_preventa && form.preventa_closes_at ? new Date(form.preventa_closes_at).toISOString() : null,
     };
@@ -403,6 +406,24 @@ export function CampaignsClient({ campaigns }: { campaigns: Campaign[] }) {
 
                 {form.is_preventa && (
                   <div className="space-y-3 pt-1">
+                    <div>
+                      <label className={labelClass}>Precio del producto (ARS) *</label>
+                      <input
+                        type="number"
+                        min={0}
+                        value={form.unit_price || ""}
+                        onChange={(e) => setForm((f) => ({ ...f, unit_price: parseFloat(e.target.value) || 0 }))}
+                        className={inputClass}
+                        placeholder="Ej: 45000"
+                        required={form.is_preventa}
+                      />
+                      {form.unit_price > 0 && (
+                        <p className="text-[10px] text-green-500 mt-1">
+                          Seña ({form.deposit_percentage}%): ${Math.round(form.unit_price * form.deposit_percentage / 100).toLocaleString("es-AR")}
+                          {" · "}Saldo: ${Math.round(form.unit_price * (1 - form.deposit_percentage / 100)).toLocaleString("es-AR")}
+                        </p>
+                      )}
+                    </div>
                     <div className="grid grid-cols-2 gap-3">
                       <div>
                         <label className={labelClass}>% de seña</label>

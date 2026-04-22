@@ -179,16 +179,31 @@ export function CampaignsBanner({ campaigns }: { campaigns: Campaign[] }) {
                       </span>
                     )}
 
-                    {/* CTA button — opens in new tab */}
-                    {c.cta_url && (
+                    {/* Preventa badge + CTA */}
+                    {c.is_preventa && c.unit_price && c.unit_price > 0 && (
+                      <span className="bg-green-500/10 border border-green-500/20 text-green-400 text-[9px] uppercase tracking-[0.25em] px-3 py-1">
+                        Seña {c.deposit_percentage}%
+                      </span>
+                    )}
+
+                    {/* Drop page CTA */}
+                    <a
+                      href={`/drop/${c.id}`}
+                      className="flex items-center gap-2 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-[0.15em] px-4 py-2 transition-colors"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      {c.is_preventa && c.unit_price && c.unit_price > 0 ? "RESERVAR LUGAR" : (c.cta_label ?? "Ver más")}
+                    </a>
+
+                    {/* External CTA if set and not preventa */}
+                    {c.cta_url && !c.is_preventa && (
                       <a
                         href={c.cta_url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center gap-2 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-[0.15em] px-4 py-2 transition-colors"
+                        className="flex items-center gap-2 border border-white/15 text-gray-400 hover:text-white text-xs uppercase tracking-[0.15em] px-4 py-2 transition-colors"
                         onClick={(e) => e.stopPropagation()}
                       >
-                        {c.cta_label ?? "Ver más"}
                         <ExternalLink className="w-3 h-3" />
                       </a>
                     )}
