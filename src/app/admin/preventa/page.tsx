@@ -11,10 +11,11 @@ export default async function PreventaPage() {
     .order("created_at", { ascending: false })
     .limit(200);
 
-  const mapped = (registrations ?? []).map((r) => ({
-    ...(r as unknown as PreventaRegistration),
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const mapped = (registrations ?? []).map((r: any) => ({
+    ...r,
     campaign_title: (r.campaigns as { title: string } | null)?.title ?? undefined,
-  }));
+  })) as (PreventaRegistration & { campaign_title?: string })[];
 
   return (
     <div className="space-y-6">
