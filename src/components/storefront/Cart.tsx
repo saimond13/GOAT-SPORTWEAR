@@ -1,6 +1,6 @@
 "use client";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Minus, Plus, Trash2, MessageCircle, ShoppingBag, Truck, Building2, MapPin, User, Phone } from "lucide-react";
+import { X, Minus, Plus, Trash2, MessageCircle, ShoppingBag, Truck, Building2, MapPin, User, Phone, Loader2 } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { buildWhatsAppMessage, getWhatsAppUrl } from "@/lib/whatsapp";
 import { formatPrice } from "@/lib/utils";
