@@ -78,7 +78,7 @@ export function ProductCard({ product }: { product: Product }) {
 
         {/* Quick add hover button */}
         <button
-          onClick={(e) => { e.preventDefault(); setExpanded(!expanded); }}
+          onClick={(e) => { e.preventDefault(); e.stopPropagation(); setExpanded(!expanded); }}
           className="absolute bottom-3 right-3 w-8 h-8 bg-green-500 text-black flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:bg-green-400"
         >
           <Plus className="w-4 h-4" />
