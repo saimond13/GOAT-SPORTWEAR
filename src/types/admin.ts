@@ -42,7 +42,7 @@ export interface PreventaRegistration {
   size: string;
   quantity: number;
   deposit_amount: number;
-  status: "pending" | "confirmed" | "cancelled";
+  status: "pending" | "deposit_paid" | "cancelled";
   notes?: string;
   created_at: string;
 }
