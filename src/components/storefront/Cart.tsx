@@ -84,8 +84,39 @@ export function Cart() {
     }
   };
 
-  const handleWhatsApp = () => {
+  const [loadingWA, setLoadingWA] = useState(false);
+
+  const handleWhatsApp = async () => {
     if (!items.length) return;
+    setLoadingWA(true);
+
+    let orderId: string | undefined;
+    try {
+      const res = await fetch("/api/orders/whatsapp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          items: items.map((i) => ({
+            id: i.product.id,
+            name: i.product.name,
+            price: i.product.price,
+            quantity: i.quantity,
+            size: i.size,
+          })),
+          shippingCost: !isFreeShipping && shippingCost !== null ? shippingCost : 0,
+          transferDiscount,
+          shipping: shipping.type ? shipping : undefined,
+          paymentMode,
+        }),
+      });
+      const data = await res.json();
+      if (res.ok) orderId = data.orderId;
+    } catch {
+      // silently continue — WhatsApp always opens even if DB save fails
+    } finally {
+      setLoadingWA(false);
+    }
+
     const whatsappItems = items.map((i) => ({
       product: { id: i.product.id, name: i.product.name, price: i.product.price },
       size: i.size,
@@ -95,8 +126,9 @@ export function Cart() {
     const shippingData = shipping.type
       ? { ...shipping, quotedPrice: shippingCost ?? undefined, quotedService: shippingZone?.name }
       : undefined;
+    const orderRef = orderId ? orderId.slice(0, 8).toUpperCase() : undefined;
     window.open(
-      getWhatsAppUrl(buildWhatsAppMessage(whatsappItems, total, shippingData as Parameters<typeof buildWhatsAppMessage>[2], transferDiscount || undefined)),
+      getWhatsAppUrl(buildWhatsAppMessage(whatsappItems, total, shippingData as Parameters<typeof buildWhatsAppMessage>[2], transferDiscount || undefined, orderRef)),
       "_blank"
     );
   };

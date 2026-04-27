@@ -26,13 +26,16 @@ export function buildWhatsAppMessage(
   items: CartItem[],
   total: number,
   shipping?: ShippingData,
-  transferDiscount?: number
+  transferDiscount?: number,
+  orderRef?: string
 ): string {
   const FREE_SHIPPING_THRESHOLD = 100_000;
   const finalTotal = transferDiscount ? total - transferDiscount : total;
   const isFreeShipping = finalTotal >= FREE_SHIPPING_THRESHOLD;
 
-  let message = "🐐 *NUEVO PEDIDO - GOAT SPORTWEAR*\n\n";
+  let message = "🐐 *NUEVO PEDIDO - GOAT SPORTWEAR*\n";
+  if (orderRef) message += `🔖 Pedido #${orderRef}\n`;
+  message += "\n";
 
   items.forEach((item, i) => {
     message += `*Producto ${i + 1}:*\n`;

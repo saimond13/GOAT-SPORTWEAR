@@ -1,4 +1,4 @@
-export type OrderStatus = "pending" | "confirmed" | "shipped" | "delivered" | "cancelled";
+export type OrderStatus = "pending" | "pending_whatsapp" | "confirmed" | "shipped" | "delivered" | "cancelled";
 export type PaymentStatus = "unpaid" | "paid" | "refunded";
 
 export interface Order {

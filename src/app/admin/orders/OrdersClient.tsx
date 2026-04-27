@@ -8,11 +8,12 @@ import { formatPrice, formatDate } from "@/lib/utils";
 import { PAYMENT_METHODS } from "@/types/product";
 
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {
-  pending:   { label: "Pendiente",   color: "bg-yellow-600/20 text-yellow-400" },
-  confirmed: { label: "Confirmado",  color: "bg-blue-600/20 text-blue-400" },
-  shipped:   { label: "Enviado",     color: "bg-purple-600/20 text-purple-400" },
-  delivered: { label: "Entregado",   color: "bg-green-600/20 text-green-400" },
-  cancelled: { label: "Cancelado",   color: "bg-red-600/20 text-red-400" },
+  pending_whatsapp: { label: "💬 WhatsApp",   color: "bg-green-600/20 text-green-400" },
+  pending:          { label: "Pendiente",      color: "bg-yellow-600/20 text-yellow-400" },
+  confirmed:        { label: "Confirmado",     color: "bg-blue-600/20 text-blue-400" },
+  shipped:          { label: "Enviado",        color: "bg-purple-600/20 text-purple-400" },
+  delivered:        { label: "Entregado",      color: "bg-green-600/20 text-green-400" },
+  cancelled:        { label: "Cancelado",      color: "bg-red-600/20 text-red-400" },
 };
 
 const PAY_LABELS: Record<string, string> = {
