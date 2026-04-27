@@ -63,6 +63,7 @@ export function Cart() {
             size: i.size,
           })),
           total,
+          shippingCost: !isFreeShipping && shippingCost !== null ? shippingCost : 0,
           shipping: shipping.type ? shipping : undefined,
         }),
       });

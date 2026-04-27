@@ -42,6 +42,7 @@ const shippingSchema = z.object({
 const schema = z.object({
   items: z.array(itemSchema).min(1).max(50),
   total: z.number().positive(),
+  shippingCost: z.number().min(0).default(0),
   shipping: shippingSchema,
 });
 
@@ -74,7 +75,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: parsed.error.issues[0].message }, { status: 400 });
   }
 
-  const { items, shipping } = parsed.data;
+  const { items, shipping, shippingCost } = parsed.data;
 
   // Validate site URL — must be set or payment redirects will fail
   const origin = process.env.NEXT_PUBLIC_SITE_URL;
@@ -109,7 +110,7 @@ export async function POST(req: Request) {
     verifiedItems.push({ ...item, price: dbProduct.price });
   }
 
-  const verifiedTotal = verifiedItems.reduce((sum, i) => sum + i.price * i.quantity, 0);
+  const verifiedTotal = verifiedItems.reduce((sum, i) => sum + i.price * i.quantity, 0) + shippingCost;
 
   // ── Build order metadata ────────────────────────────────────────────────
   const customerName = shipping?.recipientName?.trim() || "Cliente web";
@@ -178,13 +179,22 @@ export async function POST(req: Request) {
 
     const result = await preference.create({
       body: {
-        items: verifiedItems.map((item) => ({
-          id: item.id,
-          title: `${item.name} — Talle ${item.size}`,
-          quantity: item.quantity,
-          unit_price: item.price,
-          currency_id: "ARS",
-        })),
+        items: [
+          ...verifiedItems.map((item) => ({
+            id: item.id,
+            title: `${item.name} — Talle ${item.size}`,
+            quantity: item.quantity,
+            unit_price: item.price,
+            currency_id: "ARS",
+          })),
+          ...(shippingCost > 0 ? [{
+            id: "shipping",
+            title: shippingType ?? "Envío — Correo Argentino",
+            quantity: 1,
+            unit_price: shippingCost,
+            currency_id: "ARS",
+          }] : []),
+        ],
         external_reference: order.id,
         back_urls: {
           success: `${origin}/pago/exitoso`,
