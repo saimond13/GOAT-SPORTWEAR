@@ -277,6 +277,15 @@ function ReservationForm({ campaign }: { campaign: Campaign }) {
 
   if (confirmed) return <TransferInstructions data={confirmed} />;
 
+  if (!unitPrice) {
+    return (
+      <div className="bg-yellow-500/10 border border-yellow-500/20 p-4 text-center">
+        <p className="text-yellow-400 text-sm font-bold">Las reservas abren pronto.</p>
+        <p className="text-gray-500 text-xs mt-1">Anotate en la lista para ser el primero en enterarte.</p>
+      </div>
+    );
+  }
+
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
       {/* Price breakdown */}
@@ -410,7 +419,7 @@ export function DropPage({ campaign }: { campaign: Campaign }) {
     ? [campaign.image_url]
     : [];
 
-  const isPreventaOpen = campaign.is_preventa && campaign.unit_price && campaign.unit_price > 0 &&
+  const isPreventaOpen = !!campaign.is_preventa &&
     (!campaign.preventa_closes_at || new Date(campaign.preventa_closes_at) > new Date());
 
   const [activeTab, setActiveTab] = useState<"waitlist" | "reserva">(
