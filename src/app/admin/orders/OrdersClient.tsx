@@ -1,30 +1,31 @@
 "use client";
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Plus, X, Loader2 } from "lucide-react";
+import { Plus, X, Loader2, ChevronDown, ChevronUp, MapPin, Phone } from "lucide-react";
 import type { Order } from "@/types/order";
 import { createClient } from "@/lib/supabase/client";
 import { formatPrice, formatDate } from "@/lib/utils";
 import { PAYMENT_METHODS } from "@/types/product";
 
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {
-  pending_whatsapp: { label: "💬 WhatsApp",   color: "bg-green-600/20 text-green-400" },
-  pending:          { label: "Pendiente",      color: "bg-yellow-600/20 text-yellow-400" },
-  confirmed:        { label: "Confirmado",     color: "bg-blue-600/20 text-blue-400" },
-  shipped:          { label: "Enviado",        color: "bg-purple-600/20 text-purple-400" },
-  delivered:        { label: "Entregado",      color: "bg-green-600/20 text-green-400" },
-  cancelled:        { label: "Cancelado",      color: "bg-red-600/20 text-red-400" },
+  pending_whatsapp: { label: "💬 WhatsApp",  color: "bg-green-600/20 text-green-400" },
+  pending:          { label: "Pendiente",     color: "bg-yellow-600/20 text-yellow-400" },
+  confirmed:        { label: "Confirmado",    color: "bg-blue-600/20 text-blue-400" },
+  shipped:          { label: "Enviado",       color: "bg-purple-600/20 text-purple-400" },
+  delivered:        { label: "Entregado",     color: "bg-green-600/20 text-green-400" },
+  cancelled:        { label: "Cancelado",     color: "bg-red-600/20 text-red-400" },
 };
 
 const PAY_LABELS: Record<string, string> = {
-  unpaid: "bg-red-600/20 text-red-400",
-  paid:   "bg-green-600/20 text-green-400",
+  unpaid:   "bg-red-600/20 text-red-400",
+  paid:     "bg-green-600/20 text-green-400",
   refunded: "bg-gray-600/20 text-gray-400",
 };
 
 export function OrdersClient({ orders }: { orders: Order[] }) {
   const router = useRouter();
   const [, startTransition] = useTransition();
+  const [expandedId, setExpandedId] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState({
@@ -61,6 +62,12 @@ export function OrdersClient({ orders }: { orders: Order[] }) {
     startTransition(() => router.refresh());
   };
 
+  const handlePaymentStatusChange = async (id: string, payment_status: string) => {
+    const supabase = createClient();
+    await supabase.from("orders").update({ payment_status }).eq("id", id);
+    startTransition(() => router.refresh());
+  };
+
   const inputClass = "w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white text-sm focus:outline-none focus:border-green-500 placeholder-gray-600";
   const labelClass = "block text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1";
 
@@ -75,7 +82,7 @@ export function OrdersClient({ orders }: { orders: Order[] }) {
 
       {orders.length === 0 ? (
         <div className="bg-white/5 border border-white/10 rounded-2xl p-12 text-center">
-          <p className="text-gray-500 text-sm">No hay pedidos aún. Registrá los pedidos que recibís por WhatsApp.</p>
+          <p className="text-gray-500 text-sm">No hay pedidos aún.</p>
         </div>
       ) : (
         <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden">
@@ -90,32 +97,114 @@ export function OrdersClient({ orders }: { orders: Order[] }) {
               </thead>
               <tbody>
                 {orders.map((o) => {
-                  const s = STATUS_LABELS[o.status];
+                  const s = STATUS_LABELS[o.status] ?? STATUS_LABELS.pending;
+                  const isExpanded = expandedId === o.id;
                   return (
-                    <tr key={o.id} className="border-b border-white/5 hover:bg-white/5">
-                      <td className="px-5 py-3">
-                        <p className="text-white font-bold text-sm">{o.customer_name}</p>
-                        {o.customer_phone && <p className="text-gray-500 text-xs">{o.customer_phone}</p>}
-                      </td>
-                      <td className="px-5 py-3 text-white font-bold text-sm">{formatPrice(o.total)}</td>
-                      <td className="px-5 py-3">
-                        <select value={o.status} onChange={(e) => handleStatusChange(o.id, e.target.value)}
-                          className={`text-xs font-bold px-2.5 py-1 rounded-full border-0 cursor-pointer ${s.color} bg-transparent`}>
-                          {Object.entries(STATUS_LABELS).map(([k, v]) => (
-                            <option key={k} value={k} className="bg-black">{v.label}</option>
-                          ))}
-                        </select>
-                      </td>
-                      <td className="px-5 py-3">
-                        <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${PAY_LABELS[o.payment_status]}`}>
-                          {o.payment_status === "paid" ? "Pagado" : o.payment_status === "refunded" ? "Reembolsado" : "Sin pagar"}
-                        </span>
-                      </td>
-                      <td className="px-5 py-3 text-gray-500 text-xs">{formatDate(o.created_at)}</td>
-                      <td className="px-5 py-3">
-                        {o.notes && <span title={o.notes} className="text-gray-600 text-xs cursor-help">📝</span>}
-                      </td>
-                    </tr>
+                    <>
+                      <tr
+                        key={o.id}
+                        className={`border-b border-white/5 hover:bg-white/5 cursor-pointer transition-colors ${isExpanded ? "bg-white/[0.03]" : ""}`}
+                        onClick={() => setExpandedId(isExpanded ? null : o.id)}
+                      >
+                        <td className="px-5 py-3">
+                          <p className="text-white font-bold text-sm">{o.customer_name}</p>
+                          {o.customer_phone && <p className="text-gray-500 text-xs">{o.customer_phone}</p>}
+                        </td>
+                        <td className="px-5 py-3 text-white font-bold text-sm">{formatPrice(o.total)}</td>
+                        <td className="px-5 py-3" onClick={(e) => e.stopPropagation()}>
+                          <select
+                            value={o.status}
+                            onChange={(e) => handleStatusChange(o.id, e.target.value)}
+                            className={`text-xs font-bold px-2.5 py-1 rounded-full border-0 cursor-pointer ${s.color} bg-transparent`}
+                          >
+                            {Object.entries(STATUS_LABELS).map(([k, v]) => (
+                              <option key={k} value={k} className="bg-black">{v.label}</option>
+                            ))}
+                          </select>
+                        </td>
+                        <td className="px-5 py-3" onClick={(e) => e.stopPropagation()}>
+                          <select
+                            value={o.payment_status}
+                            onChange={(e) => handlePaymentStatusChange(o.id, e.target.value)}
+                            className={`text-xs font-bold px-2.5 py-1 rounded-full border-0 cursor-pointer ${PAY_LABELS[o.payment_status]} bg-transparent`}
+                          >
+                            <option value="unpaid" className="bg-black">Sin pagar</option>
+                            <option value="paid" className="bg-black">Pagado</option>
+                            <option value="refunded" className="bg-black">Reembolsado</option>
+                          </select>
+                        </td>
+                        <td className="px-5 py-3 text-gray-500 text-xs whitespace-nowrap">{formatDate(o.created_at)}</td>
+                        <td className="px-5 py-3 text-gray-500">
+                          {isExpanded
+                            ? <ChevronUp className="w-4 h-4" />
+                            : <ChevronDown className="w-4 h-4" />}
+                        </td>
+                      </tr>
+
+                      {/* Expanded detail row */}
+                      {isExpanded && (
+                        <tr key={`${o.id}-detail`} className="border-b border-white/5 bg-white/[0.02]">
+                          <td colSpan={6} className="px-5 py-4">
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+
+                              {/* Contact + address */}
+                              <div className="space-y-2">
+                                <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Datos de envío</p>
+                                {o.customer_phone && (
+                                  <div className="flex items-center gap-2 text-gray-300">
+                                    <Phone className="w-3.5 h-3.5 text-gray-500 flex-shrink-0" />
+                                    <span className="text-xs">{o.customer_phone}</span>
+                                  </div>
+                                )}
+                                {o.customer_address && (
+                                  <div className="flex items-start gap-2 text-gray-300">
+                                    <MapPin className="w-3.5 h-3.5 text-gray-500 flex-shrink-0 mt-0.5" />
+                                    <span className="text-xs">{o.customer_address}</span>
+                                  </div>
+                                )}
+                                {!o.customer_phone && !o.customer_address && (
+                                  <p className="text-gray-600 text-xs">Sin datos de envío</p>
+                                )}
+                                {o.payment_method && (
+                                  <p className="text-xs text-gray-500">Método: <span className="text-gray-300">{o.payment_method}</span></p>
+                                )}
+                              </div>
+
+                              {/* Order items */}
+                              <div className="space-y-2">
+                                <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Productos</p>
+                                {o.order_items && o.order_items.length > 0 ? (
+                                  <div className="space-y-1.5">
+                                    {o.order_items.map((item) => (
+                                      <div key={item.id} className="flex items-center justify-between gap-2">
+                                        <div>
+                                          <p className="text-xs text-gray-300 font-medium">{item.product_name}</p>
+                                          <p className="text-[10px] text-gray-600">T. {item.size} × {item.quantity}</p>
+                                        </div>
+                                        <span className="text-xs text-gray-400 whitespace-nowrap">{formatPrice(item.unit_price * item.quantity)}</span>
+                                      </div>
+                                    ))}
+                                  </div>
+                                ) : (
+                                  <p className="text-gray-600 text-xs">Sin detalle de productos</p>
+                                )}
+                              </div>
+
+                              {/* Notes */}
+                              <div className="space-y-2">
+                                <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Notas</p>
+                                {o.notes ? (
+                                  <p className="text-xs text-gray-400 whitespace-pre-line leading-relaxed">{o.notes}</p>
+                                ) : (
+                                  <p className="text-gray-600 text-xs">Sin notas</p>
+                                )}
+                              </div>
+
+                            </div>
+                          </td>
+                        </tr>
+                      )}
+                    </>
                   );
                 })}
               </tbody>
@@ -147,6 +236,10 @@ export function OrdersClient({ orders }: { orders: Order[] }) {
                   <label className={labelClass}>Total * ($)</label>
                   <input type="number" value={form.total} onChange={(e) => setForm((f) => ({ ...f, total: e.target.value }))} className={inputClass} placeholder="15000" required min="0" />
                 </div>
+              </div>
+              <div>
+                <label className={labelClass}>Dirección</label>
+                <input value={form.customer_address} onChange={(e) => setForm((f) => ({ ...f, customer_address: e.target.value }))} className={inputClass} placeholder="Calle 123, Localidad, Provincia" />
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
