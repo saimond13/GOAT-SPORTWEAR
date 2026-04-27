@@ -6,12 +6,13 @@ export type DeliveryType = "domicilio" | "sucursal" | "";
 
 export interface ShippingInfo {
   type: DeliveryType;
-  address: string;       // domicilio: calle + número + piso/depto
-  postalCode: string;    // ambos tipos
-  city: string;          // ciudad/localidad
+  address: string;
+  postalCode: string;
+  city: string;
+  province: string;
   recipientName: string;
   recipientPhone: string;
-  agencyId: string;      // selected PAQ.AR agency (sucursal mode)
+  agencyId: string;
 }
 
 interface CartContextType {
@@ -31,7 +32,7 @@ interface CartContextType {
 const CartContext = createContext<CartContextType | null>(null);
 
 const defaultShipping: ShippingInfo = {
-  type: "", address: "", postalCode: "", city: "",
+  type: "", address: "", postalCode: "", city: "", province: "",
   recipientName: "", recipientPhone: "", agencyId: "",
 };
 
