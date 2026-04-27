@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import type { PreventaRegistration } from "@/types/admin";
 import { PreventaClient } from "./PreventaClient";
 
 export default async function PreventaPage() {
@@ -10,9 +11,9 @@ export default async function PreventaPage() {
     .order("created_at", { ascending: false })
     .limit(200);
 
-  const mapped = (registrations ?? []).map((r: Record<string, unknown>) => ({
-    ...r,
-    campaign_title: (r.campaigns as { title: string } | null)?.title ?? null,
+  const mapped = (registrations ?? []).map((r) => ({
+    ...(r as unknown as PreventaRegistration),
+    campaign_title: (r.campaigns as { title: string } | null)?.title ?? undefined,
   }));
 
   return (
