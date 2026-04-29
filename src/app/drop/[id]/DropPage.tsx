@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Timer, CheckCircle, Loader2, ArrowLeft, Lock, Shield, RotateCcw } from "lucide-react";
+import { Timer, CheckCircle, Loader2, ArrowLeft, Lock, Shield, RotateCcw, Minus, Plus } from "lucide-react";
 import Link from "next/link";
 import type { Campaign } from "@/types/admin";
 import { formatPrice } from "@/lib/utils";
@@ -353,21 +353,22 @@ function ReservationForm({ campaign }: { campaign: Campaign }) {
       {/* Quantity */}
       <div>
         <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-2">Cantidad</p>
-        <div className="flex items-center gap-3">
-          {[1, 2, 3].map((q) => (
-            <button
-              key={q}
-              type="button"
-              onClick={() => setForm((f) => ({ ...f, quantity: q }))}
-              className={`w-10 h-10 text-sm font-bold border transition-all ${
-                form.quantity === q
-                  ? "bg-white text-black border-white"
-                  : "border-white/15 text-gray-300 hover:border-white/40"
-              }`}
-            >
-              {q}
-            </button>
-          ))}
+        <div className="flex items-center gap-4">
+          <button
+            type="button"
+            onClick={() => setForm((f) => ({ ...f, quantity: Math.max(1, f.quantity - 1) }))}
+            className="w-10 h-10 border border-white/15 flex items-center justify-center text-gray-300 hover:border-white/40 hover:text-white transition-colors"
+          >
+            <Minus className="w-4 h-4" />
+          </button>
+          <span className="text-white font-black text-lg w-8 text-center">{form.quantity}</span>
+          <button
+            type="button"
+            onClick={() => setForm((f) => ({ ...f, quantity: f.quantity + 1 }))}
+            className="w-10 h-10 border border-white/15 flex items-center justify-center text-gray-300 hover:border-white/40 hover:text-white transition-colors"
+          >
+            <Plus className="w-4 h-4" />
+          </button>
         </div>
       </div>
 

@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronLeft, ChevronRight, ArrowLeft, ShoppingCart, Minus, Plus } from "lucide-react";
+import { ChevronLeft, ChevronRight, ArrowLeft, ShoppingCart, Minus, Plus, Ruler, X } from "lucide-react";
 import Link from "next/link";
 import type { Product } from "@/types/product";
 import { useCart } from "@/context/CartContext";
@@ -83,6 +83,7 @@ export function ProductDetail({ product }: { product: Product }) {
   const [selectedSize, setSelectedSize] = useState("");
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
+  const [showSizeChart, setShowSizeChart] = useState(false);
 
   const discount = product.original_price
     ? Math.round((1 - product.price / product.original_price) * 100)
@@ -206,9 +207,19 @@ export function ProductDetail({ product }: { product: Product }) {
             <div className="border-t border-white/[0.06] pt-5 space-y-5">
               {/* Size */}
               {needsSize && <div>
-                <p className="text-xs font-bold text-gray-400 uppercase tracking-[0.3em] mb-3">
-                  Talle
-                </p>
+                <div className="flex items-center justify-between mb-3">
+                  <p className="text-xs font-bold text-gray-400 uppercase tracking-[0.3em]">
+                    Talle
+                  </p>
+                  {product.size_chart_image && (
+                    <button
+                      onClick={() => setShowSizeChart(true)}
+                      className="flex items-center gap-1.5 text-xs text-green-400 hover:text-green-300 font-bold uppercase tracking-widest"
+                    >
+                      <Ruler className="w-3.5 h-3.5" /> Ver tabla de talles
+                    </button>
+                  )}
+                </div>
                 <div className="flex flex-wrap gap-2">
                   {product.sizes.map((s) => {
                     const oos = isOutOfStock(s);
@@ -321,6 +332,27 @@ export function ProductDetail({ product }: { product: Product }) {
           </motion.div>
         </div>
       </main>
+
+      {showSizeChart && product.size_chart_image && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center px-4 bg-black/80 backdrop-blur-sm"
+          onClick={() => setShowSizeChart(false)}
+        >
+          <div className="relative max-w-lg w-full" onClick={(e) => e.stopPropagation()}>
+            <button
+              onClick={() => setShowSizeChart(false)}
+              className="absolute -top-10 right-0 text-gray-400 hover:text-white flex items-center gap-1.5 text-sm font-bold"
+            >
+              <X className="w-4 h-4" /> Cerrar
+            </button>
+            <img
+              src={product.size_chart_image}
+              alt="Tabla de talles"
+              className="w-full rounded-xl border border-white/10"
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

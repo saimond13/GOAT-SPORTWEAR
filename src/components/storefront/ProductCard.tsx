@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { ShoppingCart, Plus, Minus } from "lucide-react";
+import { ShoppingCart, Plus, Minus, Ruler, X } from "lucide-react";
 import Link from "next/link";
 import type { Product } from "@/types/product";
 import { useCart } from "@/context/CartContext";
@@ -13,6 +13,7 @@ export function ProductCard({ product }: { product: Product }) {
   const [quantity, setQuantity] = useState(1);
   const [expanded, setExpanded] = useState(false);
   const [added, setAdded] = useState(false);
+  const [showSizeChart, setShowSizeChart] = useState(false);
 
   const discount = product.original_price
     ? Math.round((1 - product.price / product.original_price) * 100)
@@ -129,9 +130,19 @@ export function ProductCard({ product }: { product: Product }) {
           >
             {/* Sizes */}
             {needsSize && <div>
-              <p className="text-[9px] font-bold text-gray-400 uppercase tracking-[0.3em] mb-1.5">
-                Talle
-              </p>
+              <div className="flex items-center justify-between mb-1.5">
+                <p className="text-[9px] font-bold text-gray-400 uppercase tracking-[0.3em]">
+                  Talle
+                </p>
+                {product.size_chart_image && (
+                  <button
+                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowSizeChart(true); }}
+                    className="flex items-center gap-1 text-[9px] text-green-400 hover:text-green-300 font-bold uppercase tracking-wider"
+                  >
+                    <Ruler className="w-2.5 h-2.5" /> Ver tabla
+                  </button>
+                )}
+              </div>
               <div className="flex flex-wrap gap-1">
                 {product.sizes.map((s) => (
                   <button
@@ -195,6 +206,26 @@ export function ProductCard({ product }: { product: Product }) {
           {added ? "¡Agregado!" : expanded ? "Agregar al carrito" : "Seleccionar"}
         </button>
       </div>
+      {showSizeChart && product.size_chart_image && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center px-4 bg-black/80 backdrop-blur-sm"
+          onClick={() => setShowSizeChart(false)}
+        >
+          <div className="relative max-w-sm w-full" onClick={(e) => e.stopPropagation()}>
+            <button
+              onClick={() => setShowSizeChart(false)}
+              className="absolute -top-10 right-0 text-gray-400 hover:text-white flex items-center gap-1 text-xs"
+            >
+              <X className="w-4 h-4" /> Cerrar
+            </button>
+            <img
+              src={product.size_chart_image}
+              alt="Tabla de talles"
+              className="w-full rounded-xl border border-white/10"
+            />
+          </div>
+        </div>
+      )}
     </motion.div>
   );
 }

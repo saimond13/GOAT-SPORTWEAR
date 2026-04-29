@@ -17,6 +17,7 @@ export interface Product {
   image_url?: string;
   image_path?: string;
   images?: string[];
+  size_chart_image?: string;
   is_active: boolean;
   sort_order?: number;
   created_at?: string;

@@ -1,7 +1,7 @@
 "use client";
 import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { Loader2, Upload, X, Plus } from "lucide-react";
+import { Loader2, Upload, X, Plus, Ruler } from "lucide-react";
 import type { Product } from "@/types/product";
 import { CATEGORIES, GENDERS, SIZES, BADGES, PAYMENT_METHODS } from "@/types/product";
 import { createClient } from "@/lib/supabase/client";
@@ -42,9 +42,12 @@ export function ProductForm({ product }: { product?: Product }) {
 
   const [images, setImages] = useState<string[]>(initialImages);
   const [uploadingIdx, setUploadingIdx] = useState<number | null>(null);
+  const [sizeChartImage, setSizeChartImage] = useState<string | null>(product?.size_chart_image ?? null);
+  const [uploadingSizeChart, setUploadingSizeChart] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const sizeChartFileRef = useRef<HTMLInputElement>(null);
 
   const toggleSize = (s: string) => {
     setForm((f) => {
@@ -80,6 +83,13 @@ export function ProductForm({ product }: { product?: Product }) {
     }
     const { data } = supabase.storage.from("product-images").getPublicUrl(path);
     return data.publicUrl;
+  };
+
+  const handleSizeChartUpload = async (file: File) => {
+    setUploadingSizeChart(true);
+    const url = await uploadImage(file);
+    if (url) setSizeChartImage(url);
+    setUploadingSizeChart(false);
   };
 
   const handleAddImages = async (files: FileList) => {
@@ -128,6 +138,7 @@ export function ProductForm({ product }: { product?: Product }) {
       is_active: form.is_active,
       image_url: images[0] ?? null,
       images: images,
+      size_chart_image: sizeChartImage ?? null,
       stock_by_size: stockBySize,
       payment_methods: enabledPayments.length > 0 ? enabledPayments : PAYMENT_METHODS,
     };
@@ -242,6 +253,59 @@ export function ProductForm({ product }: { product?: Product }) {
         <p className="text-gray-700 text-xs mt-2">
           Hacé hover en una foto para eliminarla o hacerla principal
         </p>
+      </div>
+
+      {/* Size chart image */}
+      <div>
+        <label className={labelClass}>
+          <Ruler className="w-3 h-3 inline mr-1" />
+          Imagen tabla de talles
+        </label>
+        {sizeChartImage ? (
+          <div className="relative inline-block group">
+            <img src={sizeChartImage} alt="Tabla de talles" className="h-40 object-contain border border-white/10 rounded-xl bg-[#1a1a1e] p-2" />
+            <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 rounded-xl">
+              <button
+                type="button"
+                onClick={() => sizeChartFileRef.current?.click()}
+                className="text-[10px] font-bold text-white bg-white/20 px-2 py-1 rounded"
+              >
+                Cambiar
+              </button>
+              <button
+                type="button"
+                onClick={() => setSizeChartImage(null)}
+                className="w-7 h-7 bg-red-600 rounded-full flex items-center justify-center"
+              >
+                <X className="w-3.5 h-3.5 text-white" />
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div
+            className="border-2 border-dashed border-white/10 rounded-2xl hover:border-green-600/40 transition-colors cursor-pointer"
+            onClick={() => sizeChartFileRef.current?.click()}
+          >
+            <div className="flex flex-col items-center justify-center h-28">
+              {uploadingSizeChart ? (
+                <Loader2 className="w-6 h-6 text-gray-500 animate-spin" />
+              ) : (
+                <>
+                  <Ruler className="w-6 h-6 text-gray-600 mb-1.5" />
+                  <span className="text-gray-500 text-sm font-medium">Subir tabla de talles</span>
+                  <span className="text-gray-700 text-xs mt-0.5">La imagen que verán los clientes al tocar "Ver tabla"</span>
+                </>
+              )}
+            </div>
+          </div>
+        )}
+        <input
+          ref={sizeChartFileRef}
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={(e) => e.target.files?.[0] && handleSizeChartUpload(e.target.files[0])}
+        />
       </div>
 
       {/* Name */}
