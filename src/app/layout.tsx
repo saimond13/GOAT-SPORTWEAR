@@ -4,9 +4,37 @@ import "./globals.css";
 import { CartProvider } from "@/context/CartContext";
 import { WhatsAppButton } from "@/components/storefront/WhatsAppButton";
 
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://goatsportwear.com.ar";
+
 export const metadata: Metadata = {
   title: "GOAT SPORTWEAR | Tienda Online",
   description: "Ropa deportiva premium. Local en Sa Pereira. Envíos a todo el país por Correo Argentino.",
+  icons: {
+    icon: "/logo.png",
+    apple: "/logo.png",
+  },
+  openGraph: {
+    title: "GOAT SPORTWEAR | Tienda Online",
+    description: "Ropa deportiva premium. Local en Sa Pereira. Envíos a todo el país por Correo Argentino.",
+    url: BASE_URL,
+    siteName: "GOAT SPORTWEAR",
+    images: [
+      {
+        url: `${BASE_URL}/og-image.png`,
+        width: 1200,
+        height: 630,
+        alt: "GOAT SPORTWEAR",
+      },
+    ],
+    locale: "es_AR",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "GOAT SPORTWEAR | Tienda Online",
+    description: "Ropa deportiva premium. Local en Sa Pereira. Envíos a todo el país por Correo Argentino.",
+    images: [`${BASE_URL}/og-image.png`],
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
