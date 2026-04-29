@@ -3,7 +3,7 @@ import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { SlidersHorizontal, X } from "lucide-react";
 import type { Product } from "@/types/product";
-import { CATEGORIES, SIZES } from "@/types/product";
+import { CATEGORIES, GENDERS, SIZES } from "@/types/product";
 import { ProductCard } from "./ProductCard";
 
 const SORT_OPTIONS = [
@@ -15,6 +15,7 @@ const SORT_OPTIONS = [
 
 export function ProductsSection({ products }: { products: Product[] }) {
   const [activeCategory, setActiveCategory] = useState("Todos");
+  const [activeGender, setActiveGender] = useState("Todos");
   const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
   const [priceMin, setPriceMin] = useState<number | null>(null);
   const [priceMax, setPriceMax] = useState<number | null>(null);
@@ -40,6 +41,10 @@ export function ProductsSection({ products }: { products: Product[] }) {
       ? products
       : products.filter((p) => p.category === activeCategory);
 
+    if (activeGender !== "Todos") {
+      list = list.filter((p) => !p.gender || p.gender === activeGender || p.gender === "Unisex");
+    }
+
     if (selectedSizes.length > 0) {
       list = list.filter((p) =>
         p.sizes?.some((s) => selectedSizes.includes(s))
@@ -54,7 +59,7 @@ export function ProductsSection({ products }: { products: Product[] }) {
       list = [...list].sort((a, b) => (b.badge === "BESTSELLER" ? 1 : 0) - (a.badge === "BESTSELLER" ? 1 : 0));
 
     return list;
-  }, [products, activeCategory, selectedSizes, priceMax, sortBy]);
+  }, [products, activeCategory, activeGender, selectedSizes, priceMax, sortBy]);
 
   return (
     <section id="products" className="bg-[#09090b] py-24">
@@ -78,6 +83,23 @@ export function ProductsSection({ products }: { products: Product[] }) {
             <span className="text-green-500">PRODUCTOS</span>
           </h2>
         </motion.div>
+
+        {/* Gender filter */}
+        <div className="flex gap-2 flex-wrap mb-3">
+          {["Todos", ...GENDERS].map((g) => (
+            <button
+              key={g}
+              onClick={() => setActiveGender(g)}
+              className={`px-4 py-1.5 text-xs font-bold border uppercase tracking-[0.15em] transition-all rounded-full ${
+                activeGender === g
+                  ? "bg-white text-black border-white"
+                  : "border-white/10 text-gray-500 hover:border-white/30 hover:text-white"
+              }`}
+            >
+              {g}
+            </button>
+          ))}
+        </div>
 
         {/* Category filter */}
         <div className="flex gap-2 flex-wrap mb-4">

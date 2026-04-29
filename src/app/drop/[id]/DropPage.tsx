@@ -137,7 +137,7 @@ function WaitlistForm() {
 }
 
 // ── Reservation form ───────────────────────────────────────────────────────
-const SIZES = ["XS", "S", "M", "L", "XL", "XXL"];
+const SIZES = ["1", "2", "3"];
 const TRANSFER_ALIAS = process.env.NEXT_PUBLIC_TRANSFER_ALIAS ?? "vanstrate";
 const TRANSFER_HOLDER = process.env.NEXT_PUBLIC_TRANSFER_HOLDER ?? "Tadeo Vanstrate";
 const WA_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "5491100000000";
@@ -308,7 +308,7 @@ function ReservationForm({ campaign }: { campaign: Campaign }) {
       {needsSize && (
         <div>
           <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-2">Talle *</p>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2 mb-3">
             {SIZES.map((s) => (
               <button
                 key={s}
@@ -324,6 +324,29 @@ function ReservationForm({ campaign }: { campaign: Campaign }) {
               </button>
             ))}
           </div>
+          {/* Size chart */}
+          {campaign.size_chart && campaign.size_chart.length > 0 && (
+            <div className="mt-2 border border-white/10 overflow-hidden text-xs">
+              <table className="w-full">
+                <thead>
+                  <tr className="bg-white/5">
+                    <th className="px-3 py-1.5 text-left text-[10px] font-bold text-gray-500 uppercase tracking-widest">Talle</th>
+                    <th className="px-3 py-1.5 text-left text-[10px] font-bold text-gray-500 uppercase tracking-widest">A — Largo</th>
+                    <th className="px-3 py-1.5 text-left text-[10px] font-bold text-gray-500 uppercase tracking-widest">B — Ancho</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {campaign.size_chart.map((row) => (
+                    <tr key={row.talle} className="border-t border-white/5">
+                      <td className="px-3 py-1.5 text-white font-black">{row.talle}</td>
+                      <td className="px-3 py-1.5 text-gray-300">{row.largo}</td>
+                      <td className="px-3 py-1.5 text-gray-300">{row.ancho}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
       )}
 
@@ -504,6 +527,23 @@ export function DropPage({ campaign }: { campaign: Campaign }) {
           </motion.div>
         </div>
       </div>
+
+      {/* Image gallery */}
+      {allImages.length > 1 && (
+        <div className="max-w-5xl mx-auto px-4 py-12">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-3">
+            {allImages.map((src, i) => (
+              <div key={i} className={`overflow-hidden ${i === 0 ? "col-span-2 md:col-span-2 row-span-2" : ""}`}>
+                <img
+                  src={src}
+                  alt={`${campaign.title} — ${i + 1}`}
+                  className="w-full h-full object-cover aspect-square hover:scale-105 transition-transform duration-500"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Action section */}
       <div className="max-w-xl mx-auto px-4 pb-24">

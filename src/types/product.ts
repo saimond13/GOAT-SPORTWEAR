@@ -5,6 +5,7 @@ export interface Product {
   price: number;
   original_price?: number;
   category: string;
+  gender?: "Hombre" | "Mujer" | "Unisex";
   sizes: string[];
   /** Si es false, el producto no requiere talle (ej: accesorios) */
   has_sizes?: boolean;
@@ -30,6 +31,7 @@ export interface CartItem {
 }
 
 export const CATEGORIES = ["Remeras", "Buzos", "Pantalones", "Camperas", "Shorts", "Conjuntos", "Calza", "Top", "Accesorios"];
+export const GENDERS = ["Hombre", "Mujer", "Unisex"] as const;
 export const PAYMENT_METHODS = ["Efectivo", "Transferencia", "Mercado Pago", "Tarjeta de crédito", "Tarjeta de débito"];
 export const SIZES = ["XS", "S", "M", "L", "XL", "XXL", "XXXL"];
 export const BADGES = ["", "NUEVO", "OFERTA", "BESTSELLER", "PACK"];

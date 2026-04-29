@@ -1,10 +1,12 @@
 "use client";
 import { useState, useTransition, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { Plus, X, Loader2, Trash2, Edit2, Upload, Image as ImageIcon, ExternalLink, Timer, Tag } from "lucide-react";
+import { Plus, X, Loader2, Trash2, Edit2, Upload, Image as ImageIcon, ExternalLink, Timer, Tag, ChevronLeft, ChevronRight, Ruler } from "lucide-react";
 import type { Campaign } from "@/types/admin";
 import { createClient } from "@/lib/supabase/client";
 import { formatDate } from "@/lib/utils";
+
+type SizeChartRow = { talle: string; largo: string; ancho: string };
 
 const empty = {
   title: "",
@@ -31,12 +33,14 @@ export function CampaignsClient({ campaigns }: { campaigns: Campaign[] }) {
   const [saving, setSaving] = useState(false);
   const [uploadingImages, setUploadingImages] = useState(false);
   const [pendingImages, setPendingImages] = useState<string[]>([]);
+  const [sizeChart, setSizeChart] = useState<SizeChartRow[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const openNew = () => {
     setEditing(null);
     setForm(empty);
     setPendingImages([]);
+    setSizeChart([]);
     setShowModal(true);
   };
 
@@ -58,6 +62,7 @@ export function CampaignsClient({ campaigns }: { campaigns: Campaign[] }) {
       preventa_closes_at: c.preventa_closes_at ? c.preventa_closes_at.slice(0, 16) : "",
     });
     setPendingImages(c.images ?? []);
+    setSizeChart(c.size_chart ?? []);
     setShowModal(true);
   };
 
@@ -107,6 +112,7 @@ export function CampaignsClient({ campaigns }: { campaigns: Campaign[] }) {
       unit_price: form.is_preventa ? form.unit_price : null,
       deposit_percentage: form.is_preventa ? form.deposit_percentage : null,
       preventa_closes_at: form.is_preventa && form.preventa_closes_at ? new Date(form.preventa_closes_at).toISOString() : null,
+      size_chart: sizeChart.length > 0 ? sizeChart.filter((r) => r.talle) : null,
     };
 
     if (editing) {
@@ -310,8 +316,37 @@ export function CampaignsClient({ campaigns }: { campaigns: Campaign[] }) {
                         >
                           <X className="w-3 h-3" />
                         </button>
+                        {/* Reorder arrows */}
+                        <div className="absolute bottom-0 left-0 right-0 flex justify-between opacity-0 group-hover:opacity-100 transition-opacity">
+                          {i > 0 && (
+                            <button
+                              type="button"
+                              onClick={() => setPendingImages((prev) => {
+                                const arr = [...prev];
+                                [arr[i - 1], arr[i]] = [arr[i], arr[i - 1]];
+                                return arr;
+                              })}
+                              className="bg-black/70 rounded-bl-lg px-1 py-0.5"
+                            >
+                              <ChevronLeft className="w-3 h-3 text-white" />
+                            </button>
+                          )}
+                          {i < pendingImages.length - 1 && (
+                            <button
+                              type="button"
+                              onClick={() => setPendingImages((prev) => {
+                                const arr = [...prev];
+                                [arr[i], arr[i + 1]] = [arr[i + 1], arr[i]];
+                                return arr;
+                              })}
+                              className="bg-black/70 rounded-br-lg px-1 py-0.5 ml-auto"
+                            >
+                              <ChevronRight className="w-3 h-3 text-white" />
+                            </button>
+                          )}
+                        </div>
                         {i === 0 && (
-                          <span className="absolute bottom-0 left-0 right-0 text-[8px] text-center bg-black/60 text-white rounded-b-lg py-0.5">
+                          <span className="absolute top-0 left-0 right-0 text-[8px] text-center bg-black/60 text-white rounded-t-lg py-0.5">
                             Principal
                           </span>
                         )}
@@ -453,6 +488,61 @@ export function CampaignsClient({ campaigns }: { campaigns: Campaign[] }) {
                       Las reservas con seña quedan registradas en la sección de campañas para control interno.
                     </p>
                   </div>
+                )}
+              </div>
+
+              {/* Size chart editor */}
+              <div className="border border-white/10 rounded-xl p-4 space-y-3">
+                <div className="flex items-center justify-between">
+                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
+                    <Ruler className="w-3 h-3" /> Tabla de talles
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => setSizeChart((prev) => [...prev, { talle: "", largo: "", ancho: "" }])}
+                    className="text-[10px] text-green-400 hover:text-green-300 font-bold flex items-center gap-1"
+                  >
+                    <Plus className="w-3 h-3" /> Agregar fila
+                  </button>
+                </div>
+                {sizeChart.length > 0 && (
+                  <div className="space-y-2">
+                    <div className="grid grid-cols-[1fr_1fr_1fr_auto] gap-2 text-[9px] font-bold text-gray-600 uppercase tracking-widest px-1">
+                      <span>Talle</span><span>Largo (cm)</span><span>Ancho (cm)</span><span />
+                    </div>
+                    {sizeChart.map((row, i) => (
+                      <div key={i} className="grid grid-cols-[1fr_1fr_1fr_auto] gap-2 items-center">
+                        <input
+                          value={row.talle}
+                          onChange={(e) => setSizeChart((prev) => prev.map((r, j) => j === i ? { ...r, talle: e.target.value } : r))}
+                          className="bg-white/5 border border-white/10 rounded-lg px-2 py-1.5 text-white text-xs focus:outline-none focus:border-green-500"
+                          placeholder="1"
+                        />
+                        <input
+                          value={row.largo}
+                          onChange={(e) => setSizeChart((prev) => prev.map((r, j) => j === i ? { ...r, largo: e.target.value } : r))}
+                          className="bg-white/5 border border-white/10 rounded-lg px-2 py-1.5 text-white text-xs focus:outline-none focus:border-green-500"
+                          placeholder="70"
+                        />
+                        <input
+                          value={row.ancho}
+                          onChange={(e) => setSizeChart((prev) => prev.map((r, j) => j === i ? { ...r, ancho: e.target.value } : r))}
+                          className="bg-white/5 border border-white/10 rounded-lg px-2 py-1.5 text-white text-xs focus:outline-none focus:border-green-500"
+                          placeholder="52"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setSizeChart((prev) => prev.filter((_, j) => j !== i))}
+                          className="w-6 h-6 flex items-center justify-center text-gray-600 hover:text-red-400"
+                        >
+                          <X className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {sizeChart.length === 0 && (
+                  <p className="text-[10px] text-gray-600">Sin tabla de talles. Agregá filas si el drop tiene medidas específicas.</p>
                 )}
               </div>
 

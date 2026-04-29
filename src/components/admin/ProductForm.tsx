@@ -3,7 +3,7 @@ import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2, Upload, X, Plus } from "lucide-react";
 import type { Product } from "@/types/product";
-import { CATEGORIES, SIZES, BADGES, PAYMENT_METHODS } from "@/types/product";
+import { CATEGORIES, GENDERS, SIZES, BADGES, PAYMENT_METHODS } from "@/types/product";
 import { createClient } from "@/lib/supabase/client";
 
 export function ProductForm({ product }: { product?: Product }) {
@@ -16,6 +16,7 @@ export function ProductForm({ product }: { product?: Product }) {
     price: product?.price?.toString() ?? "",
     original_price: product?.original_price?.toString() ?? "",
     category: product?.category ?? CATEGORIES[0],
+    gender: product?.gender ?? "",
     sizes: product?.sizes ?? [],
     has_sizes: product?.has_sizes !== false,
     badge: product?.badge ?? "",
@@ -120,6 +121,7 @@ export function ProductForm({ product }: { product?: Product }) {
       price: parseFloat(form.price),
       original_price: form.original_price ? parseFloat(form.original_price) : null,
       category: form.category,
+      gender: form.gender || null,
       sizes: form.has_sizes ? form.sizes : [],
       has_sizes: form.has_sizes,
       badge: form.badge || null,
@@ -297,8 +299,8 @@ export function ProductForm({ product }: { product?: Product }) {
         </div>
       </div>
 
-      {/* Category + Badge */}
-      <div className="grid grid-cols-2 gap-4">
+      {/* Category + Gender + Badge */}
+      <div className="grid grid-cols-3 gap-4">
         <div>
           <label className={labelClass}>Categoría *</label>
           <select
@@ -307,6 +309,17 @@ export function ProductForm({ product }: { product?: Product }) {
             className={inputClass + " cursor-pointer"}
           >
             {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
+          </select>
+        </div>
+        <div>
+          <label className={labelClass}>Género</label>
+          <select
+            value={form.gender}
+            onChange={(e) => setForm((f) => ({ ...f, gender: e.target.value }))}
+            className={inputClass + " cursor-pointer"}
+          >
+            <option value="">Sin especificar</option>
+            {GENDERS.map((g) => <option key={g} value={g}>{g}</option>)}
           </select>
         </div>
         <div>

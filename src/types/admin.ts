@@ -29,6 +29,8 @@ export interface Campaign {
   unit_price?: number;
   deposit_percentage?: number;
   preventa_closes_at?: string;
+  // Tabla de talles del drop
+  size_chart?: Array<{ talle: string; largo: string; ancho: string }>;
   created_at: string;
 }
 
