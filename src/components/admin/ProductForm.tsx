@@ -144,9 +144,30 @@ export function ProductForm({ product }: { product?: Product }) {
     };
 
     if (isEdit) {
-      await supabase.from("products").update(payload).eq("id", product.id);
+      const { error: updateErr } = await supabase.from("products").update(payload).eq("id", product.id);
+      if (updateErr) {
+        // Si falla por la columna nueva, reintentamos sin size_chart_image
+        if (updateErr.message?.includes("size_chart_image")) {
+          const { size_chart_image: _, ...payloadFallback } = payload;
+          const { error: retryErr } = await supabase.from("products").update(payloadFallback).eq("id", product.id);
+          if (retryErr) {
+            setError(`Error al guardar: ${retryErr.message}`);
+            setSaving(false);
+            return;
+          }
+        } else {
+          setError(`Error al guardar: ${updateErr.message}`);
+          setSaving(false);
+          return;
+        }
+      }
     } else {
-      await supabase.from("products").insert(payload);
+      const { error: insertErr } = await supabase.from("products").insert(payload);
+      if (insertErr) {
+        setError(`Error al crear: ${insertErr.message}`);
+        setSaving(false);
+        return;
+      }
     }
 
     router.push("/admin/products");
