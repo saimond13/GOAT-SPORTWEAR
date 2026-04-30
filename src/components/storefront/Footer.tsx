@@ -19,8 +19,8 @@ export function Footer() {
     <footer id="contact" className="bg-[#060608] border-t border-white/5">
       <div className="h-[1px] bg-gradient-to-r from-transparent via-green-500/40 to-transparent" />
 
-      <div className="max-w-7xl mx-auto px-4 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
+      <div className="max-w-7xl mx-auto px-4 py-10 md:py-16">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-12">
           {/* Brand */}
           <div className="md:col-span-2">
             <div className="mb-6">

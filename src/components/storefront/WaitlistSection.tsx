@@ -39,7 +39,7 @@ export function WaitlistSection() {
             Newsletter
           </p>
           <h2
-            className="text-[64px] md:text-[90px] text-white tracking-tight leading-none mb-6"
+            className="text-[42px] sm:text-[64px] md:text-[90px] text-white tracking-tight leading-none mb-6"
             style={{ fontFamily: "'Anton', sans-serif" }}
           >
             SÉ EL
@@ -67,7 +67,7 @@ export function WaitlistSection() {
                 placeholder="Nombre (opcional)"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="flex-shrink-0 sm:w-36 px-4 py-3 bg-white/[0.04] border border-white/10 text-white placeholder-gray-600 text-sm focus:outline-none focus:border-green-500/50 transition-colors"
+                className="w-full sm:w-36 sm:flex-shrink-0 px-4 py-3 bg-white/[0.04] border border-white/10 text-white placeholder-gray-600 text-sm focus:outline-none focus:border-green-500/50 transition-colors"
               />
               <input
                 type="email"
@@ -80,7 +80,7 @@ export function WaitlistSection() {
               <button
                 type="submit"
                 disabled={status === "loading"}
-                className="px-6 py-3 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-[0.2em] flex items-center justify-center gap-2 transition-colors flex-shrink-0"
+                className="w-full sm:flex-shrink-0 px-6 py-3 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-[0.2em] flex items-center justify-center gap-2 transition-colors"
               >
                 {status === "loading" ? <Loader2 className="w-4 h-4 animate-spin" /> : "Suscribirse"}
               </button>

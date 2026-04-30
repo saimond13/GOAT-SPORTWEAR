@@ -34,7 +34,7 @@ function ImageCarousel({ images, title }: { images: string[]; title: string }) {
   const next = () => setIdx((i) => (i + 1) % images.length);
 
   return (
-    <div className="relative overflow-hidden h-72 bg-[#0a0a0c]">
+    <div className="relative overflow-hidden h-52 sm:h-72 bg-[#0a0a0c]">
       <AnimatePresence mode="wait">
         <motion.img
           key={idx}
@@ -124,7 +124,7 @@ export function CampaignsBanner({ campaigns }: { campaigns: Campaign[] }) {
             Lanzamientos
           </p>
           <h2
-            className="text-[60px] md:text-[80px] text-white tracking-tight leading-none"
+            className="text-[38px] sm:text-[60px] md:text-[80px] text-white tracking-tight leading-none"
             style={{ fontFamily: "'Anton', sans-serif" }}
           >
             NOVEDADES
@@ -152,12 +152,12 @@ export function CampaignsBanner({ campaigns }: { campaigns: Campaign[] }) {
                 )}
 
                 {/* Content */}
-                <div className="p-6 flex flex-col flex-1">
+                <div className="p-4 sm:p-6 flex flex-col flex-1">
                   <span className="text-green-500 text-[9px] font-bold uppercase tracking-[0.4em] mb-3">
                     Drop
                   </span>
                   <h3
-                    className="text-white text-3xl md:text-4xl leading-tight"
+                    className="text-white text-2xl sm:text-3xl md:text-4xl leading-tight"
                     style={{ fontFamily: "'Anton', sans-serif" }}
                   >
                     {c.title}

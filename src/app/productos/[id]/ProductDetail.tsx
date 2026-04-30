@@ -65,7 +65,7 @@ function ImageGallery({ images, name }: { images: string[]; name: string }) {
             <button
               key={i}
               onClick={() => setIdx(i)}
-              className={`flex-shrink-0 w-20 aspect-square overflow-hidden border-2 transition-all ${
+              className={`flex-shrink-0 w-16 sm:w-20 aspect-square overflow-hidden border-2 transition-all ${
                 i === idx ? "border-green-500" : "border-white/10 opacity-60 hover:opacity-100"
               }`}
             >
@@ -133,7 +133,7 @@ export function ProductDetail({ product }: { product: Product }) {
           Volver
         </Link>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 lg:gap-16">
           {/* Gallery */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
@@ -167,7 +167,7 @@ export function ProductDetail({ product }: { product: Product }) {
 
             {/* Name */}
             <h1
-              className="text-4xl md:text-5xl text-white leading-tight"
+              className="text-3xl sm:text-4xl md:text-5xl text-white leading-tight"
               style={{ fontFamily: "'Anton', sans-serif" }}
             >
               {product.name}
@@ -175,7 +175,7 @@ export function ProductDetail({ product }: { product: Product }) {
 
             {/* Price */}
             <div className="flex items-end gap-3">
-              <span className="text-3xl font-black text-white">{formatPrice(product.price)}</span>
+              <span className="text-2xl sm:text-3xl font-black text-white">{formatPrice(product.price)}</span>
               {product.original_price && (
                 <>
                   <span className="text-gray-600 text-lg line-through mb-0.5">

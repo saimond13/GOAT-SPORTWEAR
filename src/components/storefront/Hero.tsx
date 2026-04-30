@@ -172,7 +172,7 @@ export function Hero() {
 
         {/* Main heading */}
         <motion.h1
-          className="text-[90px] md:text-[150px] lg:text-[190px] text-white leading-[0.85] tracking-tight mb-3 select-none"
+          className="text-[58px] sm:text-[90px] md:text-[150px] lg:text-[190px] text-white leading-[0.85] tracking-tight mb-3 select-none"
           style={{ fontFamily: "'Anton', sans-serif" }}
           initial={{ opacity: 0, y: 60 }}
           animate={{ opacity: 1, y: 0 }}
@@ -183,7 +183,7 @@ export function Hero() {
 
         {/* Outlined subtitle */}
         <motion.h2
-          className="text-[32px] md:text-[52px] lg:text-[64px] leading-none tracking-[0.18em] mb-10 select-none"
+          className="text-[22px] sm:text-[32px] md:text-[52px] lg:text-[64px] leading-none tracking-[0.18em] mb-8 sm:mb-10 select-none"
           style={{
             fontFamily: "'Anton', sans-serif",
             WebkitTextStroke: "1px rgba(255,255,255,0.45)",
@@ -215,13 +215,13 @@ export function Hero() {
         >
           <button
             onClick={() => document.getElementById("products")?.scrollIntoView({ behavior: "smooth" })}
-            className="bg-green-500 hover:bg-green-400 text-black font-black px-10 py-4 text-xs uppercase tracking-[0.2em] transition-all duration-200 hover:scale-105 active:scale-95"
+            className="bg-green-500 hover:bg-green-400 text-black font-black px-6 sm:px-10 py-4 text-xs uppercase tracking-[0.2em] transition-all duration-200 hover:scale-105 active:scale-95 w-full sm:w-auto"
           >
             Ver Catálogo
           </button>
           <button
             onClick={() => document.getElementById("campaigns")?.scrollIntoView({ behavior: "smooth" })}
-            className="border border-white/20 hover:border-white/60 text-white/80 hover:text-white font-bold px-10 py-4 text-xs uppercase tracking-[0.2em] transition-all duration-200"
+            className="border border-white/20 hover:border-white/60 text-white/80 hover:text-white font-bold px-6 sm:px-10 py-4 text-xs uppercase tracking-[0.2em] transition-all duration-200 w-full sm:w-auto"
           >
             Drops
           </button>
@@ -229,7 +229,7 @@ export function Hero() {
 
         {/* Stats */}
         <motion.div
-          className="flex items-center justify-center gap-12 mt-20 pt-8 border-t border-white/5"
+          className="flex items-center justify-center gap-6 sm:gap-12 mt-12 sm:mt-20 pt-6 sm:pt-8 border-t border-white/5"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.85, duration: 0.5 }}

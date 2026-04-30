@@ -48,7 +48,7 @@ function CountdownBlock({ target }: { target: string }) {
         val > 0 || label === "min" || label === "seg" ? (
           <div key={label} className="text-center">
             <div
-              className="text-4xl md:text-5xl text-white tabular-nums"
+              className="text-3xl sm:text-4xl md:text-5xl text-white tabular-nums"
               style={{ fontFamily: "'Anton', sans-serif" }}
             >
               {pad(val)}
@@ -470,7 +470,7 @@ export function DropPage({ campaign }: { campaign: Campaign }) {
         )}
 
         {/* Content */}
-        <div className="relative flex-1 flex flex-col justify-end max-w-4xl mx-auto w-full px-4 pt-32 pb-20">
+        <div className="relative flex-1 flex flex-col justify-end max-w-4xl mx-auto w-full px-4 pt-20 sm:pt-32 pb-12 sm:pb-20">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -489,7 +489,7 @@ export function DropPage({ campaign }: { campaign: Campaign }) {
             </p>
 
             <h1
-              className="text-[64px] md:text-[100px] text-white leading-none tracking-tight mb-6"
+              className="text-[40px] sm:text-[64px] md:text-[100px] text-white leading-none tracking-tight mb-6"
               style={{ fontFamily: "'Anton', sans-serif" }}
             >
               {campaign.title}

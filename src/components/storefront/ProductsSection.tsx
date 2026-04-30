@@ -75,7 +75,7 @@ export function ProductsSection({ products }: { products: Product[] }) {
             Catálogo
           </p>
           <h2
-            className="text-[60px] md:text-[80px] text-white tracking-tight leading-none"
+            className="text-[38px] sm:text-[60px] md:text-[80px] text-white tracking-tight leading-none"
             style={{ fontFamily: "'Anton', sans-serif" }}
           >
             NUESTROS
@@ -193,7 +193,7 @@ export function ProductsSection({ products }: { products: Product[] }) {
                 {maxPrice > 0 && (
                   <div>
                     <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-2">Rango de precio</p>
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
                       <div className="flex-1">
                         <p className="text-[9px] text-gray-600 mb-1">Mínimo</p>
                         <input
@@ -204,10 +204,10 @@ export function ProductsSection({ products }: { products: Product[] }) {
                           value={priceMin ?? ""}
                           onChange={(e) => setPriceMin(e.target.value === "" ? null : Math.max(0, parseInt(e.target.value)))}
                           placeholder="$0"
-                          className="w-full bg-white/5 border border-white/10 rounded-lg px-2 py-1.5 text-white text-xs focus:outline-none focus:border-green-500 placeholder-gray-600"
+                          className="w-full bg-white/5 border border-white/10 rounded-lg px-2 py-2 text-white text-sm focus:outline-none focus:border-green-500 placeholder-gray-600"
                         />
                       </div>
-                      <span className="text-gray-600 text-xs mt-4">—</span>
+                      <span className="hidden sm:block text-gray-600 text-xs mt-4">—</span>
                       <div className="flex-1">
                         <p className="text-[9px] text-gray-600 mb-1">Máximo</p>
                         <input
@@ -217,7 +217,7 @@ export function ProductsSection({ products }: { products: Product[] }) {
                           value={priceMax ?? ""}
                           onChange={(e) => setPriceMax(e.target.value === "" ? null : Math.max(0, parseInt(e.target.value)))}
                           placeholder={`$${maxPrice.toLocaleString("es-AR")}`}
-                          className="w-full bg-white/5 border border-white/10 rounded-lg px-2 py-1.5 text-white text-xs focus:outline-none focus:border-green-500 placeholder-gray-600"
+                          className="w-full bg-white/5 border border-white/10 rounded-lg px-2 py-2 text-white text-sm focus:outline-none focus:border-green-500 placeholder-gray-600"
                         />
                       </div>
                     </div>

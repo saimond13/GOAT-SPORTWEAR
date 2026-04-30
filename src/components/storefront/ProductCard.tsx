@@ -143,12 +143,12 @@ export function ProductCard({ product }: { product: Product }) {
                   </button>
                 )}
               </div>
-              <div className="flex flex-wrap gap-1">
+              <div className="flex flex-wrap gap-2">
                 {product.sizes.map((s) => (
                   <button
                     key={s}
                     onClick={() => setSelectedSize(s)}
-                    className={`px-2.5 py-1 text-xs font-bold border transition-all ${
+                    className={`px-3 py-1.5 text-xs font-bold border transition-all ${
                       selectedSize === s
                         ? "bg-green-500 text-black border-green-500"
                         : "border-white/10 text-gray-400 hover:border-white/30 hover:text-white"
@@ -168,16 +168,16 @@ export function ProductCard({ product }: { product: Product }) {
               <div className="flex items-center gap-3">
                 <button
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="w-7 h-7 border border-white/10 flex items-center justify-center hover:border-white/30 text-gray-400 hover:text-white transition-colors"
+                  className="w-9 h-9 border border-white/10 flex items-center justify-center hover:border-white/30 text-gray-400 hover:text-white transition-colors"
                 >
-                  <Minus className="w-3 h-3" />
+                  <Minus className="w-3.5 h-3.5" />
                 </button>
                 <span className="font-black text-white text-sm w-5 text-center">{quantity}</span>
                 <button
                   onClick={() => setQuantity(quantity + 1)}
-                  className="w-7 h-7 border border-white/10 flex items-center justify-center hover:border-white/30 text-gray-400 hover:text-white transition-colors"
+                  className="w-9 h-9 border border-white/10 flex items-center justify-center hover:border-white/30 text-gray-400 hover:text-white transition-colors"
                 >
-                  <Plus className="w-3 h-3" />
+                  <Plus className="w-3.5 h-3.5" />
                 </button>
               </div>
             </div>
