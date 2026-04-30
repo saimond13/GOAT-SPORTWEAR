@@ -63,10 +63,10 @@ export async function POST(req: Request) {
       customer_name: customerName,
       customer_phone: customerPhone,
       customer_email: customerEmail ?? null,
+      product_name: campaign.title,
       size,
       quantity,
       deposit_amount: totalDeposit,
-      total_amount: totalAmount,
       status: "pending",
       notes: notes ?? null,
     })
