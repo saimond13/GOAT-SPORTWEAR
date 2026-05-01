@@ -30,7 +30,7 @@ const itemSchema = z.object({
 });
 
 const shippingSchema = z.object({
-  type: z.enum(["domicilio", "sucursal", ""]),
+  type: z.enum(["domicilio", "sucursal", "local", ""]),
   address: z.string().max(300).optional(),
   city: z.string().max(100).optional(),
   postalCode: z.string().max(8).optional(),
@@ -126,6 +126,8 @@ export async function POST(req: Request) {
     ? "Envío a domicilio"
     : shipping?.type === "sucursal"
     ? "Retiro en sucursal"
+    : shipping?.type === "local"
+    ? "Retiro en local (25 de Mayo 115, Sa Pereira)"
     : null;
 
   const itemsSummary = verifiedItems

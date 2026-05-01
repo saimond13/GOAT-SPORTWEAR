@@ -11,7 +11,7 @@ export interface CartItem {
 }
 
 export interface ShippingData {
-  type: "domicilio" | "sucursal" | "";
+  type: "domicilio" | "sucursal" | "local" | "";
   address: string;
   postalCode: string;
   city: string;
@@ -87,6 +87,12 @@ export function buildWhatsAppMessage(
     if (shipping.quotedService && shipping.quotedPrice != null) {
       message += `• Servicio: ${shipping.quotedService} — $${shipping.quotedPrice.toLocaleString("es-AR")}\n`;
     }
+  } else if (shipping?.type === "local") {
+    message += `━━━━━━━━━━━━━━━━\n`;
+    message += `📍 *RETIRO EN LOCAL — SIN COSTO*\n`;
+    message += `• Dirección: 25 de Mayo 115, Sa Pereira, Santa Fe\n`;
+    if (shipping.recipientName) message += `• Nombre: ${shipping.recipientName}\n`;
+    message += `• Coordinamos el horario por WhatsApp\n`;
   }
 
   message += `━━━━━━━━━━━━━━━━\n\n`;

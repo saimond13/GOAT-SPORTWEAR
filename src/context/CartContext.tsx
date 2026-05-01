@@ -2,7 +2,7 @@
 import { createContext, useContext, useState, type ReactNode } from "react";
 import type { Product, CartItem } from "@/types/product";
 
-export type DeliveryType = "domicilio" | "sucursal" | "";
+export type DeliveryType = "domicilio" | "sucursal" | "local" | "";
 
 export interface ShippingInfo {
   type: DeliveryType;

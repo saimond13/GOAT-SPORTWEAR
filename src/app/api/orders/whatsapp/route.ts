@@ -15,7 +15,7 @@ const schema = z.object({
   shippingCost: z.number().min(0).default(0),
   transferDiscount: z.number().min(0).default(0),
   shipping: z.object({
-    type: z.enum(["domicilio", "sucursal", ""]),
+    type: z.enum(["domicilio", "sucursal", "local", ""]),
     recipientName: z.string().max(150).optional(),
     recipientPhone: z.string().max(30).optional(),
     address: z.string().max(300).optional(),
@@ -75,7 +75,9 @@ export async function POST(req: Request) {
   const customerAddress = addressParts.length ? addressParts.join(", ") : null;
 
   const shippingType = shipping?.type === "domicilio" ? "Envío a domicilio"
-    : shipping?.type === "sucursal" ? "Retiro en sucursal" : null;
+    : shipping?.type === "sucursal" ? "Retiro en sucursal"
+    : shipping?.type === "local" ? "Retiro en local (25 de Mayo 115, Sa Pereira)"
+    : null;
 
   const itemsSummary = verifiedItems.map((i) => `${i.name} T.${i.size} x${i.quantity}`).join(" | ");
   const notes = [

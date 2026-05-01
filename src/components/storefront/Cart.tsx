@@ -1,6 +1,6 @@
 "use client";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Minus, Plus, Trash2, MessageCircle, ShoppingBag, Truck, Building2, MapPin, User, Phone, Loader2 } from "lucide-react";
+import { X, Minus, Plus, Trash2, MessageCircle, ShoppingBag, Truck, Building2, MapPin, User, Phone, Loader2, Store } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { buildWhatsAppMessage, getWhatsAppUrl } from "@/lib/whatsapp";
 import { formatPrice } from "@/lib/utils";
@@ -38,7 +38,7 @@ export function Cart() {
   const shippingZone = shipping.province
     ? zones.find((z) => z.provinces.includes(shipping.province))
     : null;
-  const shippingCost = isFreeShipping ? 0 : (shippingZone?.price ?? null);
+  const shippingCost = (isFreeShipping || shipping.type === "local") ? 0 : (shippingZone?.price ?? null);
 
   const TRANSFER_DISCOUNT_PCT = 0.15;
   const [paymentMode, setPaymentMode] = useState<"mp" | "transferencia">("mp");
@@ -248,39 +248,71 @@ export function Cart() {
                   {/* Delivery type */}
                   <div className="px-4 sm:px-5 pt-4 pb-3 border-b border-gray-100">
                     <p className="text-xs font-black text-gray-700 uppercase tracking-wider mb-2.5">Tipo de envío</p>
-                    <div className="grid grid-cols-2 gap-2">
+                    <div className="grid grid-cols-3 gap-2">
                       <button
                         onClick={() => setShipping({ type: "domicilio", agencyId: "" })}
-                        className={`flex items-center gap-2 px-3 py-2.5 border rounded-xl text-left transition-all ${
+                        className={`flex flex-col items-center gap-1 px-2 py-2.5 border rounded-xl text-center transition-all ${
                           shipping.type === "domicilio"
                             ? "border-black bg-black text-white"
                             : "border-gray-200 hover:border-gray-400 text-gray-700"
                         }`}
                       >
                         <Truck className="w-4 h-4 flex-shrink-0" />
-                        <div>
-                          <p className="text-[11px] font-black">A domicilio</p>
-                          <p className="text-[9px] opacity-60">Correo Argentino</p>
-                        </div>
+                        <p className="text-[10px] font-black leading-tight">Domicilio</p>
+                        <p className="text-[8px] opacity-60 leading-tight">Correo Arg.</p>
                       </button>
                       <button
                         onClick={() => setShipping({ type: "sucursal", address: "" })}
-                        className={`flex items-center gap-2 px-3 py-2.5 border rounded-xl text-left transition-all ${
+                        className={`flex flex-col items-center gap-1 px-2 py-2.5 border rounded-xl text-center transition-all ${
                           shipping.type === "sucursal"
                             ? "border-black bg-black text-white"
                             : "border-gray-200 hover:border-gray-400 text-gray-700"
                         }`}
                       >
                         <Building2 className="w-4 h-4 flex-shrink-0" />
-                        <div>
-                          <p className="text-[11px] font-black">A sucursal</p>
-                          <p className="text-[9px] opacity-60">Correo Argentino</p>
-                        </div>
+                        <p className="text-[10px] font-black leading-tight">Sucursal</p>
+                        <p className="text-[8px] opacity-60 leading-tight">Correo Arg.</p>
+                      </button>
+                      <button
+                        onClick={() => setShipping({ type: "local", address: "", postalCode: "", city: "", province: "", agencyId: "" })}
+                        className={`flex flex-col items-center gap-1 px-2 py-2.5 border rounded-xl text-center transition-all ${
+                          shipping.type === "local"
+                            ? "border-green-600 bg-green-600 text-white"
+                            : "border-gray-200 hover:border-green-500 text-gray-700"
+                        }`}
+                      >
+                        <Store className="w-4 h-4 flex-shrink-0" />
+                        <p className="text-[10px] font-black leading-tight">En local</p>
+                        <p className="text-[8px] opacity-60 leading-tight">GRATIS</p>
                       </button>
                     </div>
 
                     <AnimatePresence mode="wait">
-                      {shipping.type && (
+                      {shipping.type === "local" ? (
+                        <motion.div
+                          key="local"
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: "auto" }}
+                          exit={{ opacity: 0, height: 0 }}
+                          className="mt-3 space-y-2 overflow-hidden"
+                        >
+                          <div className="bg-green-50 border border-green-200 rounded-xl p-3">
+                            <p className="text-xs font-black text-green-700 uppercase tracking-wide mb-1">
+                              📍 Retiro en local — Sin costo
+                            </p>
+                            <p className="text-xs text-gray-700 font-medium">25 de Mayo 115, Sa Pereira, Santa Fe</p>
+                            <p className="text-[11px] text-gray-500 mt-0.5">Coordinamos el horario por WhatsApp</p>
+                          </div>
+                          <div className="relative">
+                            <User className="absolute left-3 top-2.5 w-3.5 h-3.5 text-gray-400" />
+                            <input type="text" placeholder="Tu nombre (para coordinar retiro)"
+                              value={shipping.recipientName}
+                              onChange={(e) => setShipping({ recipientName: e.target.value })}
+                              className="w-full pl-8 pr-3 py-2 border border-gray-200 rounded-lg text-xs text-gray-900 bg-white focus:outline-none focus:border-black placeholder-gray-400"
+                            />
+                          </div>
+                        </motion.div>
+                      ) : shipping.type ? (
                         <motion.div
                           key="fields"
                           initial={{ opacity: 0, height: 0 }}
@@ -358,7 +390,7 @@ export function Cart() {
                             </p>
                           )}
                         </motion.div>
-                      )}
+                      ) : null}
                     </AnimatePresence>
                   </div>
 
@@ -423,7 +455,9 @@ export function Cart() {
                       )}
                       <div className="flex justify-between items-center">
                         <span className="text-gray-500 font-medium text-sm">Envío</span>
-                        {isFreeShipping ? (
+                        {shipping.type === "local" ? (
+                          <span className="text-green-600 font-black text-sm">GRATIS 📍</span>
+                        ) : isFreeShipping ? (
                           <span className="text-green-600 font-black text-sm">GRATIS 🎉</span>
                         ) : shippingCost !== null ? (
                           <span className="font-black text-sm text-gray-900">~{formatPrice(shippingCost)}</span>
