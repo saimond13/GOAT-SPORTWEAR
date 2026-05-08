@@ -66,7 +66,7 @@ export function CampaignsClient({ campaigns }: { campaigns: Campaign[] }) {
           .eq("campaign_id", campaignId)
           .order("sort_order");
         setCampaignProducts(
-          (cp ?? []).map((item: { product_id: string; stock_limit: number; products: { id: string; name: string; images?: string[]; image_url?: string } | null }) => ({
+          ((cp ?? []) as any[]).map((item) => ({
             product_id: item.product_id,
             name: item.products?.name ?? "",
             image: item.products?.images?.[0] ?? item.products?.image_url,
