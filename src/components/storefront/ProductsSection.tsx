@@ -14,6 +14,7 @@ const SORT_OPTIONS = [
 ];
 
 export function ProductsSection({ products }: { products: Product[] }) {
+  const PAGE_SIZE = 10;
   const [activeCategory, setActiveCategory] = useState("Todos");
   const [activeGender, setActiveGender] = useState("Todos");
   const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
@@ -21,20 +22,25 @@ export function ProductsSection({ products }: { products: Product[] }) {
   const [priceMax, setPriceMax] = useState<number | null>(null);
   const [sortBy, setSortBy] = useState("new");
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const [page, setPage] = useState(1);
 
   const maxPrice = useMemo(
     () => Math.max(0, ...products.map((p) => p.price)),
     [products]
   );
 
-  const toggleSize = (s: string) =>
+  const resetPage = () => setPage(1);
+
+  const toggleSize = (s: string) => {
     setSelectedSizes((prev) =>
       prev.includes(s) ? prev.filter((x) => x !== s) : [...prev, s]
     );
+    resetPage();
+  };
 
   const hasFilters = selectedSizes.length > 0 || priceMax !== null || priceMin !== null;
 
-  const clearFilters = () => { setSelectedSizes([]); setPriceMin(null); setPriceMax(null); };
+  const clearFilters = () => { setSelectedSizes([]); setPriceMin(null); setPriceMax(null); resetPage(); };
 
   const filtered = useMemo(() => {
     let list = activeCategory === "Todos"
@@ -60,6 +66,9 @@ export function ProductsSection({ products }: { products: Product[] }) {
 
     return list;
   }, [products, activeCategory, activeGender, selectedSizes, priceMax, sortBy]);
+
+  const paginated = filtered.slice(0, page * PAGE_SIZE);
+  const hasMore = paginated.length < filtered.length;
 
   return (
     <section id="products" className="bg-[#09090b] py-24">
@@ -89,7 +98,7 @@ export function ProductsSection({ products }: { products: Product[] }) {
           {["Todos", ...GENDERS].map((g) => (
             <button
               key={g}
-              onClick={() => setActiveGender(g)}
+              onClick={() => { setActiveGender(g); resetPage(); }}
               className={`px-4 py-1.5 text-xs font-bold border uppercase tracking-[0.15em] transition-all rounded-full ${
                 activeGender === g
                   ? "bg-white text-black border-white"
@@ -106,7 +115,7 @@ export function ProductsSection({ products }: { products: Product[] }) {
           {["Todos", ...CATEGORIES].map((cat) => (
             <button
               key={cat}
-              onClick={() => setActiveCategory(cat)}
+              onClick={() => { setActiveCategory(cat); resetPage(); }}
               className={`px-4 py-2 text-xs font-bold border uppercase tracking-[0.15em] transition-all ${
                 activeCategory === cat
                   ? "bg-green-500 text-black border-green-500"
@@ -144,6 +153,7 @@ export function ProductsSection({ products }: { products: Product[] }) {
             )}
             <span className="text-[11px] text-gray-600">
               {filtered.length} producto{filtered.length !== 1 ? "s" : ""}
+              {hasMore && ` · mostrando ${paginated.length}`}
             </span>
           </div>
 
@@ -244,11 +254,27 @@ export function ProductsSection({ products }: { products: Product[] }) {
             Sin productos con estos filtros
           </div>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
-            {filtered.map((p) => (
-              <ProductCard key={p.id} product={p} />
-            ))}
-          </div>
+          <>
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
+              {paginated.map((p) => (
+                <ProductCard key={p.id} product={p} />
+              ))}
+            </div>
+
+            {hasMore && (
+              <div className="flex flex-col items-center gap-3 mt-10">
+                <button
+                  onClick={() => setPage((p) => p + 1)}
+                  className="px-10 py-4 border border-white/20 hover:border-green-500 text-white hover:text-green-400 text-xs font-black uppercase tracking-[0.2em] transition-colors"
+                >
+                  Ver más productos ({filtered.length - paginated.length} restantes)
+                </button>
+                <p className="text-gray-700 text-[10px]">
+                  {paginated.length} de {filtered.length}
+                </p>
+              </div>
+            )}
+          </>
         )}
       </div>
     </section>
