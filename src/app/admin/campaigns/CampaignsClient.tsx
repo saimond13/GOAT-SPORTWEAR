@@ -1,12 +1,13 @@
 "use client";
 import { useState, useTransition, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { Plus, X, Loader2, Trash2, Edit2, Upload, Image as ImageIcon, ExternalLink, Timer, Tag, ChevronLeft, ChevronRight, Ruler } from "lucide-react";
+import { Plus, X, Loader2, Trash2, Edit2, Upload, Image as ImageIcon, ExternalLink, Timer, Tag, ChevronLeft, ChevronRight, Ruler, Package } from "lucide-react";
 import type { Campaign } from "@/types/admin";
 import { createClient } from "@/lib/supabase/client";
 import { formatDate } from "@/lib/utils";
 
 type SizeChartRow = { talle: string; largo: string; ancho: string };
+type CampaignProductEntry = { product_id: string; name: string; image?: string; stock_limit: number };
 
 const empty = {
   title: "",
@@ -34,13 +35,60 @@ export function CampaignsClient({ campaigns }: { campaigns: Campaign[] }) {
   const [uploadingImages, setUploadingImages] = useState(false);
   const [pendingImages, setPendingImages] = useState<string[]>([]);
   const [sizeChart, setSizeChart] = useState<SizeChartRow[]>([]);
+  const [campaignProducts, setCampaignProducts] = useState<CampaignProductEntry[]>([]);
+  const [allProducts, setAllProducts] = useState<Array<{ id: string; name: string; image?: string }>>([]);
+  const [loadingProducts, setLoadingProducts] = useState(false);
+  const [selectedProductId, setSelectedProductId] = useState("");
+  const [newStockLimit, setNewStockLimit] = useState(15);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const loadProductsForModal = async (campaignId?: string) => {
+    setLoadingProducts(true);
+    const supabase = createClient();
+    try {
+      const { data: prods } = await supabase
+        .from("products")
+        .select("id, name, images, image_url")
+        .eq("is_active", true)
+        .order("name");
+      setAllProducts(
+        ((prods ?? []) as any[]).map((p) => ({
+          id: p.id,
+          name: p.name,
+          image: p.images?.[0] ?? p.image_url,
+        }))
+      );
+      if (campaignId) {
+        const { data: cp } = await supabase
+          .from("campaign_products")
+          .select("product_id, stock_limit, products(id, name, images, image_url)")
+          .eq("campaign_id", campaignId)
+          .order("sort_order");
+        setCampaignProducts(
+          ((cp ?? []) as any[]).map((item) => ({
+            product_id: item.product_id,
+            name: item.products?.name ?? "",
+            image: item.products?.images?.[0] ?? item.products?.image_url,
+            stock_limit: item.stock_limit,
+          }))
+        );
+      } else {
+        setCampaignProducts([]);
+      }
+    } catch {
+      setCampaignProducts([]);
+    }
+    setLoadingProducts(false);
+  };
 
   const openNew = () => {
     setEditing(null);
     setForm(empty);
     setPendingImages([]);
     setSizeChart([]);
+    setSelectedProductId("");
+    setNewStockLimit(15);
+    loadProductsForModal();
     setShowModal(true);
   };
 
@@ -63,6 +111,9 @@ export function CampaignsClient({ campaigns }: { campaigns: Campaign[] }) {
     });
     setPendingImages(c.images ?? []);
     setSizeChart(c.size_chart ?? []);
+    setSelectedProductId("");
+    setNewStockLimit(15);
+    loadProductsForModal(c.id);
     setShowModal(true);
   };
 
@@ -115,10 +166,32 @@ export function CampaignsClient({ campaigns }: { campaigns: Campaign[] }) {
       size_chart: sizeChart.length > 0 ? sizeChart.filter((r) => r.talle) : null,
     };
 
+    let campaignId: string;
     if (editing) {
       await supabase.from("campaigns").update(payload).eq("id", editing.id);
+      campaignId = editing.id;
     } else {
-      await supabase.from("campaigns").insert(payload);
+      const { data: created } = await supabase.from("campaigns").insert(payload).select("id").single();
+      campaignId = created?.id ?? "";
+    }
+
+    // Sincronizar productos del drop
+    if (campaignId) {
+      try {
+        await supabase.from("campaign_products").delete().eq("campaign_id", campaignId);
+        if (campaignProducts.length > 0) {
+          await supabase.from("campaign_products").insert(
+            campaignProducts.map((p, i) => ({
+              campaign_id: campaignId,
+              product_id: p.product_id,
+              stock_limit: p.stock_limit,
+              sort_order: i,
+            }))
+          );
+        }
+      } catch {
+        // tabla campaign_products puede no existir aún
+      }
     }
 
     setSaving(false);
@@ -543,6 +616,90 @@ export function CampaignsClient({ campaigns }: { campaigns: Campaign[] }) {
                 )}
                 {sizeChart.length === 0 && (
                   <p className="text-[10px] text-gray-600">Sin tabla de talles. Agregá filas si el drop tiene medidas específicas.</p>
+                )}
+              </div>
+
+              {/* Productos del drop */}
+              <div className="border border-white/10 rounded-xl p-4 space-y-3">
+                <div className="flex items-center justify-between">
+                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
+                    <Package className="w-3 h-3" /> Productos del drop
+                  </p>
+                  {loadingProducts && <Loader2 className="w-3 h-3 animate-spin text-gray-500" />}
+                </div>
+
+                {campaignProducts.map((entry, i) => (
+                  <div key={entry.product_id} className="flex items-center gap-2">
+                    {entry.image && (
+                      <img src={entry.image} alt="" className="w-8 h-8 object-cover rounded flex-shrink-0" />
+                    )}
+                    <span className="flex-1 text-white text-xs truncate">{entry.name}</span>
+                    <input
+                      type="number"
+                      min={1}
+                      value={entry.stock_limit}
+                      onChange={(e) =>
+                        setCampaignProducts((prev) =>
+                          prev.map((p, j) => j === i ? { ...p, stock_limit: parseInt(e.target.value) || 15 } : p)
+                        )
+                      }
+                      className="w-14 bg-white/5 border border-white/10 rounded px-2 py-1 text-white text-xs text-center focus:outline-none focus:border-green-500"
+                    />
+                    <span className="text-[9px] text-gray-600">uds</span>
+                    <button
+                      type="button"
+                      onClick={() => setCampaignProducts((prev) => prev.filter((_, j) => j !== i))}
+                      className="w-6 h-6 flex items-center justify-center text-gray-600 hover:text-red-400"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                ))}
+
+                <div className="flex gap-2 pt-1">
+                  <select
+                    value={selectedProductId}
+                    onChange={(e) => setSelectedProductId(e.target.value)}
+                    className={inputClass + " flex-1 cursor-pointer"}
+                  >
+                    <option value="">— Agregar producto —</option>
+                    {allProducts
+                      .filter((p) => !campaignProducts.some((e) => e.product_id === p.id))
+                      .map((p) => (
+                        <option key={p.id} value={p.id}>{p.name}</option>
+                      ))}
+                  </select>
+                  <input
+                    type="number"
+                    min={1}
+                    value={newStockLimit}
+                    onChange={(e) => setNewStockLimit(parseInt(e.target.value) || 15)}
+                    className="w-16 bg-white/5 border border-white/10 rounded-xl px-2 py-2 text-white text-xs text-center focus:outline-none focus:border-green-500"
+                    placeholder="15"
+                  />
+                  <button
+                    type="button"
+                    disabled={!selectedProductId}
+                    onClick={() => {
+                      const product = allProducts.find((p) => p.id === selectedProductId);
+                      if (!product) return;
+                      setCampaignProducts((prev) => [
+                        ...prev,
+                        { product_id: product.id, name: product.name, image: product.image, stock_limit: newStockLimit },
+                      ]);
+                      setSelectedProductId("");
+                      setNewStockLimit(15);
+                    }}
+                    className="px-3 py-2 bg-green-600 hover:bg-green-500 disabled:opacity-40 text-white rounded-xl text-xs font-bold flex items-center"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+
+                {campaignProducts.length === 0 && !loadingProducts && (
+                  <p className="text-[10px] text-gray-600">
+                    Agregá las remeras del drop para mostrar el stock en la home.
+                  </p>
                 )}
               </div>
 
