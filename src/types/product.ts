@@ -18,6 +18,10 @@ export interface Product {
   image_path?: string;
   images?: string[];
   size_chart_image?: string;
+  /** Si está seteado, el producto aparece en la sección "Nuevo Drop" de la home */
+  drop_stock_limit?: number;
+  /** Unidades disponibles actualmente del drop (admin lo actualiza manualmente) */
+  drop_available?: number;
   is_active: boolean;
   sort_order?: number;
   created_at?: string;

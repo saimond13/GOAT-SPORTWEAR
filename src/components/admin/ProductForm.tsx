@@ -1,7 +1,7 @@
 "use client";
 import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { Loader2, Upload, X, Plus, Ruler } from "lucide-react";
+import { Loader2, Upload, X, Plus, Ruler, Zap } from "lucide-react";
 import type { Product } from "@/types/product";
 import { CATEGORIES, GENDERS, SIZES, BADGES, PAYMENT_METHODS } from "@/types/product";
 import { createClient } from "@/lib/supabase/client";
@@ -21,6 +21,9 @@ export function ProductForm({ product }: { product?: Product }) {
     has_sizes: product?.has_sizes !== false,
     badge: product?.badge ?? "",
     is_active: product?.is_active ?? true,
+    is_drop: product?.drop_stock_limit != null,
+    drop_stock_limit: product?.drop_stock_limit?.toString() ?? "15",
+    drop_available: product?.drop_available?.toString() ?? "",
   });
 
   // Stock por talle: { S: 5, M: 3, ... }
@@ -141,6 +144,10 @@ export function ProductForm({ product }: { product?: Product }) {
       size_chart_image: sizeChartImage ?? null,
       stock_by_size: stockBySize,
       payment_methods: enabledPayments.length > 0 ? enabledPayments : PAYMENT_METHODS,
+      drop_stock_limit: form.is_drop ? parseInt(form.drop_stock_limit) || 15 : null,
+      drop_available: form.is_drop
+        ? parseInt(form.drop_available || form.drop_stock_limit) || 15
+        : null,
     };
 
     if (isEdit) {
@@ -523,6 +530,52 @@ export function ProductForm({ product }: { product?: Product }) {
             </button>
           ))}
         </div>
+      </div>
+
+      {/* Drop / Lanzamiento */}
+      <div className="border border-white/10 rounded-xl p-4 space-y-3">
+        <label className="flex items-center gap-3 cursor-pointer">
+          <div
+            className={`w-10 h-5 rounded-full relative transition-colors ${form.is_drop ? "bg-green-600" : "bg-white/10"}`}
+            onClick={() => setForm((f) => ({ ...f, is_drop: !f.is_drop }))}
+          >
+            <div className={`absolute top-0.5 w-4 h-4 bg-white rounded-full transition-transform ${form.is_drop ? "translate-x-5" : "translate-x-0.5"}`} />
+          </div>
+          <div>
+            <span className="text-white text-sm font-bold flex items-center gap-1.5">
+              <Zap className="w-3.5 h-3.5 text-green-400" /> Nuevo Drop
+            </span>
+            <p className="text-gray-600 text-[10px]">Aparece primero en la home con indicador de stock</p>
+          </div>
+        </label>
+
+        {form.is_drop && (
+          <div className="grid grid-cols-2 gap-3 pt-1">
+            <div>
+              <label className={labelClass}>Stock total del drop</label>
+              <input
+                type="number"
+                min={1}
+                value={form.drop_stock_limit}
+                onChange={(e) => setForm((f) => ({ ...f, drop_stock_limit: e.target.value }))}
+                className={inputClass}
+                placeholder="15"
+              />
+            </div>
+            <div>
+              <label className={labelClass}>Quedan disponibles</label>
+              <input
+                type="number"
+                min={0}
+                value={form.drop_available}
+                onChange={(e) => setForm((f) => ({ ...f, drop_available: e.target.value }))}
+                className={inputClass}
+                placeholder={`= ${form.drop_stock_limit || 15} (máx)`}
+              />
+              <p className="text-[10px] text-gray-600 mt-1">Vacío = igual al total</p>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Active toggle */}
