@@ -16,6 +16,7 @@ export const dynamic = "force-dynamic";
 export default async function StorePage() {
   let products: Product[] = [];
   let campaigns: Campaign[] = [];
+  let activeDrop: { id: string; title: string; depositPercentage?: number } | null = null;
 
   try {
     const { createClient } = await import("@/lib/supabase/server");
@@ -33,13 +34,18 @@ export default async function StorePage() {
 
     products = (productsRes.data as Product[]) ?? [];
     campaigns = (campaignsRes.data as Campaign[]) ?? [];
+
+    const drop = campaigns.find((c) => c.is_preventa);
+    if (drop) {
+      activeDrop = { id: drop.id, title: drop.title, depositPercentage: drop.deposit_percentage };
+    }
   } catch {
     // Supabase not configured yet — show empty state
   }
 
   return (
     <ProductsProvider products={products}>
-      <AnnouncementBar />
+      <AnnouncementBar activeDrop={activeDrop} />
       <div className="min-h-screen bg-[#09090b]">
         <Header />
         <main>
