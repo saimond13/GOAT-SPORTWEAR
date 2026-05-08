@@ -4,6 +4,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 
 const schema = z.object({
   campaignId: z.string().uuid(),
+  productId: z.string().uuid().optional(),
   customerName: z.string().min(1).max(150),
   customerPhone: z.string().min(1).max(30),
   customerEmail: z.string().email().optional(),
@@ -23,7 +24,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: parsed.error.issues[0].message }, { status: 400 });
   }
 
-  const { campaignId, customerName, customerPhone, customerEmail, size, quantity, notes } = parsed.data;
+  const { campaignId, productId, customerName, customerPhone, customerEmail, size, quantity, notes } = parsed.data;
 
   const supabase = createAdminClient();
 
@@ -49,7 +50,6 @@ export async function POST(req: Request) {
   const unitPrice = campaign.unit_price ?? 0;
   const depositPct = campaign.deposit_percentage ?? 30;
   const depositAmount = Math.round(unitPrice * depositPct / 100);
-  const totalAmount = unitPrice * quantity;
   const totalDeposit = depositAmount * quantity;
 
   if (unitPrice <= 0 || depositAmount <= 0) {
@@ -60,6 +60,7 @@ export async function POST(req: Request) {
     .from("preventa_registrations")
     .insert({
       campaign_id: campaignId,
+      product_id: productId ?? null,
       customer_name: customerName,
       customer_phone: customerPhone,
       customer_email: customerEmail ?? null,

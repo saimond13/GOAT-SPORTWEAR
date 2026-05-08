@@ -1,6 +1,7 @@
 import { Header } from "@/components/storefront/Header";
 import { Hero } from "@/components/storefront/Hero";
 import { ProductsSection } from "@/components/storefront/ProductsSection";
+import { FeaturedDropSection } from "@/components/storefront/FeaturedDropSection";
 import { CampaignsBanner } from "@/components/storefront/CampaignsBanner";
 import { WaitlistSection } from "@/components/storefront/WaitlistSection";
 import { Footer } from "@/components/storefront/Footer";
@@ -43,6 +44,7 @@ export default async function StorePage() {
         <Header />
         <main>
           <Hero />
+          <FeaturedDropSection />
           <ProductsSection products={products} />
           <CampaignsBanner campaigns={campaigns} />
           <WaitlistSection />

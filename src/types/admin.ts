@@ -49,6 +49,23 @@ export interface PreventaRegistration {
   created_at: string;
 }
 
+export interface CampaignProduct {
+  id: string;
+  campaign_id: string;
+  product_id: string;
+  stock_limit: number;
+  sort_order: number;
+  available?: number;
+  product?: {
+    id: string;
+    name: string;
+    images?: string[];
+    image_url?: string;
+    price: number;
+  };
+  created_at: string;
+}
+
 export interface WaitlistEntry {
   id: string;
   email: string;
