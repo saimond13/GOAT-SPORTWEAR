@@ -60,7 +60,7 @@ export async function FeaturedDropSection() {
       }
     }
 
-    products = cp.map((item) => {
+    products = (cp as any[]).map((item) => {
       const p = item.products as { id: string; name: string; images?: string[]; image_url?: string } | null;
       const reservedCount = reserved[item.product_id] ?? 0;
       return {
