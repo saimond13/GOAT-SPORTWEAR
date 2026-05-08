@@ -1,9 +1,8 @@
 "use client";
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { CheckCircle2, XCircle, Clock, Download, Check } from "lucide-react";
+import { CheckCircle2, XCircle, Clock, Download, Check, Loader2 } from "lucide-react";
 import type { PreventaRegistration } from "@/types/admin";
-import { createClient } from "@/lib/supabase/client";
 import { formatDate, formatPrice } from "@/lib/utils";
 
 const STATUS_CONFIG = {
@@ -20,6 +19,8 @@ export function PreventaClient({ registrations }: Props) {
   const router = useRouter();
   const [, startTransition] = useTransition();
   const [filter, setFilter] = useState<"all" | "pending" | "deposit_paid" | "cancelled">("all");
+  const [loadingId, setLoadingId] = useState<string | null>(null);
+  const [errorMsg, setErrorMsg] = useState("");
 
   const filtered = filter === "all" ? registrations : registrations.filter((r) => r.status === filter);
 
@@ -27,18 +28,36 @@ export function PreventaClient({ registrations }: Props) {
     .filter((r) => r.status === "deposit_paid")
     .reduce((sum, r) => sum + r.deposit_amount, 0);
 
+  const updateStatus = async (id: string, status: "deposit_paid" | "cancelled") => {
+    setLoadingId(id);
+    setErrorMsg("");
+    try {
+      const res = await fetch("/api/admin/preventa/update-status", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, status }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setErrorMsg(data.error ?? "Error al actualizar");
+        return;
+      }
+      startTransition(() => router.refresh());
+    } catch {
+      setErrorMsg("Error de conexión");
+    } finally {
+      setLoadingId(null);
+    }
+  };
+
   const handleConfirm = async (id: string) => {
     if (!confirm("¿Confirmar que se recibió la seña?")) return;
-    const supabase = createClient();
-    await supabase.from("preventa_registrations").update({ status: "deposit_paid" }).eq("id", id);
-    startTransition(() => router.refresh());
+    await updateStatus(id, "deposit_paid");
   };
 
   const handleCancel = async (id: string) => {
     if (!confirm("¿Cancelar esta reserva?")) return;
-    const supabase = createClient();
-    await supabase.from("preventa_registrations").update({ status: "cancelled" }).eq("id", id);
-    startTransition(() => router.refresh());
+    await updateStatus(id, "cancelled");
   };
 
   const exportCSV = () => {
@@ -109,6 +128,10 @@ export function PreventaClient({ registrations }: Props) {
         </button>
       </div>
 
+      {errorMsg && (
+        <p className="text-red-400 text-sm bg-red-400/10 px-4 py-2.5 rounded-xl">{errorMsg}</p>
+      )}
+
       {/* Table */}
       {filtered.length === 0 ? (
         <div className="bg-white/5 border border-white/10 rounded-2xl p-12 text-center">
@@ -160,24 +183,28 @@ export function PreventaClient({ registrations }: Props) {
                       {formatDate(r.created_at)}
                     </td>
                     <td className="px-5 py-3">
-                      <div className="flex flex-col gap-1">
-                        {r.status === "pending" && (
-                          <button
-                            onClick={() => handleConfirm(r.id)}
-                            className="flex items-center gap-1 text-[10px] text-green-400 hover:text-green-300 font-black uppercase tracking-wide transition-colors"
-                          >
-                            <Check className="w-3 h-3" /> Confirmar seña
-                          </button>
-                        )}
-                        {r.status !== "cancelled" && (
-                          <button
-                            onClick={() => handleCancel(r.id)}
-                            className="text-[10px] text-red-400 hover:text-red-300 font-bold uppercase tracking-wide transition-colors"
-                          >
-                            Cancelar
-                          </button>
-                        )}
-                      </div>
+                      {loadingId === r.id ? (
+                        <Loader2 className="w-4 h-4 animate-spin text-gray-500" />
+                      ) : (
+                        <div className="flex flex-col gap-1">
+                          {r.status === "pending" && (
+                            <button
+                              onClick={() => handleConfirm(r.id)}
+                              className="flex items-center gap-1 text-[10px] text-green-400 hover:text-green-300 font-black uppercase tracking-wide transition-colors"
+                            >
+                              <Check className="w-3 h-3" /> Confirmar seña
+                            </button>
+                          )}
+                          {r.status !== "cancelled" && (
+                            <button
+                              onClick={() => handleCancel(r.id)}
+                              className="text-[10px] text-red-400 hover:text-red-300 font-bold uppercase tracking-wide transition-colors"
+                            >
+                              Cancelar
+                            </button>
+                          )}
+                        </div>
+                      )}
                     </td>
                   </tr>
                 );
