@@ -51,9 +51,6 @@ export async function FeaturedDropSection() {
   if (!drops.length) return null;
 
   const hero = drops[0];
-  const totalReservations = drops.reduce((sum, d) => sum + d.reservations, 0);
-  const TOTAL_UNITS = 30;
-  const progressPct = Math.min(100, Math.round((totalReservations / TOTAL_UNITS) * 100));
 
   return (
     <section className="relative overflow-hidden bg-[#09090b]">
@@ -74,30 +71,6 @@ export async function FeaturedDropSection() {
           DROP 001
         </h2>
 
-        {hero.description && (
-          <p className="text-gray-300 text-base leading-relaxed mb-6 max-w-md">
-            {hero.description}
-          </p>
-        )}
-
-        {/* Progress bar */}
-        <div className="mb-8 max-w-md">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
-              {totalReservations} / {TOTAL_UNITS} lugares reservados
-            </span>
-            <span className="text-[10px] font-black text-green-400">{progressPct}%</span>
-          </div>
-          <div className="h-2 w-full bg-white/10 rounded-full overflow-hidden">
-            <div
-              className="h-full bg-green-500 rounded-full transition-all duration-700"
-              style={{ width: `${progressPct}%` }}
-            />
-          </div>
-          <p className="text-[9px] text-gray-600 mt-1.5 uppercase tracking-widest">
-            {TOTAL_UNITS - totalReservations} unidades disponibles · Sin restock
-          </p>
-        </div>
 
         {/* Countdown (primer drop que tenga) */}
         {hero.countdown_ends_at && (
