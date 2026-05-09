@@ -38,7 +38,7 @@ export function AnnouncementBar({ activeDrop }: Props) {
     <AnimatePresence mode="wait">
       <motion.p
         key={idx}
-        className="text-[11px] font-black uppercase tracking-[0.2em] text-center px-4"
+        className="text-[11px] font-black uppercase tracking-[0.2em] text-center px-4 truncate w-full"
         initial={{ y: 14, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         exit={{ y: -14, opacity: 0 }}

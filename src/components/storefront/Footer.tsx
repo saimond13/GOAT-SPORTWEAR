@@ -1,6 +1,5 @@
 "use client";
 import { MapPin, MessageCircle, Mail } from "lucide-react";
-import { GoatLogo } from "@/components/ui/GoatLogo";
 import Link from "next/link";
 
 const infoLinks = [
@@ -24,7 +23,12 @@ export function Footer() {
           {/* Brand */}
           <div className="md:col-span-2">
             <div className="mb-6">
-              <GoatLogo size={120} variant="white" />
+              <span
+                className="text-white text-4xl leading-none tracking-tight"
+                style={{ fontFamily: "'Anton', sans-serif" }}
+              >
+                GOAT
+              </span>
             </div>
 
             <p className="text-gray-300 text-sm leading-relaxed max-w-xs mb-6">
