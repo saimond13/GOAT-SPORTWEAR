@@ -111,7 +111,7 @@ export function CampaignsBanner({ campaigns }: { campaigns: Campaign[] }) {
   if (!campaigns.length) return null;
 
   return (
-    <section id="campaigns" className="bg-[#09090b] py-24 border-t border-white/5">
+    <section id="campaigns" className="bg-[#09090b] py-24 border-t border-white/5 scroll-mt-28">
       <div className="max-w-7xl mx-auto px-4">
         {/* Section header */}
         <motion.div

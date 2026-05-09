@@ -80,7 +80,7 @@ export function ProductCard({ product }: { product: Product }) {
         {/* Quick add hover button */}
         <button
           onClick={(e) => { e.preventDefault(); e.stopPropagation(); setExpanded(!expanded); }}
-          className="absolute bottom-3 right-3 w-8 h-8 bg-green-500 text-black flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:bg-green-400"
+          className="absolute bottom-3 right-3 w-8 h-8 bg-green-500 text-black flex items-center justify-center md:opacity-0 md:group-hover:opacity-100 transition-all hover:bg-green-400"
         >
           <Plus className="w-4 h-4" />
         </button>
@@ -184,9 +184,9 @@ export function ProductCard({ product }: { product: Product }) {
 
             {/* MP badge */}
             <div className="flex items-center gap-1.5 bg-[#009EE3]/10 border border-[#009EE3]/20 rounded px-2.5 py-1.5">
-              <div className="w-2 h-2 rounded-full bg-[#009EE3]" />
+              <div className="w-2 h-2 rounded-full bg-[#009EE3] flex-shrink-0" />
               <span className="text-[10px] font-bold text-[#009EE3]">Mercado Pago</span>
-              <span className="text-[9px] text-gray-500 ml-auto">💳 débito · crédito · cuenta</span>
+              <span className="text-[9px] text-gray-500 ml-auto hidden sm:block">💳 débito · crédito · cuenta</span>
             </div>
           </motion.div>
         )}

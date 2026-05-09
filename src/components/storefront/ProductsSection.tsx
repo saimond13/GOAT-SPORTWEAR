@@ -71,7 +71,7 @@ export function ProductsSection({ products }: { products: Product[] }) {
   const hasMore = paginated.length < filtered.length;
 
   return (
-    <section id="products" className="bg-[#09090b] py-24">
+    <section id="products" className="bg-[#09090b] py-24 scroll-mt-28">
       <div className="max-w-7xl mx-auto px-4">
         {/* Header */}
         <motion.div

@@ -28,7 +28,7 @@ export function WaitlistSection() {
   };
 
   return (
-    <section id="waitlist" className="bg-[#09090b] py-24 border-t border-white/5">
+    <section id="waitlist" className="bg-[#09090b] py-24 border-t border-white/5 scroll-mt-28">
       <div className="max-w-2xl mx-auto px-4 text-center">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

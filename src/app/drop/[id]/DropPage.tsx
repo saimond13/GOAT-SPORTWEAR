@@ -38,7 +38,7 @@ function CountdownBlock({ target }: { target: string }) {
     </div>
   );
   return (
-    <div className="flex items-center gap-4">
+    <div className="flex items-center gap-2 sm:gap-4 flex-wrap">
       {[
         { val: time.d, label: "días" },
         { val: time.h, label: "hs" },

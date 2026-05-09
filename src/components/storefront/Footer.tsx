@@ -16,7 +16,7 @@ export function Footer() {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
 
   return (
-    <footer id="contact" className="bg-[#060608] border-t border-white/5">
+    <footer id="contact" className="bg-[#060608] border-t border-white/5 scroll-mt-28">
       <div className="h-[1px] bg-gradient-to-r from-transparent via-green-500/40 to-transparent" />
 
       <div className="max-w-7xl mx-auto px-4 py-10 md:py-16">
