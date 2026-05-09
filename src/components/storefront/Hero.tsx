@@ -227,29 +227,6 @@ export function Hero() {
           </button>
         </motion.div>
 
-        {/* Stats */}
-        <motion.div
-          className="flex items-center justify-center gap-6 sm:gap-12 mt-12 sm:mt-20 pt-6 sm:pt-8 border-t border-white/5"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.85, duration: 0.5 }}
-        >
-          {[
-            { v: "DROP 001", l: "En camino" },
-            { v: "LOCAL", l: "Sa Pereira" },
-            { v: "100%", l: "Original" },
-          ].map((s) => (
-            <div key={s.l} className="text-center">
-              <div
-                className="text-white text-lg font-black"
-                style={{ fontFamily: "'Anton', sans-serif" }}
-              >
-                {s.v}
-              </div>
-              <div className="text-[9px] text-gray-400 uppercase tracking-[0.3em] mt-1">{s.l}</div>
-            </div>
-          ))}
-        </motion.div>
       </motion.div>
 
       {/* Scroll indicator */}

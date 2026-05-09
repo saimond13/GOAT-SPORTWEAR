@@ -51,21 +51,12 @@ export async function FeaturedDropSection() {
   if (!drops.length) return null;
 
   const hero = drops[0];
-  const heroImg = hero.images?.[0] ?? hero.image_url;
-  const depositPct = hero.deposit_percentage ?? 50;
   const totalReservations = drops.reduce((sum, d) => sum + d.reservations, 0);
+  const TOTAL_UNITS = 30;
+  const progressPct = Math.min(100, Math.round((totalReservations / TOTAL_UNITS) * 100));
 
   return (
     <section className="relative overflow-hidden bg-[#09090b]">
-      {/* Background */}
-      {heroImg && (
-        <div className="absolute inset-0">
-          <img src={heroImg} alt="" className="w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#09090b] via-[#09090b]/85 to-[#09090b]/50" />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#09090b] via-transparent to-[#09090b]/60" />
-        </div>
-      )}
-
       <div className="relative max-w-6xl mx-auto px-4 py-20 sm:py-28">
         {/* Live indicator */}
         <div className="flex items-center gap-2 mb-5">
@@ -89,19 +80,23 @@ export async function FeaturedDropSection() {
           </p>
         )}
 
-        {/* Stats */}
-        <div className="flex items-center gap-6 mb-8 flex-wrap">
-          <div>
-            <span className="text-2xl font-black text-white">{totalReservations}</span>
-            <span className="text-gray-500 text-xs uppercase tracking-widest ml-2">reservas</span>
+        {/* Progress bar */}
+        <div className="mb-8 max-w-md">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
+              {totalReservations} / {TOTAL_UNITS} lugares reservados
+            </span>
+            <span className="text-[10px] font-black text-green-400">{progressPct}%</span>
           </div>
-          <div className="w-px h-6 bg-white/10" />
-          <div>
-            <span className="text-2xl font-black text-green-400">{depositPct}%</span>
-            <span className="text-gray-500 text-xs uppercase tracking-widest ml-2">de seña</span>
+          <div className="h-2 w-full bg-white/10 rounded-full overflow-hidden">
+            <div
+              className="h-full bg-green-500 rounded-full transition-all duration-700"
+              style={{ width: `${progressPct}%` }}
+            />
           </div>
-          <div className="w-px h-6 bg-white/10" />
-          <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest">15 uds · Sin restock</span>
+          <p className="text-[9px] text-gray-600 mt-1.5 uppercase tracking-widest">
+            {TOTAL_UNITS - totalReservations} unidades disponibles · Sin restock
+          </p>
         </div>
 
         {/* Countdown (primer drop que tenga) */}
