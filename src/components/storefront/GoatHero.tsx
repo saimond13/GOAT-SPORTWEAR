@@ -97,7 +97,7 @@ export function GoatHero({
       {/* Main content */}
       <div className="relative z-10 flex-1 flex flex-col justify-center">
         <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 w-full py-20 lg:py-0">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-8 items-center min-h-[80vh]">
+          <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-10 lg:gap-4 items-center min-h-[80vh]">
 
             {/* ── LEFT: copy ── */}
             <motion.div
@@ -116,7 +116,7 @@ export function GoatHero({
 
               {/* Title */}
               <h1
-                className="text-[52px] sm:text-[68px] lg:text-[72px] xl:text-[82px] text-white leading-[0.88] tracking-tight font-black uppercase mb-6 select-none"
+                className="text-[48px] sm:text-[64px] lg:text-[68px] xl:text-[76px] text-white leading-[0.88] tracking-tight font-black uppercase mb-6 select-none"
                 style={{ fontFamily: "'Anton', sans-serif" }}
               >
                 {lines.map((line, i) => {
@@ -187,6 +187,8 @@ export function GoatHero({
                         "radial-gradient(ellipse 70% 60% at 55% 85%, rgba(255,255,255,0.07) 0%, transparent 70%)",
                     }}
                   />
+                  {/* Gradient fade left edge */}
+                  <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-[#09090b] to-transparent z-10 pointer-events-none" />
                   {/* Gradient overlay at base */}
                   <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#09090b] to-transparent z-10 pointer-events-none" />
                   <img
