@@ -185,7 +185,7 @@ export function GoatHero({
                     src={imageSrc}
                     alt={imageAlt}
                     className="h-[320px] sm:h-[440px] lg:h-[600px] xl:h-[680px] w-auto object-contain object-bottom relative z-0"
-                    style={{ filter: "drop-shadow(0 0 60px rgba(34,197,94,0.12))" }}
+                    style={{ mixBlendMode: "multiply" }}
                   />
                   {/* Drop badge */}
                   {activeDrop && (
