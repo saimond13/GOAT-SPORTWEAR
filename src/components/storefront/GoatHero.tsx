@@ -25,14 +25,14 @@ const BENEFITS = [
 ];
 
 export function GoatHero({
-  eyebrow = "NUEVO DROP",
-  title = "PREPARADOS\nPARA MÁS",
-  subtitle = "Oversize gymwear, drops limitados y prendas pensadas para entrenar con actitud.",
-  primaryCtaLabel = "Ver nuevo drop",
-  primaryCtaHref = "#drops",
-  secondaryCtaLabel = "Ver productos",
-  secondaryCtaHref = "#products",
-  imageSrc,
+  eyebrow = "GYMWEAR · TEMPORADA 2026",
+  title = "GOAT\nSPORTWEAR",
+  subtitle = "Oversize gymwear. Drops limitados. Envíos a todo el país.",
+  primaryCtaLabel = "VER CATÁLOGO",
+  primaryCtaHref = "#products",
+  secondaryCtaLabel = "NUEVO DROP",
+  secondaryCtaHref = "#drops",
+  imageSrc = "/hero-model.png",
   imageAlt = "GOAT Sportwear",
   logoWatermarkSrc = "/logo.jpg",
   activeDrop,
@@ -122,9 +122,10 @@ export function GoatHero({
                 {lines.map((line, i) => {
                   const isLast = i === lines.length - 1;
                   const parts = isLast ? line.split(" ") : [line];
+                  const multiWord = parts.length > 1;
                   return (
                     <span key={i} className="block">
-                      {isLast
+                      {isLast && multiWord
                         ? parts.map((word, wi) =>
                             wi === parts.length - 1 ? (
                               <span key={wi} className="text-green-500">
