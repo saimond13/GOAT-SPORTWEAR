@@ -101,13 +101,18 @@ export function GoatHero({
 
       {/* ── Model image — absolutely positioned right half, desktop only ── */}
       {imageSrc && (
-        <div className="absolute right-0 top-0 bottom-0 w-[48%] hidden lg:flex items-end justify-center z-[5] pointer-events-none">
-          {/* Fade left edge */}
-          <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-[#09090b] to-transparent z-10" />
+        <div className="absolute right-0 top-0 bottom-0 w-[52%] hidden lg:flex items-end justify-center z-[5] pointer-events-none">
+          {/* Fade left edge — wide & gradual */}
+          <div className="absolute left-0 top-0 bottom-0 w-48 z-10"
+            style={{ background: "linear-gradient(to right, #09090b 0%, #09090b 20%, rgba(9,9,11,0.7) 55%, transparent 100%)" }} />
           {/* Fade bottom edge */}
-          <div className="absolute bottom-0 left-0 right-0 h-28 bg-gradient-to-t from-[#09090b] to-transparent z-10" />
+          <div className="absolute bottom-0 left-0 right-0 h-40 z-10"
+            style={{ background: "linear-gradient(to top, #09090b 0%, #09090b 15%, rgba(9,9,11,0.6) 60%, transparent 100%)" }} />
+          {/* Fade top edge — subtle */}
+          <div className="absolute top-0 left-0 right-0 h-24 z-10"
+            style={{ background: "linear-gradient(to bottom, #09090b 0%, rgba(9,9,11,0.4) 50%, transparent 100%)" }} />
           {/* Fade right edge */}
-          <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-[#09090b] to-transparent z-10" />
+          <div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-[#09090b] to-transparent z-10" />
 
           <motion.img
             src={imageSrc}
