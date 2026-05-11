@@ -109,14 +109,14 @@ export function GoatHero({
             style={{
               WebkitMaskImage: [
                 "linear-gradient(to right,  transparent 0%, rgba(0,0,0,0.4) 16%, black 32%)",
-                "linear-gradient(to top,    transparent 0%, rgba(0,0,0,0.2) 12%, rgba(0,0,0,0.7) 28%, black 44%)",
+                "linear-gradient(to top,    transparent 0%, rgba(0,0,0,0.2) 18%, rgba(0,0,0,0.7) 38%, black 58%)",
                 "linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.6) 5%,  black 12%)",
                 "linear-gradient(to left,   transparent 0%, rgba(0,0,0,0.7) 3%,  black 8%)",
               ].join(", "),
               WebkitMaskComposite: "destination-in, destination-in, destination-in",
               maskImage: [
                 "linear-gradient(to right,  transparent 0%, rgba(0,0,0,0.4) 16%, black 32%)",
-                "linear-gradient(to top,    transparent 0%, rgba(0,0,0,0.2) 12%, rgba(0,0,0,0.7) 28%, black 44%)",
+                "linear-gradient(to top,    transparent 0%, rgba(0,0,0,0.2) 18%, rgba(0,0,0,0.7) 38%, black 58%)",
                 "linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.6) 5%,  black 12%)",
                 "linear-gradient(to left,   transparent 0%, rgba(0,0,0,0.7) 3%,  black 8%)",
               ].join(", "),
