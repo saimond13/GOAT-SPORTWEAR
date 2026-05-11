@@ -56,7 +56,7 @@ export async function FeaturedDropSection() {
   const progressPct = Math.min(100, Math.round((totalReservations / TOTAL_UNITS) * 100));
 
   return (
-    <section className="relative overflow-hidden bg-[#09090b]">
+    <section id="drops" className="relative overflow-hidden bg-[#09090b] scroll-mt-28">
       <div className="relative max-w-6xl mx-auto px-4 py-20 sm:py-28">
         {/* Live indicator */}
         <div className="flex items-center gap-2 mb-5">
