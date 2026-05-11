@@ -93,38 +93,50 @@ export function ProductsSection({ products }: { products: Product[] }) {
           </h2>
         </motion.div>
 
-        {/* Gender filter */}
-        <div className="flex gap-2 flex-wrap mb-3">
-          {["Todos", ...GENDERS].map((g) => (
-            <button
-              key={g}
-              onClick={() => { setActiveGender(g); resetPage(); }}
-              className={`px-4 py-1.5 text-xs font-bold border uppercase tracking-[0.15em] transition-all rounded-full ${
-                activeGender === g
-                  ? "bg-white text-black border-white"
-                  : "border-white/10 text-gray-500 hover:border-white/30 hover:text-white"
-              }`}
-            >
-              {g}
-            </button>
-          ))}
+        {/* Gender filter — scrollable */}
+        <div className="relative mb-3">
+          <div
+            className="flex gap-2 overflow-x-auto pb-1 [&::-webkit-scrollbar]:hidden"
+            style={{ scrollbarWidth: "none" }}
+          >
+            {["Todos", ...GENDERS].map((g) => (
+              <button
+                key={g}
+                onClick={() => { setActiveGender(g); resetPage(); }}
+                className={`flex-shrink-0 px-4 py-1.5 text-xs font-bold border uppercase tracking-[0.15em] transition-all rounded-full ${
+                  activeGender === g
+                    ? "bg-white text-black border-white"
+                    : "border-white/10 text-gray-500 hover:border-white/30 hover:text-white"
+                }`}
+              >
+                {g}
+              </button>
+            ))}
+          </div>
+          <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-[#09090b] to-transparent pointer-events-none" />
         </div>
 
-        {/* Category filter */}
-        <div className="flex gap-2 flex-wrap mb-4">
-          {["Todos", ...CATEGORIES].map((cat) => (
-            <button
-              key={cat}
-              onClick={() => { setActiveCategory(cat); resetPage(); }}
-              className={`px-4 py-2 text-xs font-bold border uppercase tracking-[0.15em] transition-all ${
-                activeCategory === cat
-                  ? "bg-green-500 text-black border-green-500"
-                  : "border-white/10 text-gray-500 hover:border-white/30 hover:text-white"
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
+        {/* Category filter — scrollable */}
+        <div className="relative mb-4">
+          <div
+            className="flex gap-2 overflow-x-auto pb-1 [&::-webkit-scrollbar]:hidden"
+            style={{ scrollbarWidth: "none" }}
+          >
+            {["Todos", ...CATEGORIES].map((cat) => (
+              <button
+                key={cat}
+                onClick={() => { setActiveCategory(cat); resetPage(); }}
+                className={`flex-shrink-0 px-4 py-2 text-xs font-bold border uppercase tracking-[0.15em] transition-all rounded-lg ${
+                  activeCategory === cat
+                    ? "bg-green-500 text-black border-green-500"
+                    : "border-white/10 text-gray-500 hover:border-white/30 hover:text-white"
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+          <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-[#09090b] to-transparent pointer-events-none" />
         </div>
 
         {/* Toolbar: filters + sort */}

@@ -31,14 +31,14 @@ export function ProductCard({ product }: { product: Product }) {
 
   return (
     <motion.div
-      className="product-card bg-[#111113] border border-white/[0.06] overflow-hidden group"
+      className="product-card bg-[#111113] border border-white/[0.06] overflow-hidden group rounded-xl"
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-40px" }}
     >
       {/* Image — molde fijo 3:4, click → página de producto */}
       <Link href={`/productos/${product.id}`} className="block">
-      <div className="relative overflow-hidden bg-[#1a1a1e] aspect-[3/4]">
+      <div className="relative overflow-hidden bg-[#1a1a1e] aspect-[3/4] rounded-t-xl">
         {product.image_url ? (
           <img
             src={product.image_url}
@@ -77,12 +77,12 @@ export function ProductCard({ product }: { product: Product }) {
           </div>
         )}
 
-        {/* Quick add hover button */}
+        {/* Quick add button */}
         <button
           onClick={(e) => { e.preventDefault(); e.stopPropagation(); setExpanded(!expanded); }}
-          className="absolute bottom-3 right-3 w-8 h-8 bg-green-500 text-black flex items-center justify-center md:opacity-0 md:group-hover:opacity-100 transition-all hover:bg-green-400"
+          className="absolute bottom-3 right-3 w-9 h-9 rounded-full bg-white text-black flex items-center justify-center md:opacity-0 md:group-hover:opacity-100 transition-all duration-200 hover:bg-green-500 shadow-md hover:shadow-green-500/40 hover:scale-110 active:scale-95"
         >
-          <Plus className="w-4 h-4" />
+          <Plus className="w-4 h-4" strokeWidth={2.5} />
         </button>
       </div>
       </Link>
