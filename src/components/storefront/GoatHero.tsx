@@ -208,7 +208,7 @@ export function GoatHero({
                     src={imageSrc}
                     alt={imageAlt}
                     className="h-[320px] sm:h-[440px] lg:h-[600px] xl:h-[680px] w-auto object-contain object-bottom relative z-[1]"
-                    style={{ mixBlendMode: "multiply", filter: "brightness(1.6) contrast(1.05)" }}
+                    style={{ filter: "drop-shadow(0 0 40px rgba(34,197,94,0.08))" }}
                     initial={{ opacity: 0, y: 60, scale: 0.9 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     transition={{ duration: 1.1, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
