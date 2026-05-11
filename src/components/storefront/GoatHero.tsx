@@ -101,7 +101,7 @@ export function GoatHero({
 
             {/* ── LEFT: copy ── */}
             <motion.div
-              className="flex flex-col justify-center"
+              className="flex flex-col justify-center min-w-0"
               initial={{ opacity: 0, x: -30 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
@@ -116,7 +116,7 @@ export function GoatHero({
 
               {/* Title */}
               <h1
-                className="text-[52px] sm:text-[72px] lg:text-[80px] xl:text-[96px] text-white leading-[0.88] tracking-tight font-black uppercase mb-6 select-none"
+                className="text-[52px] sm:text-[68px] lg:text-[72px] xl:text-[82px] text-white leading-[0.88] tracking-tight font-black uppercase mb-6 select-none"
                 style={{ fontFamily: "'Anton', sans-serif" }}
               >
                 {lines.map((line, i) => {
@@ -172,25 +172,33 @@ export function GoatHero({
 
             {/* ── RIGHT: image ── */}
             <motion.div
-              className="relative flex items-end justify-center lg:justify-end lg:h-[80vh] bg-[#09090b]"
+              className="relative flex items-end justify-center lg:justify-end lg:h-[80vh] bg-[#09090b] overflow-hidden"
               initial={{ opacity: 0, scale: 0.97 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 1, ease: [0.22, 1, 0.36, 1], delay: 0.15 }}
             >
               {imageSrc ? (
                 <>
+                  {/* Spotlight behind model */}
+                  <div
+                    className="absolute inset-0 pointer-events-none z-0"
+                    style={{
+                      background:
+                        "radial-gradient(ellipse 70% 60% at 55% 85%, rgba(255,255,255,0.07) 0%, transparent 70%)",
+                    }}
+                  />
                   {/* Gradient overlay at base */}
                   <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#09090b] to-transparent z-10 pointer-events-none" />
                   <img
                     src={imageSrc}
                     alt={imageAlt}
-                    className="h-[320px] sm:h-[440px] lg:h-[600px] xl:h-[680px] w-auto object-contain object-bottom relative z-0"
-                    style={{ filter: "drop-shadow(0 0 60px rgba(34,197,94,0.12))" }}
+                    className="h-[320px] sm:h-[440px] lg:h-[600px] xl:h-[680px] w-auto object-contain object-bottom relative z-[1]"
+                    style={{ filter: "brightness(1.35) contrast(1.05)" }}
                   />
                   {/* Drop badge */}
                   {activeDrop && (
                     <motion.div
-                      className="absolute top-6 right-0 border border-green-500/50 bg-black/70 backdrop-blur-sm px-4 py-2.5 z-20"
+                      className="absolute top-[22%] right-0 border border-green-500/50 bg-black/70 backdrop-blur-sm px-4 py-2.5 z-20"
                       initial={{ opacity: 0, x: 16 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: 0.9 }}
