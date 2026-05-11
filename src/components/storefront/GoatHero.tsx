@@ -24,6 +24,12 @@ const BENEFITS = [
   { icon: MapPin, label: "Retiro en local" },
 ];
 
+const fadeUp = (delay: number, duration = 0.6) => ({
+  initial: { opacity: 0, y: 28 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration, delay, ease: [0.22, 1, 0.36, 1] },
+});
+
 export function GoatHero({
   eyebrow = "GYMWEAR · TEMPORADA 2026",
   title = "GOAT\nSPORTWEAR",
@@ -54,7 +60,7 @@ export function GoatHero({
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute right-0 top-1/4 w-[500px] h-[500px] rounded-full bg-green-500/[0.06] blur-[140px]" />
         <div className="absolute -bottom-20 left-1/3 w-[400px] h-[300px] rounded-full bg-green-500/[0.04] blur-[100px]" />
-        {/* Spotlight behind hero model — positioned at right column */}
+        {/* Spotlight behind hero model */}
         <div
           className="absolute right-0 bottom-0 w-1/2 h-full"
           style={{
@@ -107,24 +113,20 @@ export function GoatHero({
         <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 w-full py-20 lg:py-0">
           <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-10 lg:gap-4 items-center min-h-[80vh]">
 
-            {/* ── LEFT: copy ── */}
-            <motion.div
-              className="flex flex-col justify-center min-w-0"
-              initial={{ opacity: 0, x: -30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-            >
+            {/* ── LEFT: copy — each element animates independently ── */}
+            <div className="flex flex-col justify-center min-w-0">
+
               {/* Eyebrow */}
-              <div className="flex items-center gap-2.5 mb-6">
+              <motion.div className="flex items-center gap-2.5 mb-6" {...fadeUp(0.15)}>
                 <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse flex-shrink-0" />
                 <span className="text-green-500 text-[11px] font-black uppercase tracking-[0.5em]">
                   {eyebrow}
                 </span>
-              </div>
+              </motion.div>
 
-              {/* Title */}
+              {/* Title — each line staggers in */}
               <h1
-                className="text-[48px] sm:text-[64px] lg:text-[68px] xl:text-[76px] text-white leading-[0.88] tracking-tight font-black uppercase mb-6 select-none"
+                className="text-[48px] sm:text-[64px] lg:text-[68px] xl:text-[76px] text-white leading-[0.88] tracking-tight font-black uppercase mb-6 select-none overflow-hidden"
                 style={{ fontFamily: "'Anton', sans-serif" }}
               >
                 {lines.map((line, i) => {
@@ -132,30 +134,41 @@ export function GoatHero({
                   const parts = isLast ? line.split(" ") : [line];
                   const multiWord = parts.length > 1;
                   return (
-                    <span key={i} className="block">
+                    <motion.span
+                      key={i}
+                      className="block"
+                      initial={{ opacity: 0, y: 40 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{
+                        duration: 0.75,
+                        delay: 0.3 + i * 0.15,
+                        ease: [0.22, 1, 0.36, 1],
+                      }}
+                    >
                       {isLast && multiWord
                         ? parts.map((word, wi) =>
                             wi === parts.length - 1 ? (
-                              <span key={wi} className="text-green-500">
-                                {word}
-                              </span>
+                              <span key={wi} className="text-green-500">{word}</span>
                             ) : (
                               <span key={wi}>{word} </span>
                             )
                           )
                         : line}
-                    </span>
+                    </motion.span>
                   );
                 })}
               </h1>
 
               {/* Subtitle */}
-              <p className="text-gray-400 text-sm sm:text-base leading-relaxed max-w-[380px] mb-8">
+              <motion.p
+                className="text-gray-400 text-sm sm:text-base leading-relaxed max-w-[380px] mb-8"
+                {...fadeUp(0.65)}
+              >
                 {subtitle}
-              </p>
+              </motion.p>
 
               {/* CTAs */}
-              <div className="flex flex-col sm:flex-row gap-3 mb-10">
+              <motion.div className="flex flex-col sm:flex-row gap-3 mb-10" {...fadeUp(0.8)}>
                 <Link
                   href={resolvedPrimaryHref}
                   className="inline-flex items-center justify-center gap-2 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-[0.2em] px-8 py-4 transition-all hover:scale-[1.03] active:scale-95 w-full sm:w-auto"
@@ -170,39 +183,43 @@ export function GoatHero({
                   {secondaryCtaLabel}
                   <ArrowUpRight className="w-4 h-4" />
                 </button>
-              </div>
+              </motion.div>
 
               {/* Microcopy */}
-              <p className="text-gray-600 text-[11px] uppercase tracking-widest">
+              <motion.p
+                className="text-gray-600 text-[11px] uppercase tracking-widest"
+                {...fadeUp(0.95)}
+              >
                 📍 Local en Sa Pereira, Santa Fe
-              </p>
-            </motion.div>
+              </motion.p>
+            </div>
 
             {/* ── RIGHT: image ── */}
-            <motion.div
-              className="relative flex items-end justify-center lg:justify-end lg:h-[80vh]"
-              initial={{ opacity: 0, scale: 0.97 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 1, ease: [0.22, 1, 0.36, 1], delay: 0.15 }}
-            >
+            <div className="relative flex items-end justify-center lg:justify-end lg:h-[80vh]">
               {imageSrc ? (
                 <>
-                  {/* Gradient fade left edge */}
+                  {/* Fade edges */}
                   <div className="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-[#09090b] to-transparent z-10 pointer-events-none" />
-                  {/* Gradient overlay at base */}
+                  <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-[#09090b] to-transparent z-10 pointer-events-none" />
                   <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#09090b] to-transparent z-10 pointer-events-none" />
-                  <img
+
+                  {/* Model — slides up from below with scale, like MinimalistHero */}
+                  <motion.img
                     src={imageSrc}
                     alt={imageAlt}
                     className="h-[320px] sm:h-[440px] lg:h-[600px] xl:h-[680px] w-auto object-contain object-bottom relative z-[1]"
+                    initial={{ opacity: 0, y: 60, scale: 0.9 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    transition={{ duration: 1.1, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
                   />
+
                   {/* Drop badge */}
                   {activeDrop && (
                     <motion.div
                       className="absolute top-[22%] right-0 border border-green-500/50 bg-black/70 backdrop-blur-sm px-4 py-2.5 z-20"
-                      initial={{ opacity: 0, x: 16 }}
+                      initial={{ opacity: 0, x: 20 }}
                       animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.9 }}
+                      transition={{ delay: 1.1, ease: [0.22, 1, 0.36, 1] }}
                     >
                       <p className="text-green-500 text-[9px] font-black uppercase tracking-[0.4em] mb-0.5">Drop 001</p>
                       <p className="text-white text-sm font-black uppercase tracking-wider leading-none">Limited Drop</p>
@@ -210,20 +227,22 @@ export function GoatHero({
                   )}
                 </>
               ) : (
-                /* No image: show large ghost text + drop badge */
                 <div className="relative flex items-center justify-center w-full h-[340px] sm:h-[440px] lg:h-full">
-                  <span
+                  <motion.span
                     className="text-white/[0.03] select-none font-black leading-none text-[120px] sm:text-[180px] lg:text-[220px]"
                     style={{ fontFamily: "'Anton', sans-serif" }}
+                    initial={{ opacity: 0, scale: 0.85 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 1.2, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
                   >
                     GOAT
-                  </span>
+                  </motion.span>
                   {activeDrop && (
                     <motion.div
                       className="absolute bottom-8 right-0 border border-green-500/50 bg-black/70 backdrop-blur-sm px-4 py-2.5"
-                      initial={{ opacity: 0, x: 16 }}
+                      initial={{ opacity: 0, x: 20 }}
                       animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.9 }}
+                      transition={{ delay: 1.1 }}
                     >
                       <p className="text-green-500 text-[9px] font-black uppercase tracking-[0.4em] mb-0.5">Drop 001</p>
                       <p className="text-white text-sm font-black uppercase tracking-wider leading-none">Limited Drop</p>
@@ -231,7 +250,7 @@ export function GoatHero({
                   )}
                 </div>
               )}
-            </motion.div>
+            </div>
 
           </div>
         </div>
@@ -242,17 +261,23 @@ export function GoatHero({
         className="relative z-10 border-t border-white/[0.06] bg-black/50 backdrop-blur-sm"
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.65 }}
+        transition={{ duration: 0.5, delay: 1.1 }}
       >
         <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16">
           <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-white/[0.05]">
-            {BENEFITS.map(({ icon: Icon, label }) => (
-              <div key={label} className="flex items-center gap-3 px-4 sm:px-6 py-4">
+            {BENEFITS.map(({ icon: Icon, label }, i) => (
+              <motion.div
+                key={label}
+                className="flex items-center gap-3 px-4 sm:px-6 py-4"
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: 1.15 + i * 0.08 }}
+              >
                 <Icon className="w-4 h-4 text-green-500 flex-shrink-0" />
                 <span className="text-gray-300 text-[11px] sm:text-xs font-bold uppercase tracking-[0.15em] leading-tight">
                   {label}
                 </span>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
