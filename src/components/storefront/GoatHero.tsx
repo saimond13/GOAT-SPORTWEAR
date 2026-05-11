@@ -27,7 +27,7 @@ const BENEFITS = [
 const fadeUp = (delay: number, duration = 0.6) => ({
   initial: { opacity: 0, y: 28 },
   animate: { opacity: 1, y: 0 },
-  transition: { duration, delay, ease: [0.22, 1, 0.36, 1] },
+  transition: { duration, delay, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] },
 });
 
 export function GoatHero({
