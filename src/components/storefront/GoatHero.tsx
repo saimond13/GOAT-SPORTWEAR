@@ -172,7 +172,7 @@ export function GoatHero({
 
             {/* ── RIGHT: image ── */}
             <motion.div
-              className="relative flex items-end justify-center lg:justify-end lg:h-[80vh]"
+              className="relative flex items-end justify-center lg:justify-end lg:h-[80vh] bg-[#09090b]"
               initial={{ opacity: 0, scale: 0.97 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 1, ease: [0.22, 1, 0.36, 1], delay: 0.15 }}
@@ -185,7 +185,7 @@ export function GoatHero({
                     src={imageSrc}
                     alt={imageAlt}
                     className="h-[320px] sm:h-[440px] lg:h-[600px] xl:h-[680px] w-auto object-contain object-bottom relative z-0"
-                    style={{ filter: "drop-shadow(0 0 80px rgba(34,197,94,0.10))" }}
+                    style={{ filter: "drop-shadow(0 0 60px rgba(34,197,94,0.12))" }}
                   />
                   {/* Drop badge */}
                   {activeDrop && (
