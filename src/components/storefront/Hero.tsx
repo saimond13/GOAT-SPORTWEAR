@@ -1,238 +1,127 @@
 "use client";
-import { useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion } from "framer-motion";
 import { ArrowDown } from "lucide-react";
 import { ParticleCanvas } from "./ParticleCanvas";
-import { GoatLogo } from "@/components/ui/GoatLogo";
 
-function OrbitalRing({
-  size,
-  tiltX,
-  speed,
-  color,
-  thickness = 1,
-  y,
-  reverse = false,
-}: {
-  size: number;
-  tiltX: number;
-  speed: number;
-  color: string;
-  thickness?: number;
-  y: any;
-  reverse?: boolean;
-}) {
-  return (
-    <motion.div
-      className="absolute pointer-events-none"
-      style={{
-        width: size,
-        height: size,
-        left: "50%",
-        top: "50%",
-        marginLeft: -size / 2,
-        marginTop: -size / 2,
-        borderRadius: "50%",
-        border: `${thickness}px solid ${color}`,
-        y,
-        rotateX: tiltX,
-      }}
-      animate={{ rotateZ: reverse ? [0, -360] : [0, 360] }}
-      transition={{ duration: speed, repeat: Infinity, ease: "linear" }}
-    />
-  );
-}
-
-const floatingBars = [
-  { w: 100, top: "22%", left: "7%", rotate: -20, delay: 0 },
-  { w: 60, top: "38%", right: "5%", rotate: 15, delay: 0.6 },
-  { w: 140, bottom: "28%", left: "4%", rotate: 10, delay: 1.2 },
-  { w: 80, bottom: "35%", right: "9%", rotate: -12, delay: 1.8 },
-  { w: 50, top: "55%", left: "20%", rotate: 30, delay: 0.9 },
-];
-
-const glowDots = [
-  { top: "18%", left: "18%" },
-  { top: "72%", right: "14%" },
-  { bottom: "18%", left: "30%" },
-  { top: "42%", right: "22%" },
-];
-
-export function Hero() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end start"],
-  });
-
-  const textY = useTransform(scrollYProgress, [0, 1], [0, -90]);
-  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
-  const ring1Y = useTransform(scrollYProgress, [0, 1], [0, -220]);
-  const ring2Y = useTransform(scrollYProgress, [0, 1], [0, -140]);
-  const ring3Y = useTransform(scrollYProgress, [0, 1], [0, -300]);
-  const ring4Y = useTransform(scrollYProgress, [0, 1], [0, -80]);
+export function Hero({ heroImage }: { heroImage?: string }) {
+  const scrollTo = (id: string) =>
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
 
   return (
     <section
       id="hero"
-      ref={containerRef}
-      className="relative min-h-screen bg-[#09090b] overflow-hidden flex items-center justify-center"
-      style={{ perspective: "1400px" }}
+      className="relative min-h-screen bg-[#09090b] overflow-hidden flex flex-col"
     >
-      {/* Particle background */}
       <ParticleCanvas />
-
-      {/* Subtle grid */}
-      <div
-        className="absolute inset-0 opacity-[0.025]"
-        style={{
-          backgroundImage: `
-            repeating-linear-gradient(0deg, #fff 0, #fff 1px, transparent 1px, transparent 90px),
-            repeating-linear-gradient(90deg, #fff 0, #fff 1px, transparent 1px, transparent 90px)
-          `,
-        }}
-      />
-
-      {/* Top green accent */}
       <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-green-500/50 to-transparent" />
 
-      {/* 3D Orbital rings */}
-      <OrbitalRing size={700} tiltX={72} speed={28} color="rgba(34,197,94,0.08)" thickness={1} y={ring1Y} />
-      <OrbitalRing size={500} tiltX={68} speed={18} color="rgba(34,197,94,0.15)" thickness={1} y={ring2Y} reverse />
-      <OrbitalRing size={320} tiltX={65} speed={11} color="rgba(34,197,94,0.30)" thickness={2} y={ring3Y} />
-      <OrbitalRing size={180} tiltX={60} speed={7}  color="rgba(34,197,94,0.50)" thickness={2} y={ring4Y} reverse />
+      {/* 3-column editorial grid */}
+      <div className="relative z-10 flex-1 flex items-center">
+        <div className="w-full max-w-7xl mx-auto px-6 sm:px-10 grid grid-cols-1 md:grid-cols-[1fr_340px_1fr] lg:grid-cols-[1fr_420px_1fr] gap-6 items-center py-28 md:py-0">
 
-      {/* Orbiting dot on the smallest ring */}
-      <motion.div
-        className="absolute pointer-events-none"
-        style={{
-          width: 180, height: 180,
-          left: "50%", top: "50%",
-          marginLeft: -90, marginTop: -90,
-          rotateX: 60,
-          y: ring4Y,
-        }}
-        animate={{ rotateZ: [0, 360] }}
-        transition={{ duration: 7, repeat: Infinity, ease: "linear" }}
-      >
-        <div
-          className="absolute w-3 h-3 rounded-full bg-green-500"
-          style={{
-            top: -6,
-            left: "50%",
-            marginLeft: -6,
-            boxShadow: "0 0 16px 6px rgba(34,197,94,0.6)",
-          }}
-        />
-      </motion.div>
-
-      {/* Floating horizontal bars */}
-      {floatingBars.map((bar, i) => (
-        <motion.div
-          key={i}
-          className="absolute h-[1px] bg-gradient-to-r from-transparent via-green-500/35 to-transparent pointer-events-none hidden md:block"
-          style={{
-            width: bar.w,
-            top: bar.top,
-            left: (bar as any).left,
-            right: (bar as any).right,
-            bottom: (bar as any).bottom,
-            rotate: bar.rotate,
-          }}
-          animate={{ opacity: [0.3, 0.9, 0.3], scaleX: [0.8, 1.1, 0.8] }}
-          transition={{ duration: 3 + i * 0.8, repeat: Infinity, delay: bar.delay, ease: "easeInOut" }}
-        />
-      ))}
-
-      {/* Green glow dots */}
-      {glowDots.map((pos, i) => (
-        <motion.div
-          key={i}
-          className="absolute w-1 h-1 rounded-full bg-green-500 pointer-events-none hidden md:block"
-          style={{ ...pos, boxShadow: "0 0 10px 4px rgba(34,197,94,0.35)" }}
-          animate={{ opacity: [0.3, 1, 0.3], scale: [1, 1.8, 1] }}
-          transition={{ duration: 2.5 + i * 0.4, repeat: Infinity, delay: i * 0.6, ease: "easeInOut" }}
-        />
-      ))}
-
-      {/* Center content */}
-      <motion.div
-        className="relative z-10 text-center px-6 max-w-4xl mx-auto"
-        style={{ y: textY, opacity }}
-      >
-        {/* Eyebrow */}
-        <motion.p
-          className="text-green-500 text-[10px] font-bold tracking-[0.6em] uppercase mb-6"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.5 }}
-        >
-          Gymwear · Temporada 2026
-        </motion.p>
-
-        {/* Main heading */}
-        <motion.h1
-          className="text-[58px] sm:text-[90px] md:text-[150px] lg:text-[190px] text-white leading-[0.85] tracking-tight mb-3 select-none"
-          style={{ fontFamily: "'Anton', sans-serif" }}
-          initial={{ opacity: 0, y: 60 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-        >
-          GOAT
-        </motion.h1>
-
-        {/* Outlined subtitle */}
-        <motion.h2
-          className="text-[22px] sm:text-[32px] md:text-[52px] lg:text-[64px] leading-none tracking-[0.18em] mb-8 sm:mb-10 select-none"
-          style={{
-            fontFamily: "'Anton', sans-serif",
-            WebkitTextStroke: "1px rgba(255,255,255,0.45)",
-            color: "transparent",
-          }}
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.42, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-        >
-          SPORTWEAR
-        </motion.h2>
-
-        {/* Tagline */}
-        <motion.p
-          className="text-gray-300 text-sm md:text-base max-w-xs mx-auto mb-12 leading-relaxed"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.58, duration: 0.5 }}
-        >
-          Local en Sa Pereira, Santa Fe.<br />Envíos a todo el país.
-        </motion.p>
-
-        {/* CTAs */}
-        <motion.div
-          className="flex flex-col sm:flex-row items-center justify-center gap-4"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.68, duration: 0.5 }}
-        >
-          <button
-            onClick={() => document.getElementById("products")?.scrollIntoView({ behavior: "smooth" })}
-            className="bg-green-500 hover:bg-green-400 text-black font-black px-6 sm:px-10 py-4 text-xs uppercase tracking-[0.2em] transition-all duration-200 hover:scale-105 active:scale-95 w-full sm:w-auto"
+          {/* LEFT — tagline + CTAs */}
+          <motion.div
+            className="order-2 md:order-1 flex flex-col items-center md:items-start text-center md:text-left"
+            initial={{ opacity: 0, x: -24 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.7 }}
           >
-            Ver Catálogo
-          </button>
-          <button
-            onClick={() => document.getElementById("campaigns")?.scrollIntoView({ behavior: "smooth" })}
-            className="border border-white/20 hover:border-white/60 text-white/80 hover:text-white font-bold px-6 sm:px-10 py-4 text-xs uppercase tracking-[0.2em] transition-all duration-200 w-full sm:w-auto"
+            <p className="text-green-500 text-[10px] font-bold tracking-[0.6em] uppercase mb-5">
+              Gymwear · Temporada 2026
+            </p>
+            <p className="text-gray-400 text-sm leading-relaxed mb-8 max-w-[200px]">
+              Local en Sa Pereira, Santa Fe.{" "}
+              Envíos a todo el país.
+            </p>
+            <div className="flex flex-col gap-3 w-full max-w-[200px]">
+              <button
+                onClick={() => scrollTo("products")}
+                className="bg-green-500 hover:bg-green-400 text-black font-black py-3.5 text-xs uppercase tracking-[0.2em] transition-all hover:scale-[1.03] active:scale-95"
+              >
+                Ver Catálogo
+              </button>
+              <button
+                onClick={() => scrollTo("campaigns")}
+                className="border border-white/20 hover:border-white/60 text-white/70 hover:text-white font-bold py-3.5 text-xs uppercase tracking-[0.2em] transition-all"
+              >
+                Drops
+              </button>
+            </div>
+          </motion.div>
+
+          {/* CENTER — circle glow + product image */}
+          <div className="order-1 md:order-2 relative flex justify-center items-end h-[380px] sm:h-[460px] md:h-[540px]">
+            {/* Outer glow */}
+            <motion.div
+              initial={{ scale: 0.7, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+              className="absolute bottom-0 w-[270px] h-[270px] sm:w-[330px] sm:h-[330px] md:w-[370px] md:h-[370px] rounded-full pointer-events-none"
+              style={{
+                background:
+                  "radial-gradient(circle, rgba(34,197,94,0.14) 0%, rgba(34,197,94,0.04) 65%, transparent 100%)",
+                boxShadow: "0 0 90px 30px rgba(34,197,94,0.07)",
+              }}
+            />
+            {/* Circle border */}
+            <motion.div
+              initial={{ scale: 0.7, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 1, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
+              className="absolute bottom-0 w-[240px] h-[240px] sm:w-[300px] sm:h-[300px] md:w-[340px] md:h-[340px] rounded-full border border-green-500/20 pointer-events-none"
+            />
+            {/* Product image */}
+            <motion.div
+              className="relative z-10"
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, ease: [0.22, 1, 0.36, 1], delay: 0.3 }}
+            >
+              {heroImage ? (
+                <img
+                  src={heroImage}
+                  alt="GOAT Sportwear"
+                  className="h-[340px] sm:h-[420px] md:h-[490px] w-auto object-contain"
+                  style={{ filter: "drop-shadow(0 24px 48px rgba(0,0,0,0.6))" }}
+                />
+              ) : (
+                <div className="h-[280px] w-[160px] bg-white/[0.03] border border-white/10" />
+              )}
+            </motion.div>
+          </div>
+
+          {/* RIGHT — big brand text */}
+          <motion.div
+            className="order-3 text-center md:text-right"
+            initial={{ opacity: 0, x: 24 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.9 }}
           >
-            Drops
-          </button>
-        </motion.div>
+            <h1
+              className="text-[80px] sm:text-[110px] md:text-[96px] lg:text-[128px] text-white leading-[0.82] tracking-tight select-none"
+              style={{ fontFamily: "'Anton', sans-serif" }}
+            >
+              GOAT
+            </h1>
+            <h2
+              className="text-[30px] sm:text-[42px] md:text-[36px] lg:text-[48px] leading-none tracking-[0.12em] mt-2 select-none"
+              style={{
+                fontFamily: "'Anton', sans-serif",
+                WebkitTextStroke: "1px rgba(255,255,255,0.28)",
+                color: "transparent",
+              }}
+            >
+              SPORTWEAR
+            </h2>
+          </motion.div>
 
-      </motion.div>
+        </div>
+      </div>
 
-      {/* Scroll indicator */}
+      {/* Scroll cue */}
       <motion.button
-        onClick={() => document.getElementById("products")?.scrollIntoView({ behavior: "smooth" })}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 text-white/60 hover:text-green-500 transition-colors"
+        onClick={() => scrollTo("products")}
+        className="relative z-10 mx-auto mb-8 text-white/30 hover:text-green-500 transition-colors"
         animate={{ y: [0, 8, 0] }}
         transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
       >

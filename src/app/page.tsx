@@ -43,13 +43,15 @@ export default async function StorePage() {
     // Supabase not configured yet — show empty state
   }
 
+  const heroImage = products.find((p) => p.image_url)?.image_url;
+
   return (
     <ProductsProvider products={products}>
       <AnnouncementBar activeDrop={activeDrop} />
       <div className="min-h-screen bg-[#09090b]">
         <Header />
         <main>
-          <Hero />
+          <Hero heroImage={heroImage} />
           <FeaturedDropSection />
           <ProductsSection products={products} />
           <CampaignsBanner campaigns={campaigns} />

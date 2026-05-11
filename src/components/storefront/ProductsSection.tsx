@@ -38,9 +38,21 @@ export function ProductsSection({ products }: { products: Product[] }) {
     resetPage();
   };
 
-  const hasFilters = selectedSizes.length > 0 || priceMax !== null || priceMin !== null;
+  const hasFilters =
+    selectedSizes.length > 0 ||
+    priceMax !== null ||
+    priceMin !== null ||
+    activeGender !== "Todos" ||
+    activeCategory !== "Todos";
 
-  const clearFilters = () => { setSelectedSizes([]); setPriceMin(null); setPriceMax(null); resetPage(); };
+  const clearFilters = () => {
+    setSelectedSizes([]);
+    setPriceMin(null);
+    setPriceMax(null);
+    setActiveGender("Todos");
+    setActiveCategory("Todos");
+    resetPage();
+  };
 
   const filtered = useMemo(() => {
     let list = activeCategory === "Todos"
@@ -65,7 +77,7 @@ export function ProductsSection({ products }: { products: Product[] }) {
       list = [...list].sort((a, b) => (b.badge === "BESTSELLER" ? 1 : 0) - (a.badge === "BESTSELLER" ? 1 : 0));
 
     return list;
-  }, [products, activeCategory, activeGender, selectedSizes, priceMax, sortBy]);
+  }, [products, activeCategory, activeGender, selectedSizes, priceMin, priceMax, sortBy]);
 
   const paginated = filtered.slice(0, page * PAGE_SIZE);
   const hasMore = paginated.length < filtered.length;
@@ -93,52 +105,6 @@ export function ProductsSection({ products }: { products: Product[] }) {
           </h2>
         </motion.div>
 
-        {/* Gender filter — scrollable */}
-        <div className="relative mb-3">
-          <div
-            className="flex gap-2 overflow-x-auto pb-1 [&::-webkit-scrollbar]:hidden"
-            style={{ scrollbarWidth: "none" }}
-          >
-            {["Todos", ...GENDERS].map((g) => (
-              <button
-                key={g}
-                onClick={() => { setActiveGender(g); resetPage(); }}
-                className={`flex-shrink-0 px-4 py-1.5 text-xs font-bold border uppercase tracking-[0.15em] transition-all rounded-full ${
-                  activeGender === g
-                    ? "bg-white text-black border-white"
-                    : "border-white/10 text-gray-500 hover:border-white/30 hover:text-white"
-                }`}
-              >
-                {g}
-              </button>
-            ))}
-          </div>
-          <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-[#09090b] to-transparent pointer-events-none" />
-        </div>
-
-        {/* Category filter — scrollable */}
-        <div className="relative mb-4">
-          <div
-            className="flex gap-2 overflow-x-auto pb-1 [&::-webkit-scrollbar]:hidden"
-            style={{ scrollbarWidth: "none" }}
-          >
-            {["Todos", ...CATEGORIES].map((cat) => (
-              <button
-                key={cat}
-                onClick={() => { setActiveCategory(cat); resetPage(); }}
-                className={`flex-shrink-0 px-4 py-2 text-xs font-bold border uppercase tracking-[0.15em] transition-all rounded-lg ${
-                  activeCategory === cat
-                    ? "bg-green-500 text-black border-green-500"
-                    : "border-white/10 text-gray-500 hover:border-white/30 hover:text-white"
-                }`}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
-          <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-[#09090b] to-transparent pointer-events-none" />
-        </div>
-
         {/* Toolbar: filters + sort */}
         <div className="flex items-center justify-between mb-6 gap-3 flex-wrap">
           <div className="flex items-center gap-2">
@@ -154,7 +120,7 @@ export function ProductsSection({ products }: { products: Product[] }) {
               Filtros
               {hasFilters && (
                 <span className="w-4 h-4 bg-green-500 text-black text-[9px] font-black rounded-full flex items-center justify-center">
-                  {selectedSizes.length + (priceMax !== null ? 1 : 0)}
+                  {selectedSizes.length + (priceMax !== null ? 1 : 0) + (activeGender !== "Todos" ? 1 : 0) + (activeCategory !== "Todos" ? 1 : 0)}
                 </span>
               )}
             </button>
@@ -191,6 +157,46 @@ export function ProductsSection({ products }: { products: Product[] }) {
               className="overflow-hidden"
             >
               <div className="border border-white/10 rounded-xl p-5 mb-6 bg-[#111113] space-y-5">
+                {/* Gender */}
+                <div>
+                  <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-3">Género</p>
+                  <div className="flex flex-wrap gap-2">
+                    {["Todos", ...GENDERS].map((g) => (
+                      <button
+                        key={g}
+                        onClick={() => { setActiveGender(g); resetPage(); }}
+                        className={`px-4 py-1.5 text-xs font-bold border uppercase tracking-[0.15em] transition-all rounded-full ${
+                          activeGender === g
+                            ? "bg-white text-black border-white"
+                            : "border-white/10 text-gray-400 hover:border-white/30 hover:text-white"
+                        }`}
+                      >
+                        {g}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Category */}
+                <div>
+                  <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-3">Categoría</p>
+                  <div className="flex flex-wrap gap-2">
+                    {["Todos", ...CATEGORIES].map((cat) => (
+                      <button
+                        key={cat}
+                        onClick={() => { setActiveCategory(cat); resetPage(); }}
+                        className={`px-4 py-1.5 text-xs font-bold border uppercase tracking-[0.15em] transition-all rounded-lg ${
+                          activeCategory === cat
+                            ? "bg-green-500 text-black border-green-500"
+                            : "border-white/10 text-gray-400 hover:border-white/30 hover:text-white"
+                        }`}
+                      >
+                        {cat}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
                 {/* Sizes */}
                 <div>
                   <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-3">Talle</p>
