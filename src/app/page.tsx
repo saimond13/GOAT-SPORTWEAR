@@ -1,5 +1,5 @@
 import { Header } from "@/components/storefront/Header";
-import { Hero } from "@/components/storefront/Hero";
+import { GoatHero } from "@/components/storefront/GoatHero";
 import { ProductsSection } from "@/components/storefront/ProductsSection";
 import { FeaturedDropSection } from "@/components/storefront/FeaturedDropSection";
 import { CampaignsBanner } from "@/components/storefront/CampaignsBanner";
@@ -51,7 +51,7 @@ export default async function StorePage() {
       <div className="min-h-screen bg-[#09090b]">
         <Header />
         <main>
-          <Hero heroImage={heroImage} />
+          <GoatHero imageSrc={heroImage} activeDrop={activeDrop} />
           <FeaturedDropSection />
           <ProductsSection products={products} />
           <CampaignsBanner campaigns={campaigns} />
