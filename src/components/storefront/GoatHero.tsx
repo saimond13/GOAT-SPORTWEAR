@@ -54,6 +54,14 @@ export function GoatHero({
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute right-0 top-1/4 w-[500px] h-[500px] rounded-full bg-green-500/[0.06] blur-[140px]" />
         <div className="absolute -bottom-20 left-1/3 w-[400px] h-[300px] rounded-full bg-green-500/[0.04] blur-[100px]" />
+        {/* Spotlight behind hero model — positioned at right column */}
+        <div
+          className="absolute right-0 bottom-0 w-1/2 h-full"
+          style={{
+            background:
+              "radial-gradient(ellipse 80% 60% at 55% 85%, rgba(255,255,255,0.06) 0%, transparent 70%)",
+          }}
+        />
         {/* Subtle grid */}
         <div
           className="absolute inset-0 opacity-[0.015]"
@@ -172,30 +180,21 @@ export function GoatHero({
 
             {/* ── RIGHT: image ── */}
             <motion.div
-              className="relative flex items-end justify-center lg:justify-end lg:h-[80vh] bg-[#09090b] overflow-hidden"
+              className="relative flex items-end justify-center lg:justify-end lg:h-[80vh]"
               initial={{ opacity: 0, scale: 0.97 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 1, ease: [0.22, 1, 0.36, 1], delay: 0.15 }}
             >
               {imageSrc ? (
                 <>
-                  {/* Spotlight behind model */}
-                  <div
-                    className="absolute inset-0 pointer-events-none z-0"
-                    style={{
-                      background:
-                        "radial-gradient(ellipse 70% 60% at 55% 85%, rgba(255,255,255,0.07) 0%, transparent 70%)",
-                    }}
-                  />
                   {/* Gradient fade left edge */}
-                  <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-[#09090b] to-transparent z-10 pointer-events-none" />
+                  <div className="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-[#09090b] to-transparent z-10 pointer-events-none" />
                   {/* Gradient overlay at base */}
                   <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#09090b] to-transparent z-10 pointer-events-none" />
                   <img
                     src={imageSrc}
                     alt={imageAlt}
                     className="h-[320px] sm:h-[440px] lg:h-[600px] xl:h-[680px] w-auto object-contain object-bottom relative z-[1]"
-                    style={{ filter: "brightness(1.35) contrast(1.05)" }}
                   />
                   {/* Drop badge */}
                   {activeDrop && (
