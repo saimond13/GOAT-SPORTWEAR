@@ -101,23 +101,28 @@ export function GoatHero({
 
       {/* ── Model image — absolutely positioned right half, desktop only ── */}
       {imageSrc && (
-        <div className="absolute right-0 top-0 bottom-0 w-[52%] hidden lg:flex items-end justify-center z-[5] pointer-events-none">
-          {/* Fade left edge — wide & gradual */}
-          <div className="absolute left-0 top-0 bottom-0 w-48 z-10"
-            style={{ background: "linear-gradient(to right, #09090b 0%, #09090b 20%, rgba(9,9,11,0.7) 55%, transparent 100%)" }} />
-          {/* Fade bottom edge */}
-          <div className="absolute bottom-0 left-0 right-0 h-40 z-10"
-            style={{ background: "linear-gradient(to top, #09090b 0%, #09090b 15%, rgba(9,9,11,0.6) 60%, transparent 100%)" }} />
-          {/* Fade top edge — subtle */}
-          <div className="absolute top-0 left-0 right-0 h-24 z-10"
-            style={{ background: "linear-gradient(to bottom, #09090b 0%, rgba(9,9,11,0.4) 50%, transparent 100%)" }} />
-          {/* Fade right edge */}
-          <div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-[#09090b] to-transparent z-10" />
-
+        <div className="absolute right-0 top-0 bottom-0 w-[54%] hidden lg:flex items-end justify-center z-[5] pointer-events-none">
           <motion.img
             src={imageSrc}
             alt={imageAlt}
             className="h-[88%] w-auto object-contain object-bottom relative z-[1]"
+            style={{
+              WebkitMaskImage: [
+                "linear-gradient(to right,  transparent 0%, rgba(0,0,0,0.5) 18%, black 34%)",
+                "linear-gradient(to top,    transparent 0%, rgba(0,0,0,0.5) 10%, black 22%)",
+                "linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.6) 6%,  black 14%)",
+                "linear-gradient(to left,   transparent 0%, rgba(0,0,0,0.7) 4%,  black 10%)",
+              ].join(", "),
+              WebkitMaskComposite: "destination-in, destination-in, destination-in",
+              maskImage: [
+                "linear-gradient(to right,  transparent 0%, rgba(0,0,0,0.5) 18%, black 34%)",
+                "linear-gradient(to top,    transparent 0%, rgba(0,0,0,0.5) 10%, black 22%)",
+                "linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.6) 6%,  black 14%)",
+                "linear-gradient(to left,   transparent 0%, rgba(0,0,0,0.7) 4%,  black 10%)",
+              ].join(", "),
+              maskComposite: "intersect",
+              filter: "drop-shadow(-8px 0 32px rgba(9,9,11,0.9)) drop-shadow(0 24px 48px rgba(9,9,11,0.7))",
+            }}
             initial={{ opacity: 0, y: 50, scale: 0.92 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 1.2, delay: 0.2, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }}
