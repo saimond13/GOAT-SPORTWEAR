@@ -135,30 +135,30 @@ export function CampaignsClient({ campaigns }: { campaigns: Campaign[] }) {
 
   const now = new Date();
   const getStatus = (c: Campaign) => {
-    if (!c.is_active) return { label: "Inactiva", color: "bg-white/10 text-gray-500" };
-    if (now < new Date(c.starts_at)) return { label: "Próximamente", color: "bg-yellow-600/20 text-yellow-400" };
-    if (now > new Date(c.ends_at)) return { label: "Finalizada", color: "bg-gray-600/20 text-gray-500" };
-    return { label: "Activa", color: "bg-green-600/20 text-green-400" };
+    if (!c.is_active) return { label: "Inactiva", color: "bg-[#111111]/8 text-[#B8B8B8]" };
+    if (now < new Date(c.starts_at)) return { label: "Próximamente", color: "bg-yellow-600/20 text-yellow-600" };
+    if (now > new Date(c.ends_at)) return { label: "Finalizada", color: "bg-[#111111]/8 text-[#B8B8B8]" };
+    return { label: "Activa", color: "bg-[#556B5D]/20 text-[#556B5D]" };
   };
 
   const inputClass =
-    "w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white text-sm focus:outline-none focus:border-green-500 placeholder-gray-600";
-  const labelClass = "block text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1";
+    "w-full bg-white border border-[#111111]/10 rounded-xl px-3 py-2 text-[#111111] text-sm focus:outline-none focus:border-[#556B5D] placeholder-[#B8B8B8]";
+  const labelClass = "block text-[10px] font-bold text-[#B8B8B8] uppercase tracking-widest mb-1";
 
   return (
     <>
       <div className="flex justify-end">
         <button
           onClick={openNew}
-          className="flex items-center gap-2 bg-green-600 hover:bg-green-500 text-white font-bold px-4 py-2.5 rounded-xl text-sm transition-colors"
+          className="flex items-center gap-2 bg-[#556B5D] hover:bg-[#4a5f52] text-white font-bold px-4 py-2.5 rounded-xl text-sm transition-colors"
         >
           <Plus className="w-4 h-4" /> Nueva campaña
         </button>
       </div>
 
       {campaigns.length === 0 ? (
-        <div className="bg-white/5 border border-white/10 rounded-2xl p-12 text-center">
-          <p className="text-gray-500 text-sm">Sin campañas. Creá lanzamientos para mostrar en la tienda.</p>
+        <div className="bg-white border border-[#111111]/10 rounded-2xl p-12 text-center">
+          <p className="text-[#B8B8B8] text-sm">Sin campañas. Creá lanzamientos para mostrar en la tienda.</p>
         </div>
       ) : (
         <div className="grid gap-4">
@@ -167,7 +167,7 @@ export function CampaignsClient({ campaigns }: { campaigns: Campaign[] }) {
             return (
               <div
                 key={c.id}
-                className="bg-white/5 border border-white/10 rounded-2xl p-5 flex items-start justify-between gap-4"
+                className="bg-white border border-[#111111]/10 rounded-2xl p-5 flex items-start justify-between gap-4"
               >
                 <div className="flex gap-4 flex-1 min-w-0">
                   {/* Thumbnail */}
@@ -184,37 +184,37 @@ export function CampaignsClient({ campaigns }: { campaigns: Campaign[] }) {
                         {status.label}
                       </span>
                       {c.target_category && (
-                        <span className="text-[10px] text-gray-500 bg-white/5 px-2 py-0.5 rounded-full">
+                        <span className="text-[10px] text-[#B8B8B8] bg-[#111111]/5 px-2 py-0.5 rounded-full">
                           {c.target_category}
                         </span>
                       )}
                       {c.images && c.images.length > 0 && (
-                        <span className="text-[10px] text-blue-400 bg-blue-400/10 px-2 py-0.5 rounded-full flex items-center gap-1">
+                        <span className="text-[10px] text-blue-500 bg-blue-400/10 px-2 py-0.5 rounded-full flex items-center gap-1">
                           <ImageIcon className="w-2.5 h-2.5" />
                           {c.images.length} foto{c.images.length !== 1 ? "s" : ""}
                         </span>
                       )}
                       {c.countdown_ends_at && (
-                        <span className="text-[10px] text-orange-400 bg-orange-400/10 px-2 py-0.5 rounded-full flex items-center gap-1">
+                        <span className="text-[10px] text-orange-500 bg-orange-400/10 px-2 py-0.5 rounded-full flex items-center gap-1">
                           <Timer className="w-2.5 h-2.5" /> Countdown
                         </span>
                       )}
                       {c.cta_url && (
-                        <span className="text-[10px] text-purple-400 bg-purple-400/10 px-2 py-0.5 rounded-full flex items-center gap-1">
+                        <span className="text-[10px] text-purple-500 bg-purple-400/10 px-2 py-0.5 rounded-full flex items-center gap-1">
                           <ExternalLink className="w-2.5 h-2.5" /> {c.cta_label ?? "Ver más"}
                         </span>
                       )}
                       {c.is_preventa && (
-                        <span className="text-[10px] text-yellow-400 bg-yellow-400/10 px-2 py-0.5 rounded-full flex items-center gap-1">
+                        <span className="text-[10px] text-yellow-600 bg-yellow-400/10 px-2 py-0.5 rounded-full flex items-center gap-1">
                           <Tag className="w-2.5 h-2.5" /> Preventa {c.deposit_percentage}%
                         </span>
                       )}
                     </div>
-                    <h3 className="text-white font-black text-base truncate">{c.title}</h3>
+                    <h3 className="text-[#111111] font-black text-base truncate">{c.title}</h3>
                     {c.description && (
-                      <p className="text-gray-500 text-sm mt-1 line-clamp-1">{c.description}</p>
+                      <p className="text-[#B8B8B8] text-sm mt-1 line-clamp-1">{c.description}</p>
                     )}
-                    <p className="text-gray-600 text-xs mt-2">
+                    <p className="text-[#B8B8B8] text-xs mt-2">
                       {formatDate(c.starts_at)} → {formatDate(c.ends_at)}
                     </p>
                   </div>
@@ -222,15 +222,15 @@ export function CampaignsClient({ campaigns }: { campaigns: Campaign[] }) {
                 <div className="flex gap-2 flex-shrink-0">
                   <button
                     onClick={() => openEdit(c)}
-                    className="w-8 h-8 bg-white/10 hover:bg-white/20 rounded-lg flex items-center justify-center"
+                    className="w-8 h-8 bg-[#111111]/8 hover:bg-[#111111]/15 rounded-lg flex items-center justify-center"
                   >
-                    <Edit2 className="w-3.5 h-3.5 text-gray-300" />
+                    <Edit2 className="w-3.5 h-3.5 text-[#2B2B2B]" />
                   </button>
                   <button
                     onClick={() => handleDelete(c.id)}
-                    className="w-8 h-8 bg-white/10 hover:bg-red-600/20 rounded-lg flex items-center justify-center"
+                    className="w-8 h-8 bg-[#111111]/8 hover:bg-red-600/20 rounded-lg flex items-center justify-center"
                   >
-                    <Trash2 className="w-3.5 h-3.5 text-gray-300" />
+                    <Trash2 className="w-3.5 h-3.5 text-[#2B2B2B]" />
                   </button>
                 </div>
               </div>
@@ -243,13 +243,13 @@ export function CampaignsClient({ campaigns }: { campaigns: Campaign[] }) {
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
           <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={() => setShowModal(false)} />
-          <div className="relative bg-[#1a1a1a] border border-white/10 rounded-2xl p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto">
+          <div className="relative bg-[#F5F5F3] border border-[#111111]/10 rounded-2xl p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-5">
-              <h3 className="text-white font-black text-lg">
+              <h3 className="text-[#111111] font-black text-lg">
                 {editing ? "Editar campaña" : "Nueva campaña"}
               </h3>
               <button onClick={() => setShowModal(false)}>
-                <X className="w-5 h-5 text-gray-500" />
+                <X className="w-5 h-5 text-[#B8B8B8]" />
               </button>
             </div>
 
@@ -282,17 +282,17 @@ export function CampaignsClient({ campaigns }: { campaigns: Campaign[] }) {
               <div>
                 <label className={labelClass}>Imágenes ({pendingImages.length})</label>
                 <div
-                  className="border-2 border-dashed border-white/10 rounded-xl p-4 text-center cursor-pointer hover:border-green-500/40 transition-colors"
+                  className="border-2 border-dashed border-[#111111]/10 rounded-xl p-4 text-center cursor-pointer hover:border-[#556B5D]/40 transition-colors"
                   onClick={() => fileInputRef.current?.click()}
                 >
                   {uploadingImages ? (
-                    <div className="flex items-center justify-center gap-2 text-gray-400 text-sm">
+                    <div className="flex items-center justify-center gap-2 text-[#B8B8B8] text-sm">
                       <Loader2 className="w-4 h-4 animate-spin" /> Subiendo...
                     </div>
                   ) : (
                     <div className="flex flex-col items-center gap-1">
-                      <Upload className="w-5 h-5 text-gray-600" />
-                      <span className="text-gray-500 text-xs">Clic para subir múltiples fotos</span>
+                      <Upload className="w-5 h-5 text-[#B8B8B8]" />
+                      <span className="text-[#B8B8B8] text-xs">Clic para subir múltiples fotos</span>
                     </div>
                   )}
                 </div>
@@ -392,7 +392,7 @@ export function CampaignsClient({ campaigns }: { campaigns: Campaign[] }) {
                   onChange={(e) => setForm((f) => ({ ...f, countdown_ends_at: e.target.value }))}
                   className={inputClass}
                 />
-                <p className="text-[10px] text-gray-600 mt-1">
+                <p className="text-[10px] text-[#B8B8B8] mt-1">
                   Si lo configurás, aparece un contador regresivo en la card del drop
                 </p>
               </div>
@@ -423,19 +423,19 @@ export function CampaignsClient({ campaigns }: { campaigns: Campaign[] }) {
               </div>
 
               {/* Preventa / Seña */}
-              <div className="border border-white/10 rounded-xl p-4 space-y-3">
+              <div className="border border-[#111111]/10 rounded-xl p-4 space-y-3">
                 <label className="flex items-center gap-3 cursor-pointer">
                   <div
-                    className={`w-10 h-5 rounded-full relative transition-colors ${form.is_preventa ? "bg-green-600" : "bg-white/10"}`}
+                    className={`w-10 h-5 rounded-full relative transition-colors ${form.is_preventa ? "bg-[#556B5D]" : "bg-[#111111]/10"}`}
                     onClick={() => setForm((f) => ({ ...f, is_preventa: !f.is_preventa }))}
                   >
                     <div className={`absolute top-0.5 w-4 h-4 bg-white rounded-full transition-transform ${form.is_preventa ? "translate-x-5" : "translate-x-0.5"}`} />
                   </div>
                   <div>
-                    <span className="text-white text-sm font-bold flex items-center gap-1.5">
-                      <Tag className="w-3.5 h-3.5 text-green-400" /> Modo preventa / seña
+                    <span className="text-[#111111] text-sm font-bold flex items-center gap-1.5">
+                      <Tag className="w-3.5 h-3.5 text-[#556B5D]" /> Modo preventa / seña
                     </span>
-                    <p className="text-gray-600 text-[10px]">Registra compras con seña parcial</p>
+                    <p className="text-[#B8B8B8] text-[10px]">Registra compras con seña parcial</p>
                   </div>
                 </label>
 
@@ -453,7 +453,7 @@ export function CampaignsClient({ campaigns }: { campaigns: Campaign[] }) {
                         required={form.is_preventa}
                       />
                       {form.unit_price > 0 && (
-                        <p className="text-[10px] text-green-500 mt-1">
+                        <p className="text-[10px] text-[#556B5D] mt-1">
                           Seña ({form.deposit_percentage}%): ${Math.round(form.unit_price * form.deposit_percentage / 100).toLocaleString("es-AR")}
                           {" · "}Saldo: ${Math.round(form.unit_price * (1 - form.deposit_percentage / 100)).toLocaleString("es-AR")}
                         </p>
@@ -484,7 +484,7 @@ export function CampaignsClient({ campaigns }: { campaigns: Campaign[] }) {
                         />
                       </div>
                     </div>
-                    <p className="text-[10px] text-gray-600">
+                    <p className="text-[10px] text-[#B8B8B8]">
                       Las reservas con seña quedan registradas en la sección de campañas para control interno.
                     </p>
                   </div>
@@ -492,22 +492,22 @@ export function CampaignsClient({ campaigns }: { campaigns: Campaign[] }) {
               </div>
 
               {/* Size chart editor */}
-              <div className="border border-white/10 rounded-xl p-4 space-y-3">
+              <div className="border border-[#111111]/10 rounded-xl p-4 space-y-3">
                 <div className="flex items-center justify-between">
-                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
+                  <p className="text-[10px] font-bold text-[#B8B8B8] uppercase tracking-widest flex items-center gap-1.5">
                     <Ruler className="w-3 h-3" /> Tabla de talles
                   </p>
                   <button
                     type="button"
                     onClick={() => setSizeChart((prev) => [...prev, { talle: "", largo: "", ancho: "" }])}
-                    className="text-[10px] text-green-400 hover:text-green-300 font-bold flex items-center gap-1"
+                    className="text-[10px] text-[#556B5D] hover:text-[#4a5f52] font-bold flex items-center gap-1"
                   >
                     <Plus className="w-3 h-3" /> Agregar fila
                   </button>
                 </div>
                 {sizeChart.length > 0 && (
                   <div className="space-y-2">
-                    <div className="grid grid-cols-[1fr_1fr_1fr_auto] gap-2 text-[9px] font-bold text-gray-600 uppercase tracking-widest px-1">
+                    <div className="grid grid-cols-[1fr_1fr_1fr_auto] gap-2 text-[9px] font-bold text-[#B8B8B8] uppercase tracking-widest px-1">
                       <span>Talle</span><span>Largo (cm)</span><span>Ancho (cm)</span><span />
                     </div>
                     {sizeChart.map((row, i) => (
@@ -515,25 +515,25 @@ export function CampaignsClient({ campaigns }: { campaigns: Campaign[] }) {
                         <input
                           value={row.talle}
                           onChange={(e) => setSizeChart((prev) => prev.map((r, j) => j === i ? { ...r, talle: e.target.value } : r))}
-                          className="bg-white/5 border border-white/10 rounded-lg px-2 py-1.5 text-white text-xs focus:outline-none focus:border-green-500"
+                          className="bg-white border border-[#111111]/10 rounded-lg px-2 py-1.5 text-[#111111] text-xs focus:outline-none focus:border-[#556B5D]"
                           placeholder="1"
                         />
                         <input
                           value={row.largo}
                           onChange={(e) => setSizeChart((prev) => prev.map((r, j) => j === i ? { ...r, largo: e.target.value } : r))}
-                          className="bg-white/5 border border-white/10 rounded-lg px-2 py-1.5 text-white text-xs focus:outline-none focus:border-green-500"
+                          className="bg-white border border-[#111111]/10 rounded-lg px-2 py-1.5 text-[#111111] text-xs focus:outline-none focus:border-[#556B5D]"
                           placeholder="70"
                         />
                         <input
                           value={row.ancho}
                           onChange={(e) => setSizeChart((prev) => prev.map((r, j) => j === i ? { ...r, ancho: e.target.value } : r))}
-                          className="bg-white/5 border border-white/10 rounded-lg px-2 py-1.5 text-white text-xs focus:outline-none focus:border-green-500"
+                          className="bg-white border border-[#111111]/10 rounded-lg px-2 py-1.5 text-[#111111] text-xs focus:outline-none focus:border-[#556B5D]"
                           placeholder="52"
                         />
                         <button
                           type="button"
                           onClick={() => setSizeChart((prev) => prev.filter((_, j) => j !== i))}
-                          className="w-6 h-6 flex items-center justify-center text-gray-600 hover:text-red-400"
+                          className="w-6 h-6 flex items-center justify-center text-[#B8B8B8] hover:text-red-400"
                         >
                           <X className="w-3.5 h-3.5" />
                         </button>
@@ -542,7 +542,7 @@ export function CampaignsClient({ campaigns }: { campaigns: Campaign[] }) {
                   </div>
                 )}
                 {sizeChart.length === 0 && (
-                  <p className="text-[10px] text-gray-600">Sin tabla de talles. Agregá filas si el drop tiene medidas específicas.</p>
+                  <p className="text-[10px] text-[#B8B8B8]">Sin tabla de talles. Agregá filas si el drop tiene medidas específicas.</p>
                 )}
               </div>
 
@@ -560,7 +560,7 @@ export function CampaignsClient({ campaigns }: { campaigns: Campaign[] }) {
               {/* Active toggle */}
               <label className="flex items-center gap-3 cursor-pointer pt-1">
                 <div
-                  className={`w-10 h-5 rounded-full relative transition-colors ${form.is_active ? "bg-green-600" : "bg-white/10"}`}
+                  className={`w-10 h-5 rounded-full relative transition-colors ${form.is_active ? "bg-[#556B5D]" : "bg-[#111111]/10"}`}
                   onClick={() => setForm((f) => ({ ...f, is_active: !f.is_active }))}
                 >
                   <div
@@ -569,14 +569,14 @@ export function CampaignsClient({ campaigns }: { campaigns: Campaign[] }) {
                     }`}
                   />
                 </div>
-                <span className="text-gray-300 text-sm">Campaña activa</span>
+                <span className="text-[#2B2B2B] text-sm">Campaña activa</span>
               </label>
 
               <div className="flex gap-3 pt-2">
                 <button
                   type="submit"
                   disabled={saving || uploadingImages}
-                  className="flex-1 bg-green-600 hover:bg-green-500 text-white font-black py-2.5 rounded-xl text-sm flex items-center justify-center gap-2"
+                  className="flex-1 bg-[#556B5D] hover:bg-[#4a5f52] text-white font-black py-2.5 rounded-xl text-sm flex items-center justify-center gap-2"
                 >
                   {saving && <Loader2 className="w-4 h-4 animate-spin" />}
                   {editing ? "Guardar" : "Crear"}
@@ -584,7 +584,7 @@ export function CampaignsClient({ campaigns }: { campaigns: Campaign[] }) {
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="px-4 border border-white/10 text-gray-400 rounded-xl text-sm"
+                  className="px-4 border border-[#111111]/10 text-[#2B2B2B] rounded-xl text-sm"
                 >
                   Cancelar
                 </button>

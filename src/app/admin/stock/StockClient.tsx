@@ -64,7 +64,6 @@ export function StockClient({
 
     const newStock = currentStock !== null ? Math.max(0, currentStock - qty) : null;
 
-    // Update stock in products table
     const updatedStockBySize = {
       ...(selectedProduct.stock_by_size ?? {}),
       ...(newStock !== null ? { [selectedSize]: newStock } : {}),
@@ -77,7 +76,6 @@ export function StockClient({
 
     if (updateErr) { setError("Error al actualizar stock"); setSaving(false); return; }
 
-    // Log the movement
     await supabase.from("stock_movements").insert({
       product_id: selectedProduct.id,
       product_name: selectedProduct.name,
@@ -111,25 +109,25 @@ export function StockClient({
     startTransition(() => router.refresh());
   };
 
-  const inputClass = "w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white text-sm focus:outline-none focus:border-green-500";
+  const inputClass = "w-full bg-white border border-[#111111]/10 rounded-xl px-3 py-2 text-[#111111] text-sm focus:outline-none focus:border-[#556B5D]";
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-white font-black text-2xl">Gestión de Stock</h1>
-        <p className="text-gray-500 text-sm mt-1">Registrá ventas locales y editá stock rápidamente</p>
+        <h1 className="text-[#111111] font-black text-2xl">Gestión de Stock</h1>
+        <p className="text-[#B8B8B8] text-sm mt-1">Registrá ventas locales y editá stock rápidamente</p>
       </div>
 
       <div className="grid lg:grid-cols-2 gap-6">
         {/* Quick deduct - venta local */}
-        <div className="bg-white/5 border border-white/10 rounded-2xl p-5 space-y-4">
-          <h2 className="text-white font-black text-base flex items-center gap-2">
+        <div className="bg-white border border-[#111111]/10 rounded-2xl p-5 space-y-4">
+          <h2 className="text-[#111111] font-black text-base flex items-center gap-2">
             <Minus className="w-4 h-4 text-orange-400" />
             Registrar venta local
           </h2>
 
           <div>
-            <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1">Producto</label>
+            <label className="block text-[10px] font-bold text-[#B8B8B8] uppercase tracking-widest mb-1">Producto</label>
             <select
               value={selectedProduct?.id ?? ""}
               onChange={(e) => handleProductChange(e.target.value)}
@@ -145,7 +143,7 @@ export function StockClient({
           {selectedProduct && (
             <>
               <div>
-                <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1">Talle</label>
+                <label className="block text-[10px] font-bold text-[#B8B8B8] uppercase tracking-widest mb-1">Talle</label>
                 <div className="flex flex-wrap gap-2">
                   {sizes.map((s) => {
                     const stock = selectedProduct.stock_by_size?.[s] ?? null;
@@ -155,13 +153,13 @@ export function StockClient({
                         onClick={() => setSelectedSize(s)}
                         className={`px-3 py-1.5 text-xs font-bold border rounded-lg transition-all ${
                           selectedSize === s
-                            ? "bg-green-600 border-green-600 text-white"
-                            : "border-white/10 text-gray-400 hover:border-white/30"
+                            ? "bg-[#556B5D] border-[#556B5D] text-white"
+                            : "border-[#111111]/10 text-[#2B2B2B] hover:border-[#111111]/30"
                         }`}
                       >
                         {s}
                         {stock !== null && (
-                          <span className={`ml-1.5 text-[9px] ${stock <= 3 ? "text-red-400" : "text-gray-600"}`}>
+                          <span className={`ml-1.5 text-[9px] ${stock <= 3 ? "text-red-400" : "text-[#B8B8B8]"}`}>
                             ({stock})
                           </span>
                         )}
@@ -174,24 +172,24 @@ export function StockClient({
               {selectedSize && (
                 <>
                   {currentStock !== null && (
-                    <p className="text-xs text-gray-500">
-                      Stock actual: <strong className={`${currentStock <= 3 ? "text-orange-400" : "text-white"}`}>{currentStock} unidades</strong>
+                    <p className="text-xs text-[#B8B8B8]">
+                      Stock actual: <strong className={`${currentStock <= 3 ? "text-orange-400" : "text-[#111111]"}`}>{currentStock} unidades</strong>
                     </p>
                   )}
 
                   <div>
-                    <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1">Cantidad vendida</label>
+                    <label className="block text-[10px] font-bold text-[#B8B8B8] uppercase tracking-widest mb-1">Cantidad vendida</label>
                     <div className="flex items-center gap-3">
                       <button
                         onClick={() => setQty(Math.max(1, qty - 1))}
-                        className="w-9 h-9 border border-white/10 rounded-lg flex items-center justify-center text-gray-400 hover:border-white/30"
+                        className="w-9 h-9 border border-[#111111]/10 rounded-lg flex items-center justify-center text-[#2B2B2B] hover:border-[#111111]/30"
                       >
                         <Minus className="w-3.5 h-3.5" />
                       </button>
-                      <span className="font-black text-white text-lg w-6 text-center">{qty}</span>
+                      <span className="font-black text-[#111111] text-lg w-6 text-center">{qty}</span>
                       <button
                         onClick={() => setQty(qty + 1)}
-                        className="w-9 h-9 border border-white/10 rounded-lg flex items-center justify-center text-gray-400 hover:border-white/30"
+                        className="w-9 h-9 border border-[#111111]/10 rounded-lg flex items-center justify-center text-[#2B2B2B] hover:border-[#111111]/30"
                       >
                         <Plus className="w-3.5 h-3.5" />
                       </button>
@@ -199,7 +197,7 @@ export function StockClient({
                   </div>
 
                   <div>
-                    <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1">Nota (opcional)</label>
+                    <label className="block text-[10px] font-bold text-[#B8B8B8] uppercase tracking-widest mb-1">Nota (opcional)</label>
                     <input
                       value={notes}
                       onChange={(e) => setNotes(e.target.value)}
@@ -209,7 +207,7 @@ export function StockClient({
                   </div>
 
                   {error && <p className="text-red-400 text-sm">{error}</p>}
-                  {success && <p className="text-green-400 text-sm">{success}</p>}
+                  {success && <p className="text-[#556B5D] text-sm">{success}</p>}
 
                   <button
                     onClick={handleDeduct}
@@ -226,9 +224,9 @@ export function StockClient({
         </div>
 
         {/* Stock overview — quick inline edit */}
-        <div className="bg-white/5 border border-white/10 rounded-2xl p-5 space-y-4">
-          <h2 className="text-white font-black text-base flex items-center gap-2">
-            <Plus className="w-4 h-4 text-green-400" />
+        <div className="bg-white border border-[#111111]/10 rounded-2xl p-5 space-y-4">
+          <h2 className="text-[#111111] font-black text-base flex items-center gap-2">
+            <Plus className="w-4 h-4 text-[#556B5D]" />
             Stock por producto
           </h2>
           <div className="space-y-3 max-h-96 overflow-y-auto pr-1">
@@ -236,12 +234,12 @@ export function StockClient({
               if (!p.stock_by_size || Object.keys(p.stock_by_size).length === 0) return null;
               const totalStock = Object.values(p.stock_by_size as Record<string, number>).reduce((s, v) => s + v, 0);
               return (
-                <div key={p.id} className="border border-white/5 rounded-xl p-3">
+                <div key={p.id} className="border border-[#111111]/8 rounded-xl p-3">
                   <div className="flex items-center gap-2 mb-2">
                     {p.image_url && <img src={p.image_url} alt="" className="w-8 h-10 object-cover rounded flex-shrink-0" />}
                     <div className="flex-1 min-w-0">
-                      <p className="text-white text-xs font-bold truncate">{p.name}</p>
-                      <p className="text-gray-600 text-[10px]">Total: {totalStock} ud.</p>
+                      <p className="text-[#111111] text-xs font-bold truncate">{p.name}</p>
+                      <p className="text-[#B8B8B8] text-[10px]">Total: {totalStock} ud.</p>
                     </div>
                     {totalStock === 0 && <span className="text-[10px] text-red-400 font-bold">AGOTADO</span>}
                     {totalStock > 0 && totalStock <= 5 && <span className="text-[10px] text-orange-400 font-bold">BAJO</span>}
@@ -249,7 +247,7 @@ export function StockClient({
                   <div className="flex flex-wrap gap-2">
                     {Object.entries(p.stock_by_size as Record<string, number>).map(([size, stock]) => (
                       <div key={size} className="flex items-center gap-1">
-                        <span className="text-[10px] text-gray-500 font-bold w-8 text-center">{size}</span>
+                        <span className="text-[10px] text-[#B8B8B8] font-bold w-8 text-center">{size}</span>
                         <input
                           type="number"
                           min={0}
@@ -258,7 +256,7 @@ export function StockClient({
                             const v = parseInt(e.target.value);
                             if (!isNaN(v) && v !== stock) handleManualEdit(p.id, size, v);
                           }}
-                          className="w-14 bg-white/5 border border-white/10 rounded px-2 py-1 text-white text-xs text-center focus:outline-none focus:border-green-500"
+                          className="w-14 bg-[#E7E7E4] border border-[#111111]/10 rounded px-2 py-1 text-[#111111] text-xs text-center focus:outline-none focus:border-[#556B5D]"
                         />
                       </div>
                     ))}
@@ -271,44 +269,44 @@ export function StockClient({
       </div>
 
       {/* Movement log */}
-      <div className="bg-white/5 border border-white/10 rounded-2xl p-5">
-        <h2 className="text-white font-black text-base mb-4 flex items-center gap-2">
-          <History className="w-4 h-4 text-gray-400" />
+      <div className="bg-white border border-[#111111]/10 rounded-2xl p-5">
+        <h2 className="text-[#111111] font-black text-base mb-4 flex items-center gap-2">
+          <History className="w-4 h-4 text-[#B8B8B8]" />
           Historial de movimientos
         </h2>
         {movements.length === 0 ? (
-          <p className="text-gray-600 text-sm text-center py-8">Sin movimientos registrados aún</p>
+          <p className="text-[#B8B8B8] text-sm text-center py-8">Sin movimientos registrados aún</p>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-white/5">
+                <tr className="border-b border-[#111111]/8">
                   {["Fecha", "Producto", "Talle", "Cantidad", "Tipo", "Nota"].map((h) => (
-                    <th key={h} className="text-left px-3 py-2 text-[10px] font-bold text-gray-500 uppercase tracking-widest">{h}</th>
+                    <th key={h} className="text-left px-3 py-2 text-[10px] font-bold text-[#B8B8B8] uppercase tracking-widest">{h}</th>
                   ))}
                 </tr>
               </thead>
               <tbody>
                 {movements.map((m) => (
-                  <tr key={m.id} className="border-b border-white/5 hover:bg-white/5">
-                    <td className="px-3 py-2 text-gray-500 text-xs whitespace-nowrap">
+                  <tr key={m.id} className="border-b border-[#111111]/8 hover:bg-[#111111]/5">
+                    <td className="px-3 py-2 text-[#B8B8B8] text-xs whitespace-nowrap">
                       {new Date(m.created_at).toLocaleDateString("es-AR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" })}
                     </td>
-                    <td className="px-3 py-2 text-white text-xs font-bold">{m.product_name}</td>
-                    <td className="px-3 py-2 text-gray-400 text-xs">{m.size}</td>
-                    <td className={`px-3 py-2 text-xs font-black ${m.quantity < 0 ? "text-red-400" : "text-green-400"}`}>
+                    <td className="px-3 py-2 text-[#111111] text-xs font-bold">{m.product_name}</td>
+                    <td className="px-3 py-2 text-[#2B2B2B] text-xs">{m.size}</td>
+                    <td className={`px-3 py-2 text-xs font-black ${m.quantity < 0 ? "text-red-400" : "text-[#556B5D]"}`}>
                       {m.quantity > 0 ? "+" : ""}{m.quantity}
                     </td>
                     <td className="px-3 py-2">
                       <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                        m.type === "venta_web" ? "bg-blue-500/20 text-blue-400"
-                        : m.type === "venta_local" ? "bg-orange-500/20 text-orange-400"
-                        : "bg-gray-500/20 text-gray-400"
+                        m.type === "venta_web" ? "bg-blue-500/20 text-blue-500"
+                        : m.type === "venta_local" ? "bg-orange-500/20 text-orange-500"
+                        : "bg-[#111111]/8 text-[#B8B8B8]"
                       }`}>
                         {m.type === "venta_web" ? "Web" : m.type === "venta_local" ? "Local" : "Ajuste"}
                       </span>
                     </td>
-                    <td className="px-3 py-2 text-gray-600 text-xs">{m.notes ?? "—"}</td>
+                    <td className="px-3 py-2 text-[#B8B8B8] text-xs">{m.notes ?? "—"}</td>
                   </tr>
                 ))}
               </tbody>

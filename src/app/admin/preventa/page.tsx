@@ -20,8 +20,8 @@ export default async function PreventaPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-white font-black text-2xl">Preventa / Reservas</h1>
-        <p className="text-gray-500 text-sm mt-1">Reservas con seña de todos los drops</p>
+        <h1 className="text-[#111111] font-black text-2xl">Preventa / Reservas</h1>
+        <p className="text-[#B8B8B8] text-sm mt-1">Reservas con seña de todos los drops</p>
       </div>
       <PreventaClient registrations={mapped} />
     </div>

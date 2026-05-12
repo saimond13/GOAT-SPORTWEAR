@@ -31,13 +31,13 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
   return (
     <aside className="admin-sidebar w-60 flex flex-col h-full">
       {/* Header */}
-      <div className="flex items-center justify-between px-5 py-5 border-b border-white/5">
+      <div className="flex items-center justify-between px-5 py-5 border-b border-white/10">
         <div className="flex items-center gap-2.5">
           <GoatLogo size={80} variant="white" />
-          <p className="text-green-500 text-[9px] font-bold tracking-[0.2em] uppercase">Admin</p>
+          <p className="text-[#556B5D] text-[9px] font-bold tracking-[0.2em] uppercase">Admin</p>
         </div>
         {onClose && (
-          <button onClick={onClose} className="text-gray-500 hover:text-white md:hidden">
+          <button onClick={onClose} className="text-gray-400 hover:text-white md:hidden">
             <X className="w-4 h-4" />
           </button>
         )}
@@ -49,8 +49,8 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
           <Link key={href} href={href}
             className={cn("flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors",
               pathname === href || pathname.startsWith(href + "/")
-                ? "bg-green-600/20 text-green-400"
-                : "text-gray-500 hover:text-white hover:bg-white/5"
+                ? "bg-[#556B5D]/20 text-[#556B5D]"
+                : "text-gray-400 hover:text-white hover:bg-white/10"
             )}>
             <Icon className="w-4 h-4 flex-shrink-0" />
             {label}
@@ -59,9 +59,9 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
       </nav>
 
       {/* Logout */}
-      <div className="px-3 pb-5 border-t border-white/5 pt-4">
+      <div className="px-3 pb-5 border-t border-white/10 pt-4">
         <button onClick={handleLogout}
-          className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-sm font-medium text-gray-500 hover:text-white hover:bg-white/5 transition-colors">
+          className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-sm font-medium text-gray-400 hover:text-white hover:bg-white/10 transition-colors">
           <LogOut className="w-4 h-4" />
           Cerrar sesión
         </button>

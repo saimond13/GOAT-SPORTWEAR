@@ -9,7 +9,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const { profile } = useAuth();
 
   return (
-    <div className="flex h-screen bg-[#0f0f0f] overflow-hidden">
+    <div className="flex h-screen bg-[#F5F5F3] overflow-hidden">
       {/* Desktop sidebar */}
       <div className="hidden md:flex flex-shrink-0">
         <Sidebar />
@@ -28,13 +28,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       {/* Main area */}
       <div className="flex-1 flex flex-col overflow-hidden min-w-0">
         {/* Topbar */}
-        <header className="flex items-center justify-between px-4 md:px-6 h-14 border-b border-white/5 bg-[#0f0f0f] flex-shrink-0">
-          <button onClick={() => setSidebarOpen(true)} className="md:hidden text-gray-500 hover:text-white p-1">
+        <header className="flex items-center justify-between px-4 md:px-6 h-14 border-b border-[#111111]/10 bg-[#F5F5F3] flex-shrink-0">
+          <button onClick={() => setSidebarOpen(true)} className="md:hidden text-[#B8B8B8] hover:text-[#111111] p-1">
             <Menu className="w-5 h-5" />
           </button>
           <div className="flex items-center gap-2 ml-auto">
-            <div className="w-2 h-2 rounded-full bg-green-500 flex-shrink-0" />
-            <span className="text-gray-400 text-xs font-medium truncate max-w-[120px]">
+            <div className="w-2 h-2 rounded-full bg-[#556B5D] flex-shrink-0" />
+            <span className="text-[#2B2B2B] text-xs font-medium truncate max-w-[120px]">
               {profile?.full_name ?? profile?.email ?? "Admin"}
             </span>
           </div>

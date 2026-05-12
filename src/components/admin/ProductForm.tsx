@@ -23,17 +23,14 @@ export function ProductForm({ product }: { product?: Product }) {
     is_active: product?.is_active ?? true,
   });
 
-  // Stock por talle: { S: 5, M: 3, ... }
   const [stockBySize, setStockBySize] = useState<Record<string, number>>(
     product?.stock_by_size ?? {}
   );
 
-  // Métodos de pago habilitados (null = todos)
   const [enabledPayments, setEnabledPayments] = useState<string[]>(
     product?.payment_methods ?? PAYMENT_METHODS
   );
 
-  // All product images: images[] array takes priority, fallback to image_url
   const initialImages = product?.images?.length
     ? product.images
     : product?.image_url
@@ -53,7 +50,6 @@ export function ProductForm({ product }: { product?: Product }) {
     setForm((f) => {
       const hasSz = f.sizes.includes(s);
       if (hasSz) {
-        // Remove size and its stock entry
         setStockBySize((prev) => { const n = { ...prev }; delete n[s]; return n; });
       }
       return { ...f, sizes: hasSz ? f.sizes.filter((x) => x !== s) : [...f.sizes, s] };
@@ -95,7 +91,7 @@ export function ProductForm({ product }: { product?: Product }) {
   const handleAddImages = async (files: FileList) => {
     setError("");
     for (const file of Array.from(files)) {
-      setUploadingIdx(-1); // show global spinner
+      setUploadingIdx(-1);
       const url = await uploadImage(file);
       if (url) setImages((prev) => [...prev, url]);
     }
@@ -146,7 +142,6 @@ export function ProductForm({ product }: { product?: Product }) {
     if (isEdit) {
       const { error: updateErr } = await supabase.from("products").update(payload).eq("id", product.id);
       if (updateErr) {
-        // Si falla por la columna nueva, reintentamos sin size_chart_image
         if (updateErr.message?.includes("size_chart_image")) {
           const { size_chart_image: _, ...payloadFallback } = payload;
           const { error: retryErr } = await supabase.from("products").update(payloadFallback).eq("id", product.id);
@@ -175,9 +170,9 @@ export function ProductForm({ product }: { product?: Product }) {
   };
 
   const inputClass =
-    "w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-green-500 placeholder-gray-600";
+    "w-full bg-white border border-[#111111]/10 rounded-xl px-4 py-2.5 text-[#111111] text-sm focus:outline-none focus:border-[#556B5D] placeholder-[#B8B8B8]";
   const labelClass =
-    "block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5";
+    "block text-[10px] font-bold text-[#B8B8B8] uppercase tracking-widest mb-1.5";
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5 max-w-2xl">
@@ -188,21 +183,18 @@ export function ProductForm({ product }: { product?: Product }) {
           Fotos del producto ({images.length}) — la primera es la principal
         </label>
 
-        {/* Existing images grid */}
         {images.length > 0 && (
           <div className="grid grid-cols-3 gap-2 mb-3">
             {images.map((url, i) => (
-              <div key={url + i} className="relative group aspect-[3/4] bg-[#1a1a1e] overflow-hidden">
+              <div key={url + i} className="relative group aspect-[3/4] bg-[#E7E7E4] overflow-hidden">
                 <img src={url} alt="" className="w-full h-full object-cover" />
 
-                {/* Primary badge */}
                 {i === 0 && (
-                  <span className="absolute top-2 left-2 bg-green-500 text-black text-[8px] font-black px-1.5 py-0.5 uppercase">
+                  <span className="absolute top-2 left-2 bg-[#556B5D] text-white text-[8px] font-black px-1.5 py-0.5 uppercase">
                     Principal
                   </span>
                 )}
 
-                {/* Actions overlay */}
                 <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2">
                   <button
                     type="button"
@@ -224,39 +216,37 @@ export function ProductForm({ product }: { product?: Product }) {
               </div>
             ))}
 
-            {/* Add more slot */}
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
-              className="aspect-[3/4] border-2 border-dashed border-white/10 hover:border-green-500/40 flex flex-col items-center justify-center gap-1 transition-colors"
+              className="aspect-[3/4] border-2 border-dashed border-[#111111]/10 hover:border-[#556B5D]/40 flex flex-col items-center justify-center gap-1 transition-colors"
             >
               {uploadingIdx === -1 ? (
-                <Loader2 className="w-5 h-5 text-gray-500 animate-spin" />
+                <Loader2 className="w-5 h-5 text-[#B8B8B8] animate-spin" />
               ) : (
                 <>
-                  <Plus className="w-5 h-5 text-gray-600" />
-                  <span className="text-gray-600 text-[10px]">Agregar</span>
+                  <Plus className="w-5 h-5 text-[#B8B8B8]" />
+                  <span className="text-[#B8B8B8] text-[10px]">Agregar</span>
                 </>
               )}
             </button>
           </div>
         )}
 
-        {/* Empty state upload area */}
         {images.length === 0 && (
           <div
-            className="border-2 border-dashed border-white/10 rounded-2xl hover:border-green-600/40 transition-colors cursor-pointer"
+            className="border-2 border-dashed border-[#111111]/10 rounded-2xl hover:border-[#556B5D]/40 transition-colors cursor-pointer"
             onClick={() => fileInputRef.current?.click()}
           >
             <div className="flex flex-col items-center justify-center h-44">
               {uploadingIdx === -1 ? (
-                <Loader2 className="w-8 h-8 text-gray-500 animate-spin" />
+                <Loader2 className="w-8 h-8 text-[#B8B8B8] animate-spin" />
               ) : (
                 <>
-                  <Upload className="w-8 h-8 text-gray-600 mb-2" />
-                  <span className="text-gray-500 text-sm font-medium">Subir fotos</span>
-                  <span className="text-gray-700 text-xs mt-1">JPG, PNG, WebP · hasta 15MB c/u</span>
-                  <span className="text-gray-700 text-xs">Podés subir varias a la vez</span>
+                  <Upload className="w-8 h-8 text-[#B8B8B8] mb-2" />
+                  <span className="text-[#B8B8B8] text-sm font-medium">Subir fotos</span>
+                  <span className="text-[#B8B8B8] text-xs mt-1">JPG, PNG, WebP · hasta 15MB c/u</span>
+                  <span className="text-[#B8B8B8] text-xs">Podés subir varias a la vez</span>
                 </>
               )}
             </div>
@@ -271,7 +261,7 @@ export function ProductForm({ product }: { product?: Product }) {
           className="hidden"
           onChange={(e) => e.target.files && handleAddImages(e.target.files)}
         />
-        <p className="text-gray-700 text-xs mt-2">
+        <p className="text-[#B8B8B8] text-xs mt-2">
           Hacé hover en una foto para eliminarla o hacerla principal
         </p>
       </div>
@@ -284,7 +274,7 @@ export function ProductForm({ product }: { product?: Product }) {
         </label>
         {sizeChartImage ? (
           <div className="relative inline-block group">
-            <img src={sizeChartImage} alt="Tabla de talles" className="h-40 object-contain border border-white/10 rounded-xl bg-[#1a1a1e] p-2" />
+            <img src={sizeChartImage} alt="Tabla de talles" className="h-40 object-contain border border-[#111111]/10 rounded-xl bg-[#E7E7E4] p-2" />
             <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 rounded-xl">
               <button
                 type="button"
@@ -304,17 +294,17 @@ export function ProductForm({ product }: { product?: Product }) {
           </div>
         ) : (
           <div
-            className="border-2 border-dashed border-white/10 rounded-2xl hover:border-green-600/40 transition-colors cursor-pointer"
+            className="border-2 border-dashed border-[#111111]/10 rounded-2xl hover:border-[#556B5D]/40 transition-colors cursor-pointer"
             onClick={() => sizeChartFileRef.current?.click()}
           >
             <div className="flex flex-col items-center justify-center h-28">
               {uploadingSizeChart ? (
-                <Loader2 className="w-6 h-6 text-gray-500 animate-spin" />
+                <Loader2 className="w-6 h-6 text-[#B8B8B8] animate-spin" />
               ) : (
                 <>
-                  <Ruler className="w-6 h-6 text-gray-600 mb-1.5" />
-                  <span className="text-gray-500 text-sm font-medium">Subir tabla de talles</span>
-                  <span className="text-gray-700 text-xs mt-0.5">La imagen que verán los clientes al tocar "Ver tabla"</span>
+                  <Ruler className="w-6 h-6 text-[#B8B8B8] mb-1.5" />
+                  <span className="text-[#B8B8B8] text-sm font-medium">Subir tabla de talles</span>
+                  <span className="text-[#B8B8B8] text-xs mt-0.5">La imagen que verán los clientes al tocar "Ver tabla"</span>
                 </>
               )}
             </div>
@@ -370,7 +360,7 @@ export function ProductForm({ product }: { product?: Product }) {
         </div>
         <div>
           <label className={labelClass}>
-            Precio original ($) <span className="text-gray-600">opcional</span>
+            Precio original ($) <span className="text-[#B8B8B8]">opcional</span>
           </label>
           <input
             type="number"
@@ -424,10 +414,10 @@ export function ProductForm({ product }: { product?: Product }) {
         <div className="flex items-center justify-between mb-1">
           <label className={labelClass}>Talles y stock</label>
           <label className="flex items-center gap-2 cursor-pointer">
-            <span className="text-[10px] text-gray-500">Requiere talle</span>
+            <span className="text-[10px] text-[#B8B8B8]">Requiere talle</span>
             <div
               onClick={() => setForm((f) => ({ ...f, has_sizes: !f.has_sizes }))}
-              className={`w-10 h-5 rounded-full transition-colors relative cursor-pointer ${form.has_sizes ? "bg-green-600" : "bg-white/10"}`}
+              className={`w-10 h-5 rounded-full transition-colors relative cursor-pointer ${form.has_sizes ? "bg-[#556B5D]" : "bg-[#111111]/10"}`}
             >
               <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-all ${form.has_sizes ? "left-5" : "left-0.5"}`} />
             </div>
@@ -443,8 +433,8 @@ export function ProductForm({ product }: { product?: Product }) {
                   onClick={() => toggleSize(s)}
                   className={`w-14 py-1.5 rounded-lg text-xs font-bold border transition-colors flex-shrink-0 ${
                     active
-                      ? "bg-green-600 text-white border-green-600"
-                      : "bg-white/5 border-white/10 text-gray-400 hover:border-green-600/50"
+                      ? "bg-[#556B5D] text-white border-[#556B5D]"
+                      : "bg-white border-[#111111]/10 text-[#2B2B2B] hover:border-[#556B5D]/50"
                   }`}
                 >
                   {s}
@@ -462,9 +452,9 @@ export function ProductForm({ product }: { product?: Product }) {
                         }))
                       }
                       placeholder="Stock"
-                      className="w-24 bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-white text-xs focus:outline-none focus:border-green-500 placeholder-gray-600"
+                      className="w-24 bg-white border border-[#111111]/10 rounded-lg px-3 py-1.5 text-[#111111] text-xs focus:outline-none focus:border-[#556B5D] placeholder-[#B8B8B8]"
                     />
-                    <span className="text-gray-600 text-xs">
+                    <span className="text-[#B8B8B8] text-xs">
                       {(stockBySize[s] ?? 0) === 0
                         ? "sin stock"
                         : `${stockBySize[s]} unidades`}
@@ -475,7 +465,7 @@ export function ProductForm({ product }: { product?: Product }) {
             );
           })}
         </div>}
-        {form.has_sizes && <p className="text-gray-600 text-xs mt-2">Stock = 0 deshabilita el talle en la tienda</p>}
+        {form.has_sizes && <p className="text-[#B8B8B8] text-xs mt-2">Stock = 0 deshabilita el talle en la tienda</p>}
 
         {/* Stock for no-size products */}
         {!form.has_sizes && (
@@ -493,13 +483,13 @@ export function ProductForm({ product }: { product?: Product }) {
                   }))
                 }
                 placeholder="Ej: 10"
-                className="w-32 bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-green-500 placeholder-gray-600"
+                className="w-32 bg-white border border-[#111111]/10 rounded-lg px-3 py-2 text-[#111111] text-sm focus:outline-none focus:border-[#556B5D] placeholder-[#B8B8B8]"
               />
-              <span className="text-gray-600 text-xs">
+              <span className="text-[#B8B8B8] text-xs">
                 {(stockBySize["Único"] ?? 0) === 0 ? "sin stock" : `${stockBySize["Único"]} unidades`}
               </span>
             </div>
-            <p className="text-gray-600 text-xs mt-1">Stock = 0 muestra el producto como agotado</p>
+            <p className="text-[#B8B8B8] text-xs mt-1">Stock = 0 muestra el producto como agotado</p>
           </div>
         )}
       </div>
@@ -515,8 +505,8 @@ export function ProductForm({ product }: { product?: Product }) {
               onClick={() => togglePayment(m)}
               className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-colors ${
                 enabledPayments.includes(m)
-                  ? "bg-green-600 text-white border-green-600"
-                  : "bg-white/5 border-white/10 text-gray-400 hover:border-green-600/50"
+                  ? "bg-[#556B5D] text-white border-[#556B5D]"
+                  : "bg-white border-[#111111]/10 text-[#2B2B2B] hover:border-[#556B5D]/50"
               }`}
             >
               {m}
@@ -528,7 +518,7 @@ export function ProductForm({ product }: { product?: Product }) {
       {/* Active toggle */}
       <label className="flex items-center gap-3 cursor-pointer">
         <div
-          className={`w-11 h-6 rounded-full transition-colors relative ${form.is_active ? "bg-green-600" : "bg-white/10"}`}
+          className={`w-11 h-6 rounded-full transition-colors relative ${form.is_active ? "bg-[#556B5D]" : "bg-[#111111]/10"}`}
           onClick={() => setForm((f) => ({ ...f, is_active: !f.is_active }))}
         >
           <div
@@ -537,18 +527,18 @@ export function ProductForm({ product }: { product?: Product }) {
             }`}
           />
         </div>
-        <span className="text-gray-300 text-sm font-medium">Visible en la tienda</span>
+        <span className="text-[#2B2B2B] text-sm font-medium">Visible en la tienda</span>
       </label>
 
       {error && (
-        <p className="text-red-400 text-sm bg-red-400/10 px-4 py-2.5 rounded-xl">{error}</p>
+        <p className="text-red-500 text-sm bg-red-400/10 px-4 py-2.5 rounded-xl">{error}</p>
       )}
 
       <div className="flex gap-3 pt-2">
         <button
           type="submit"
           disabled={saving}
-          className="flex items-center gap-2 bg-green-600 hover:bg-green-500 disabled:opacity-50 text-white font-black px-6 py-3 rounded-xl text-sm transition-colors"
+          className="flex items-center gap-2 bg-[#556B5D] hover:bg-[#4a5f52] disabled:opacity-50 text-white font-black px-6 py-3 rounded-xl text-sm transition-colors"
         >
           {saving && <Loader2 className="w-4 h-4 animate-spin" />}
           {isEdit ? "Guardar cambios" : "Crear producto"}
@@ -556,7 +546,7 @@ export function ProductForm({ product }: { product?: Product }) {
         <button
           type="button"
           onClick={() => router.back()}
-          className="px-6 py-3 border border-white/10 text-gray-400 hover:text-white rounded-xl text-sm font-medium transition-colors"
+          className="px-6 py-3 border border-[#111111]/10 text-[#2B2B2B] hover:text-[#111111] rounded-xl text-sm font-medium transition-colors"
         >
           Cancelar
         </button>

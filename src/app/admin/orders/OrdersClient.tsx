@@ -8,18 +8,18 @@ import { formatPrice, formatDate } from "@/lib/utils";
 import { PAYMENT_METHODS } from "@/types/product";
 
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {
-  pending_whatsapp: { label: "💬 WhatsApp",  color: "bg-green-600/20 text-green-400" },
-  pending:          { label: "Pendiente",     color: "bg-yellow-600/20 text-yellow-400" },
-  confirmed:        { label: "Confirmado",    color: "bg-blue-600/20 text-blue-400" },
-  shipped:          { label: "Enviado",       color: "bg-purple-600/20 text-purple-400" },
-  delivered:        { label: "Entregado",     color: "bg-green-600/20 text-green-400" },
-  cancelled:        { label: "Cancelado",     color: "bg-red-600/20 text-red-400" },
+  pending_whatsapp: { label: "💬 WhatsApp",  color: "bg-[#556B5D]/20 text-[#556B5D]" },
+  pending:          { label: "Pendiente",     color: "bg-yellow-600/20 text-yellow-600" },
+  confirmed:        { label: "Confirmado",    color: "bg-blue-600/20 text-blue-600" },
+  shipped:          { label: "Enviado",       color: "bg-purple-600/20 text-purple-600" },
+  delivered:        { label: "Entregado",     color: "bg-[#556B5D]/20 text-[#556B5D]" },
+  cancelled:        { label: "Cancelado",     color: "bg-red-600/20 text-red-500" },
 };
 
 const PAY_LABELS: Record<string, string> = {
-  unpaid:   "bg-red-600/20 text-red-400",
-  paid:     "bg-green-600/20 text-green-400",
-  refunded: "bg-gray-600/20 text-gray-400",
+  unpaid:   "bg-red-600/20 text-red-500",
+  paid:     "bg-[#556B5D]/20 text-[#556B5D]",
+  refunded: "bg-[#111111]/8 text-[#B8B8B8]",
 };
 
 export function OrdersClient({ orders }: { orders: Order[] }) {
@@ -68,30 +68,30 @@ export function OrdersClient({ orders }: { orders: Order[] }) {
     startTransition(() => router.refresh());
   };
 
-  const inputClass = "w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white text-sm focus:outline-none focus:border-green-500 placeholder-gray-600";
-  const labelClass = "block text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1";
+  const inputClass = "w-full bg-white border border-[#111111]/10 rounded-xl px-3 py-2 text-[#111111] text-sm focus:outline-none focus:border-[#556B5D] placeholder-[#B8B8B8]";
+  const labelClass = "block text-[10px] font-bold text-[#B8B8B8] uppercase tracking-widest mb-1";
 
   return (
     <>
       <div className="flex justify-end">
         <button onClick={() => setShowModal(true)}
-          className="flex items-center gap-2 bg-green-600 hover:bg-green-500 text-white font-bold px-4 py-2.5 rounded-xl text-sm transition-colors">
+          className="flex items-center gap-2 bg-[#556B5D] hover:bg-[#4a5f52] text-white font-bold px-4 py-2.5 rounded-xl text-sm transition-colors">
           <Plus className="w-4 h-4" /> Nuevo pedido
         </button>
       </div>
 
       {orders.length === 0 ? (
-        <div className="bg-white/5 border border-white/10 rounded-2xl p-12 text-center">
-          <p className="text-gray-500 text-sm">No hay pedidos aún.</p>
+        <div className="bg-white border border-[#111111]/10 rounded-2xl p-12 text-center">
+          <p className="text-[#B8B8B8] text-sm">No hay pedidos aún.</p>
         </div>
       ) : (
-        <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden">
+        <div className="bg-white border border-[#111111]/10 rounded-2xl overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-white/5">
+                <tr className="border-b border-[#111111]/8">
                   {["Cliente", "Total", "Estado", "Pago", "Fecha", ""].map((h) => (
-                    <th key={h} className="text-left px-5 py-3 text-[10px] font-bold text-gray-500 uppercase tracking-widest">{h}</th>
+                    <th key={h} className="text-left px-5 py-3 text-[10px] font-bold text-[#B8B8B8] uppercase tracking-widest">{h}</th>
                   ))}
                 </tr>
               </thead>
@@ -103,14 +103,14 @@ export function OrdersClient({ orders }: { orders: Order[] }) {
                     <>
                       <tr
                         key={o.id}
-                        className={`border-b border-white/5 hover:bg-white/5 cursor-pointer transition-colors ${isExpanded ? "bg-white/[0.03]" : ""}`}
+                        className={`border-b border-[#111111]/8 hover:bg-[#111111]/5 cursor-pointer transition-colors ${isExpanded ? "bg-[#111111]/[0.03]" : ""}`}
                         onClick={() => setExpandedId(isExpanded ? null : o.id)}
                       >
                         <td className="px-5 py-3">
-                          <p className="text-white font-bold text-sm">{o.customer_name}</p>
-                          {o.customer_phone && <p className="text-gray-500 text-xs">{o.customer_phone}</p>}
+                          <p className="text-[#111111] font-bold text-sm">{o.customer_name}</p>
+                          {o.customer_phone && <p className="text-[#B8B8B8] text-xs">{o.customer_phone}</p>}
                         </td>
-                        <td className="px-5 py-3 text-white font-bold text-sm">{formatPrice(o.total)}</td>
+                        <td className="px-5 py-3 text-[#111111] font-bold text-sm">{formatPrice(o.total)}</td>
                         <td className="px-5 py-3" onClick={(e) => e.stopPropagation()}>
                           <select
                             value={o.status}
@@ -118,7 +118,7 @@ export function OrdersClient({ orders }: { orders: Order[] }) {
                             className={`text-xs font-bold px-2.5 py-1 rounded-full border-0 cursor-pointer ${s.color} bg-transparent`}
                           >
                             {Object.entries(STATUS_LABELS).map(([k, v]) => (
-                              <option key={k} value={k} className="bg-black">{v.label}</option>
+                              <option key={k} value={k}>{v.label}</option>
                             ))}
                           </select>
                         </td>
@@ -128,13 +128,13 @@ export function OrdersClient({ orders }: { orders: Order[] }) {
                             onChange={(e) => handlePaymentStatusChange(o.id, e.target.value)}
                             className={`text-xs font-bold px-2.5 py-1 rounded-full border-0 cursor-pointer ${PAY_LABELS[o.payment_status]} bg-transparent`}
                           >
-                            <option value="unpaid" className="bg-black">Sin pagar</option>
-                            <option value="paid" className="bg-black">Pagado</option>
-                            <option value="refunded" className="bg-black">Reembolsado</option>
+                            <option value="unpaid">Sin pagar</option>
+                            <option value="paid">Pagado</option>
+                            <option value="refunded">Reembolsado</option>
                           </select>
                         </td>
-                        <td className="px-5 py-3 text-gray-500 text-xs whitespace-nowrap">{formatDate(o.created_at)}</td>
-                        <td className="px-5 py-3 text-gray-500">
+                        <td className="px-5 py-3 text-[#B8B8B8] text-xs whitespace-nowrap">{formatDate(o.created_at)}</td>
+                        <td className="px-5 py-3 text-[#B8B8B8]">
                           {isExpanded
                             ? <ChevronUp className="w-4 h-4" />
                             : <ChevronDown className="w-4 h-4" />}
@@ -143,60 +143,60 @@ export function OrdersClient({ orders }: { orders: Order[] }) {
 
                       {/* Expanded detail row */}
                       {isExpanded && (
-                        <tr key={`${o.id}-detail`} className="border-b border-white/5 bg-white/[0.02]">
+                        <tr key={`${o.id}-detail`} className="border-b border-[#111111]/8 bg-[#111111]/[0.02]">
                           <td colSpan={6} className="px-5 py-4">
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
 
                               {/* Contact + address */}
                               <div className="space-y-2">
-                                <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Datos de envío</p>
+                                <p className="text-[10px] font-bold text-[#B8B8B8] uppercase tracking-widest">Datos de envío</p>
                                 {o.customer_phone && (
-                                  <div className="flex items-center gap-2 text-gray-300">
-                                    <Phone className="w-3.5 h-3.5 text-gray-500 flex-shrink-0" />
+                                  <div className="flex items-center gap-2 text-[#2B2B2B]">
+                                    <Phone className="w-3.5 h-3.5 text-[#B8B8B8] flex-shrink-0" />
                                     <span className="text-xs">{o.customer_phone}</span>
                                   </div>
                                 )}
                                 {o.customer_address && (
-                                  <div className="flex items-start gap-2 text-gray-300">
-                                    <MapPin className="w-3.5 h-3.5 text-gray-500 flex-shrink-0 mt-0.5" />
+                                  <div className="flex items-start gap-2 text-[#2B2B2B]">
+                                    <MapPin className="w-3.5 h-3.5 text-[#B8B8B8] flex-shrink-0 mt-0.5" />
                                     <span className="text-xs">{o.customer_address}</span>
                                   </div>
                                 )}
                                 {!o.customer_phone && !o.customer_address && (
-                                  <p className="text-gray-600 text-xs">Sin datos de envío</p>
+                                  <p className="text-[#B8B8B8] text-xs">Sin datos de envío</p>
                                 )}
                                 {o.payment_method && (
-                                  <p className="text-xs text-gray-500">Método: <span className="text-gray-300">{o.payment_method}</span></p>
+                                  <p className="text-xs text-[#B8B8B8]">Método: <span className="text-[#2B2B2B]">{o.payment_method}</span></p>
                                 )}
                               </div>
 
                               {/* Order items */}
                               <div className="space-y-2">
-                                <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Productos</p>
+                                <p className="text-[10px] font-bold text-[#B8B8B8] uppercase tracking-widest">Productos</p>
                                 {o.order_items && o.order_items.length > 0 ? (
                                   <div className="space-y-1.5">
                                     {o.order_items.map((item) => (
                                       <div key={item.id} className="flex items-center justify-between gap-2">
                                         <div>
-                                          <p className="text-xs text-gray-300 font-medium">{item.product_name}</p>
-                                          <p className="text-[10px] text-gray-600">T. {item.size} × {item.quantity}</p>
+                                          <p className="text-xs text-[#2B2B2B] font-medium">{item.product_name}</p>
+                                          <p className="text-[10px] text-[#B8B8B8]">T. {item.size} × {item.quantity}</p>
                                         </div>
-                                        <span className="text-xs text-gray-400 whitespace-nowrap">{formatPrice(item.unit_price * item.quantity)}</span>
+                                        <span className="text-xs text-[#2B2B2B] whitespace-nowrap">{formatPrice(item.unit_price * item.quantity)}</span>
                                       </div>
                                     ))}
                                   </div>
                                 ) : (
-                                  <p className="text-gray-600 text-xs">Sin detalle de productos</p>
+                                  <p className="text-[#B8B8B8] text-xs">Sin detalle de productos</p>
                                 )}
                               </div>
 
                               {/* Notes */}
                               <div className="space-y-2">
-                                <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Notas</p>
+                                <p className="text-[10px] font-bold text-[#B8B8B8] uppercase tracking-widest">Notas</p>
                                 {o.notes ? (
-                                  <p className="text-xs text-gray-400 whitespace-pre-line leading-relaxed">{o.notes}</p>
+                                  <p className="text-xs text-[#2B2B2B] whitespace-pre-line leading-relaxed">{o.notes}</p>
                                 ) : (
-                                  <p className="text-gray-600 text-xs">Sin notas</p>
+                                  <p className="text-[#B8B8B8] text-xs">Sin notas</p>
                                 )}
                               </div>
 
@@ -217,10 +217,10 @@ export function OrdersClient({ orders }: { orders: Order[] }) {
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
           <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={() => setShowModal(false)} />
-          <div className="relative bg-[#1a1a1a] border border-white/10 rounded-2xl p-6 w-full max-w-md">
+          <div className="relative bg-[#F5F5F3] border border-[#111111]/10 rounded-2xl p-6 w-full max-w-md">
             <div className="flex items-center justify-between mb-5">
-              <h3 className="text-white font-black text-lg">Nuevo pedido</h3>
-              <button onClick={() => setShowModal(false)} className="text-gray-500 hover:text-white"><X className="w-5 h-5" /></button>
+              <h3 className="text-[#111111] font-black text-lg">Nuevo pedido</h3>
+              <button onClick={() => setShowModal(false)} className="text-[#B8B8B8] hover:text-[#111111]"><X className="w-5 h-5" /></button>
             </div>
             <form onSubmit={handleCreate} className="space-y-3">
               <div>
@@ -262,10 +262,10 @@ export function OrdersClient({ orders }: { orders: Order[] }) {
                 <textarea value={form.notes} onChange={(e) => setForm((f) => ({ ...f, notes: e.target.value }))} className={inputClass + " resize-none"} rows={2} placeholder="Detalles del pedido..." />
               </div>
               <div className="flex gap-3 pt-2">
-                <button type="submit" disabled={saving} className="flex-1 bg-green-600 hover:bg-green-500 text-white font-black py-2.5 rounded-xl text-sm flex items-center justify-center gap-2">
+                <button type="submit" disabled={saving} className="flex-1 bg-[#556B5D] hover:bg-[#4a5f52] text-white font-black py-2.5 rounded-xl text-sm flex items-center justify-center gap-2">
                   {saving && <Loader2 className="w-4 h-4 animate-spin" />} Guardar
                 </button>
-                <button type="button" onClick={() => setShowModal(false)} className="px-4 border border-white/10 text-gray-400 hover:text-white rounded-xl text-sm transition-colors">Cancelar</button>
+                <button type="button" onClick={() => setShowModal(false)} className="px-4 border border-[#111111]/10 text-[#2B2B2B] hover:text-[#111111] rounded-xl text-sm transition-colors">Cancelar</button>
               </div>
             </form>
           </div>

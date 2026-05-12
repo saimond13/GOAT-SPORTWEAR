@@ -38,7 +38,7 @@ export default function AdminLogin() {
           <GoatLogo size={64} variant="white" />
           <div className="mt-3 text-center">
             <p className="font-black text-2xl text-white tracking-tight">GOAT</p>
-            <p className="text-green-500 text-xs font-bold tracking-[0.3em] uppercase">Admin Panel</p>
+            <p className="text-[#556B5D] text-xs font-bold tracking-[0.3em] uppercase">Admin Panel</p>
           </div>
         </div>
 
@@ -50,7 +50,7 @@ export default function AdminLogin() {
             <div>
               <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">Email</label>
               <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required
-                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-green-500 placeholder-gray-600"
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-[#556B5D] placeholder-gray-600"
                 placeholder="admin@goatsportwear.com" />
             </div>
 
@@ -58,7 +58,7 @@ export default function AdminLogin() {
               <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">Contraseña</label>
               <div className="relative">
                 <input type={showPass ? "text" : "password"} value={password} onChange={(e) => setPassword(e.target.value)} required
-                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-green-500 pr-10"
+                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-[#556B5D] pr-10"
                   placeholder="••••••••" />
                 <button type="button" onClick={() => setShowPass(!showPass)}
                   className="absolute right-3 top-3.5 text-gray-500 hover:text-white">
@@ -70,7 +70,7 @@ export default function AdminLogin() {
             {error && <p className="text-red-400 text-xs font-medium bg-red-400/10 px-3 py-2 rounded-lg">{error}</p>}
 
             <button type="submit" disabled={loading}
-              className="w-full bg-green-600 hover:bg-green-500 disabled:opacity-50 text-white font-black py-3 rounded-xl text-sm uppercase tracking-wider flex items-center justify-center gap-2 transition-colors mt-2">
+              className="w-full bg-[#556B5D] hover:bg-[#4a5f52] disabled:opacity-50 text-white font-black py-3 rounded-xl text-sm uppercase tracking-wider flex items-center justify-center gap-2 transition-colors mt-2">
               {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Ingresar"}
             </button>
           </form>

@@ -11,8 +11,8 @@ export default async function WaitlistPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-white font-black text-2xl">Waitlist</h1>
-        <p className="text-gray-500 text-sm mt-1">{count ?? 0} suscriptores registrados</p>
+        <h1 className="text-[#111111] font-black text-2xl">Waitlist</h1>
+        <p className="text-[#B8B8B8] text-sm mt-1">{count ?? 0} suscriptores registrados</p>
       </div>
       <WaitlistClient entries={entries ?? []} />
     </div>

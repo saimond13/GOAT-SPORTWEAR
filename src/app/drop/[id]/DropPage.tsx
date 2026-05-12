@@ -33,19 +33,19 @@ function CountdownBlock({ target }: { target: string }) {
   const time = useCountdown(target);
   const pad = (n: number) => String(n).padStart(2, "0");
   if (!time) return (
-    <div className="flex items-center gap-2 text-green-500 text-sm font-black uppercase tracking-widest">
+    <div className="flex items-center gap-2 text-[#556B5D] text-sm font-black uppercase tracking-widest">
       <Timer className="w-4 h-4" /> Reservas abiertas
     </div>
   );
   return (
-    <div className="flex items-center gap-2 sm:gap-4 flex-wrap">
+    <div className="flex items-center gap-4 sm:gap-8 flex-wrap">
       {[
-        { val: time.d, label: "días" },
-        { val: time.h, label: "hs" },
-        { val: time.m, label: "min" },
-        { val: time.s, label: "seg" },
+        { val: time.d, label: "Días" },
+        { val: time.h, label: "Horas" },
+        { val: time.m, label: "Min" },
+        { val: time.s, label: "Seg" },
       ].map(({ val, label }) => (
-        val > 0 || label === "min" || label === "seg" ? (
+        val > 0 || label === "Min" || label === "Seg" ? (
           <div key={label} className="text-center">
             <div
               className="text-3xl sm:text-4xl md:text-5xl text-white tabular-nums"
@@ -53,7 +53,7 @@ function CountdownBlock({ target }: { target: string }) {
             >
               {pad(val)}
             </div>
-            <div className="text-[9px] text-gray-600 uppercase tracking-[0.3em] mt-1">{label}</div>
+            <div className="text-[9px] text-gray-500 uppercase tracking-[0.3em] mt-1">{label}</div>
           </div>
         ) : null
       ))}
@@ -92,11 +92,11 @@ function WaitlistForm() {
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
       >
-        <CheckCircle className="w-10 h-10 text-green-500" />
-        <p className="text-white font-black uppercase tracking-widest text-sm">
+        <CheckCircle className="w-10 h-10 text-[#556B5D]" />
+        <p className="text-[#111111] font-black uppercase tracking-widest text-sm">
           {status === "success" ? "¡Estás en la lista!" : "Ya estás anotado ✓"}
         </p>
-        <p className="text-gray-500 text-xs text-center">
+        <p className="text-[#B8B8B8] text-xs text-center">
           Cuando abran las reservas, te avisamos primero.
         </p>
       </motion.div>
@@ -111,7 +111,7 @@ function WaitlistForm() {
           placeholder="Nombre (opcional)"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="sm:w-36 px-4 py-3 bg-white/[0.04] border border-white/10 text-white placeholder-gray-600 text-sm focus:outline-none focus:border-green-500/50"
+          className="sm:w-36 px-4 py-3 bg-white border border-[#111111]/10 text-[#111111] placeholder-[#B8B8B8] text-sm focus:outline-none focus:border-[#556B5D]/50"
         />
         <input
           type="email"
@@ -119,18 +119,18 @@ function WaitlistForm() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          className="flex-1 px-4 py-3 bg-white/[0.04] border border-white/10 text-white placeholder-gray-600 text-sm focus:outline-none focus:border-green-500/50"
+          className="flex-1 px-4 py-3 bg-white border border-[#111111]/10 text-[#111111] placeholder-[#B8B8B8] text-sm focus:outline-none focus:border-[#556B5D]/50"
         />
       </div>
       <button
         type="submit"
         disabled={status === "loading"}
-        className="w-full py-4 bg-white text-black font-black text-sm uppercase tracking-[0.2em] hover:bg-green-500 transition-colors flex items-center justify-center gap-2"
+        className="w-full py-4 bg-[#111111] text-white font-black text-sm uppercase tracking-[0.2em] hover:bg-[#556B5D] transition-colors flex items-center justify-center gap-2"
       >
         {status === "loading" ? <Loader2 className="w-4 h-4 animate-spin" /> : "QUIERO ACCESO ANTICIPADO"}
       </button>
       {status === "error" && (
-        <p className="text-red-400 text-xs text-center">Algo salió mal. Intentá de nuevo.</p>
+        <p className="text-red-500 text-xs text-center">Algo salió mal. Intentá de nuevo.</p>
       )}
     </form>
   );
@@ -168,20 +168,19 @@ function TransferInstructions({ data }: { data: ConfirmedData }) {
       animate={{ opacity: 1, y: 0 }}
     >
       <div className="flex items-center gap-3">
-        <CheckCircle className="w-8 h-8 text-green-500 flex-shrink-0" />
+        <CheckCircle className="w-8 h-8 text-[#556B5D] flex-shrink-0" />
         <div>
-          <p className="text-white font-black text-base uppercase tracking-wide">¡Reserva registrada!</p>
-          <p className="text-gray-500 text-xs">N° {data.registrationId.slice(0, 8).toUpperCase()}</p>
+          <p className="text-[#111111] font-black text-base uppercase tracking-wide">¡Reserva registrada!</p>
+          <p className="text-[#B8B8B8] text-xs">N° {data.registrationId.slice(0, 8).toUpperCase()}</p>
         </div>
       </div>
 
-      <p className="text-gray-400 text-sm">
+      <p className="text-[#2B2B2B] text-sm">
         Para confirmar tu lugar, transferí la seña y mandanos el comprobante por WhatsApp.
       </p>
 
-      {/* Transfer details */}
-      <div className="bg-white/[0.03] border border-green-500/20 p-4 space-y-3">
-        <p className="text-[10px] font-black text-green-500 uppercase tracking-[0.3em]">Datos para transferir</p>
+      <div className="bg-[#E7E7E4] border border-[#556B5D]/20 p-4 space-y-3">
+        <p className="text-[10px] font-black text-[#556B5D] uppercase tracking-[0.3em]">Datos para transferir</p>
         <div className="space-y-2">
           {[
             { label: "Monto a transferir", value: `$${data.depositAmount.toLocaleString("es-AR")}`, highlight: true },
@@ -189,8 +188,8 @@ function TransferInstructions({ data }: { data: ConfirmedData }) {
             { label: "Titular", value: TRANSFER_HOLDER },
           ].map(({ label, value, highlight }) => (
             <div key={label} className="flex justify-between items-center">
-              <span className="text-gray-500 text-xs">{label}</span>
-              <span className={`text-sm font-black ${highlight ? "text-green-400 text-base" : "text-white"}`}>
+              <span className="text-[#B8B8B8] text-xs">{label}</span>
+              <span className={`text-sm font-black ${highlight ? "text-[#556B5D] text-base" : "text-[#111111]"}`}>
                 {value}
               </span>
             </div>
@@ -198,7 +197,6 @@ function TransferInstructions({ data }: { data: ConfirmedData }) {
         </div>
       </div>
 
-      {/* WhatsApp CTA */}
       <a
         href={`https://wa.me/${WA_NUMBER}?text=${waMsg}`}
         target="_blank"
@@ -211,7 +209,7 @@ function TransferInstructions({ data }: { data: ConfirmedData }) {
         MANDAR COMPROBANTE POR WHATSAPP
       </a>
 
-      <p className="text-gray-600 text-xs text-center">
+      <p className="text-[#B8B8B8] text-xs text-center">
         Una vez que confirmemos la transferencia, tu reserva queda activa.
       </p>
     </motion.div>
@@ -279,9 +277,9 @@ function ReservationForm({ campaign }: { campaign: Campaign }) {
 
   if (!unitPrice) {
     return (
-      <div className="bg-yellow-500/10 border border-yellow-500/20 p-4 text-center">
-        <p className="text-yellow-400 text-sm font-bold">Las reservas abren pronto.</p>
-        <p className="text-gray-500 text-xs mt-1">Anotate en la lista para ser el primero en enterarte.</p>
+      <div className="bg-yellow-50 border border-yellow-200 p-4 text-center">
+        <p className="text-yellow-700 text-sm font-bold">Las reservas abren pronto.</p>
+        <p className="text-[#B8B8B8] text-xs mt-1">Anotate en la lista para ser el primero en enterarte.</p>
       </div>
     );
   }
@@ -289,25 +287,25 @@ function ReservationForm({ campaign }: { campaign: Campaign }) {
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
       {/* Price breakdown */}
-      <div className="bg-white/[0.03] border border-white/10 p-4 space-y-2">
+      <div className="bg-[#E7E7E4] border border-[#111111]/10 p-4 space-y-2">
         <div className="flex justify-between text-sm">
-          <span className="text-gray-400">Precio del producto</span>
-          <span className="text-white font-bold">{formatPrice(unitPrice)}</span>
+          <span className="text-[#2B2B2B]">Precio del producto</span>
+          <span className="text-[#111111] font-bold">{formatPrice(unitPrice)}</span>
         </div>
         <div className="flex justify-between text-sm">
-          <span className="text-green-400 font-bold">Seña ahora ({depositPct}%)</span>
-          <span className="text-green-400 font-black">{formatPrice(totalDeposit)}</span>
+          <span className="text-[#556B5D] font-bold">Seña ahora ({depositPct}%)</span>
+          <span className="text-[#556B5D] font-black">{formatPrice(totalDeposit)}</span>
         </div>
-        <div className="flex justify-between text-sm border-t border-white/5 pt-2">
-          <span className="text-gray-500">Saldo al recibir</span>
-          <span className="text-gray-400">{formatPrice(totalBalance)}</span>
+        <div className="flex justify-between text-sm border-t border-[#111111]/5 pt-2">
+          <span className="text-[#B8B8B8]">Saldo al recibir</span>
+          <span className="text-[#2B2B2B]">{formatPrice(totalBalance)}</span>
         </div>
       </div>
 
       {/* Size selector */}
       {needsSize && (
         <div>
-          <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-2">Talle *</p>
+          <p className="text-[10px] font-bold text-[#B8B8B8] uppercase tracking-widest mb-2">Talle *</p>
           <div className="flex flex-wrap gap-2 mb-3">
             {SIZES.map((s) => (
               <button
@@ -316,31 +314,30 @@ function ReservationForm({ campaign }: { campaign: Campaign }) {
                 onClick={() => setForm((f) => ({ ...f, size: s }))}
                 className={`w-12 h-12 text-sm font-bold border transition-all ${
                   form.size === s
-                    ? "bg-green-500 text-black border-green-500"
-                    : "border-white/15 text-gray-300 hover:border-white/40"
+                    ? "bg-[#556B5D] text-white border-[#556B5D]"
+                    : "border-[#111111]/15 text-[#2B2B2B] hover:border-[#111111]/40"
                 }`}
               >
                 {s}
               </button>
             ))}
           </div>
-          {/* Size chart */}
           {campaign.size_chart && campaign.size_chart.length > 0 && (
-            <div className="mt-2 border border-white/10 overflow-hidden text-xs">
+            <div className="mt-2 border border-[#111111]/10 overflow-hidden text-xs">
               <table className="w-full">
                 <thead>
-                  <tr className="bg-white/5">
-                    <th className="px-3 py-1.5 text-left text-[10px] font-bold text-gray-500 uppercase tracking-widest">Talle</th>
-                    <th className="px-3 py-1.5 text-left text-[10px] font-bold text-gray-500 uppercase tracking-widest">A — Largo</th>
-                    <th className="px-3 py-1.5 text-left text-[10px] font-bold text-gray-500 uppercase tracking-widest">B — Ancho</th>
+                  <tr className="bg-[#E7E7E4]">
+                    <th className="px-3 py-1.5 text-left text-[10px] font-bold text-[#B8B8B8] uppercase tracking-widest">Talle</th>
+                    <th className="px-3 py-1.5 text-left text-[10px] font-bold text-[#B8B8B8] uppercase tracking-widest">A — Largo</th>
+                    <th className="px-3 py-1.5 text-left text-[10px] font-bold text-[#B8B8B8] uppercase tracking-widest">B — Ancho</th>
                   </tr>
                 </thead>
                 <tbody>
                   {campaign.size_chart.map((row) => (
-                    <tr key={row.talle} className="border-t border-white/5">
-                      <td className="px-3 py-1.5 text-white font-black">{row.talle}</td>
-                      <td className="px-3 py-1.5 text-gray-300">{row.largo}</td>
-                      <td className="px-3 py-1.5 text-gray-300">{row.ancho}</td>
+                    <tr key={row.talle} className="border-t border-[#111111]/5">
+                      <td className="px-3 py-1.5 text-[#111111] font-black">{row.talle}</td>
+                      <td className="px-3 py-1.5 text-[#2B2B2B]">{row.largo}</td>
+                      <td className="px-3 py-1.5 text-[#2B2B2B]">{row.ancho}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -352,20 +349,20 @@ function ReservationForm({ campaign }: { campaign: Campaign }) {
 
       {/* Quantity */}
       <div>
-        <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-2">Cantidad</p>
+        <p className="text-[10px] font-bold text-[#B8B8B8] uppercase tracking-widest mb-2">Cantidad</p>
         <div className="flex items-center gap-4">
           <button
             type="button"
             onClick={() => setForm((f) => ({ ...f, quantity: Math.max(1, f.quantity - 1) }))}
-            className="w-10 h-10 border border-white/15 flex items-center justify-center text-gray-300 hover:border-white/40 hover:text-white transition-colors"
+            className="w-10 h-10 border border-[#111111]/15 flex items-center justify-center text-[#2B2B2B] hover:border-[#111111]/40 hover:text-[#111111] transition-colors"
           >
             <Minus className="w-4 h-4" />
           </button>
-          <span className="text-white font-black text-lg w-8 text-center">{form.quantity}</span>
+          <span className="text-[#111111] font-black text-lg w-8 text-center">{form.quantity}</span>
           <button
             type="button"
             onClick={() => setForm((f) => ({ ...f, quantity: f.quantity + 1 }))}
-            className="w-10 h-10 border border-white/15 flex items-center justify-center text-gray-300 hover:border-white/40 hover:text-white transition-colors"
+            className="w-10 h-10 border border-[#111111]/15 flex items-center justify-center text-[#2B2B2B] hover:border-[#111111]/40 hover:text-[#111111] transition-colors"
           >
             <Plus className="w-4 h-4" />
           </button>
@@ -375,33 +372,33 @@ function ReservationForm({ campaign }: { campaign: Campaign }) {
       {/* Contact */}
       <div className="space-y-2">
         <div>
-          <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1">Nombre *</p>
+          <p className="text-[10px] font-bold text-[#B8B8B8] uppercase tracking-widest mb-1">Nombre *</p>
           <input
             value={form.name}
             onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
             required
             placeholder="Tu nombre completo"
-            className="w-full px-4 py-3 bg-white/[0.04] border border-white/10 text-white placeholder-gray-600 text-sm focus:outline-none focus:border-green-500/50"
+            className="w-full px-4 py-3 bg-white border border-[#111111]/10 text-[#111111] placeholder-[#B8B8B8] text-sm focus:outline-none focus:border-[#556B5D]/50"
           />
         </div>
         <div>
-          <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1">WhatsApp *</p>
+          <p className="text-[10px] font-bold text-[#B8B8B8] uppercase tracking-widest mb-1">WhatsApp *</p>
           <input
             value={form.phone}
             onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
             required
             placeholder="+54 9 11 1234-5678"
-            className="w-full px-4 py-3 bg-white/[0.04] border border-white/10 text-white placeholder-gray-600 text-sm focus:outline-none focus:border-green-500/50"
+            className="w-full px-4 py-3 bg-white border border-[#111111]/10 text-[#111111] placeholder-[#B8B8B8] text-sm focus:outline-none focus:border-[#556B5D]/50"
           />
         </div>
         <div>
-          <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1">Email (opcional)</p>
+          <p className="text-[10px] font-bold text-[#B8B8B8] uppercase tracking-widest mb-1">Email (opcional)</p>
           <input
             type="email"
             value={form.email}
             onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
             placeholder="tu@email.com"
-            className="w-full px-4 py-3 bg-white/[0.04] border border-white/10 text-white placeholder-gray-600 text-sm focus:outline-none focus:border-green-500/50"
+            className="w-full px-4 py-3 bg-white border border-[#111111]/10 text-[#111111] placeholder-[#B8B8B8] text-sm focus:outline-none focus:border-[#556B5D]/50"
           />
         </div>
       </div>
@@ -414,20 +411,20 @@ function ReservationForm({ campaign }: { campaign: Campaign }) {
           { icon: RotateCcw, text: "El saldo se cobra antes de enviar, no antes" },
         ].map(({ icon: Icon, text }) => (
           <div key={text} className="flex items-start gap-2">
-            <Icon className="w-3.5 h-3.5 text-green-500 flex-shrink-0 mt-0.5" />
-            <span className="text-gray-500 text-xs">{text}</span>
+            <Icon className="w-3.5 h-3.5 text-[#556B5D] flex-shrink-0 mt-0.5" />
+            <span className="text-[#B8B8B8] text-xs">{text}</span>
           </div>
         ))}
       </div>
 
       {status === "error" && (
-        <p className="text-red-400 text-xs text-center">{errorMsg}</p>
+        <p className="text-red-500 text-xs text-center">{errorMsg}</p>
       )}
 
       <button
         type="submit"
         disabled={status === "loading" || (needsSize && !form.size) || !form.name || !form.phone}
-        className="w-full py-4 bg-green-500 hover:bg-green-400 text-black font-black text-sm uppercase tracking-[0.2em] transition-colors flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed"
+        className="w-full py-4 bg-[#556B5D] hover:bg-[#4a5f52] text-white font-black text-sm uppercase tracking-[0.2em] transition-colors flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed"
       >
         {status === "loading" ? <Loader2 className="w-4 h-4 animate-spin" /> : `RESERVAR — SEÑA ${formatPrice(totalDeposit)}`}
       </button>
@@ -451,13 +448,12 @@ export function DropPage({ campaign }: { campaign: Campaign }) {
   );
 
   return (
-    <div className="min-h-screen bg-[#09090b]">
+    <div className="min-h-screen bg-[#F5F5F3]">
       <Header />
       <Cart />
 
-      {/* Hero */}
-      <div className="relative min-h-screen flex flex-col">
-        {/* Background image */}
+      {/* Hero — dark with bg image */}
+      <div className="relative min-h-screen flex flex-col bg-[#09090b]">
         {allImages.length > 0 && (
           <div className="absolute inset-0">
             <img
@@ -469,8 +465,7 @@ export function DropPage({ campaign }: { campaign: Campaign }) {
           </div>
         )}
 
-        {/* Content */}
-        <div className="relative flex-1 flex flex-col justify-end max-w-4xl mx-auto w-full px-4 pt-20 sm:pt-32 pb-12 sm:pb-20">
+        <div className="relative flex-1 flex flex-col justify-end max-w-4xl mx-auto w-full px-4 pt-28 sm:pt-36 pb-12 sm:pb-20">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -484,7 +479,7 @@ export function DropPage({ campaign }: { campaign: Campaign }) {
               Volver
             </Link>
 
-            <p className="text-green-500 text-[10px] font-black uppercase tracking-[0.5em] mb-4">
+            <p className="text-[#556B5D] text-[10px] font-black uppercase tracking-[0.5em] mb-4">
               Drop Limitado
             </p>
 
@@ -495,7 +490,6 @@ export function DropPage({ campaign }: { campaign: Campaign }) {
               {campaign.title}
             </h1>
 
-            {/* Countdown */}
             {campaign.countdown_ends_at && (
               <div className="mb-8">
                 <p className="text-[10px] text-gray-600 uppercase tracking-[0.3em] mb-4">
@@ -511,7 +505,6 @@ export function DropPage({ campaign }: { campaign: Campaign }) {
               </p>
             )}
 
-            {/* Badges */}
             <div className="flex flex-wrap gap-2 mb-12">
               <span className="border border-white/10 text-gray-500 text-[9px] uppercase tracking-[0.3em] px-3 py-1.5">
                 Stock limitado
@@ -520,7 +513,7 @@ export function DropPage({ campaign }: { campaign: Campaign }) {
                 Sin restock
               </span>
               {campaign.is_preventa && (
-                <span className="bg-green-500/10 border border-green-500/30 text-green-400 text-[9px] uppercase tracking-[0.3em] px-3 py-1.5">
+                <span className="bg-[#556B5D]/10 border border-[#556B5D]/30 text-[#556B5D] text-[9px] uppercase tracking-[0.3em] px-3 py-1.5">
                   Reserva con {campaign.deposit_percentage}% de seña
                 </span>
               )}
@@ -553,15 +546,14 @@ export function DropPage({ campaign }: { campaign: Campaign }) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.3 }}
         >
-          {/* Tabs */}
           {isPreventaOpen && (
-            <div className="flex mb-8 border-b border-white/10">
+            <div className="flex mb-8 border-b border-[#111111]/10">
               <button
                 onClick={() => setActiveTab("reserva")}
                 className={`flex-1 py-3 text-xs font-black uppercase tracking-widest transition-colors ${
                   activeTab === "reserva"
-                    ? "text-green-500 border-b-2 border-green-500 -mb-px"
-                    : "text-gray-600 hover:text-gray-400"
+                    ? "text-[#556B5D] border-b-2 border-[#556B5D] -mb-px"
+                    : "text-[#B8B8B8] hover:text-[#2B2B2B]"
                 }`}
               >
                 Reservar lugar
@@ -570,8 +562,8 @@ export function DropPage({ campaign }: { campaign: Campaign }) {
                 onClick={() => setActiveTab("waitlist")}
                 className={`flex-1 py-3 text-xs font-black uppercase tracking-widest transition-colors ${
                   activeTab === "waitlist"
-                    ? "text-white border-b-2 border-white -mb-px"
-                    : "text-gray-600 hover:text-gray-400"
+                    ? "text-[#111111] border-b-2 border-[#111111] -mb-px"
+                    : "text-[#B8B8B8] hover:text-[#2B2B2B]"
                 }`}
               >
                 Solo anotarme
@@ -587,7 +579,7 @@ export function DropPage({ campaign }: { campaign: Campaign }) {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -10 }}
               >
-                <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-6">
+                <p className="text-[10px] font-bold text-[#B8B8B8] uppercase tracking-widest mb-6">
                   Reservá tu unidad con una seña. Pagás el saldo cuando enviamos.
                 </p>
                 <ReservationForm campaign={campaign} />
@@ -599,7 +591,7 @@ export function DropPage({ campaign }: { campaign: Campaign }) {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -10 }}
               >
-                <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-6">
+                <p className="text-[10px] font-bold text-[#B8B8B8] uppercase tracking-widest mb-6">
                   Anotate y avisamos antes que nadie cuando abran las reservas.
                 </p>
                 <WaitlistForm />

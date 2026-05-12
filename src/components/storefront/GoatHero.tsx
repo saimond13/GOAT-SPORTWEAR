@@ -31,7 +31,7 @@ const fadeUp = (delay: number, duration = 0.6) => ({
 });
 
 export function GoatHero({
-  title = "BUILT\nDIFFERENT.",
+  title = "GOAT\nSPORTWEAR",
   subtitle = "Oversize gymwear de calidad premium. Drops limitados y exclusivos.",
   primaryCtaLabel = "VER CATÁLOGO",
   primaryCtaHref = "#products",

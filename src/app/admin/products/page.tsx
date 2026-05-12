@@ -14,11 +14,11 @@ export default async function ProductsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-white font-black text-2xl">Productos</h1>
-          <p className="text-gray-500 text-sm mt-1">{products?.length ?? 0} productos en total</p>
+          <h1 className="text-[#111111] font-black text-2xl">Productos</h1>
+          <p className="text-[#B8B8B8] text-sm mt-1">{products?.length ?? 0} productos en total</p>
         </div>
         <Link href="/admin/products/new"
-          className="flex items-center gap-2 bg-green-600 hover:bg-green-500 text-white font-bold px-4 py-2.5 rounded-xl text-sm transition-colors">
+          className="flex items-center gap-2 bg-[#556B5D] hover:bg-[#4a5f52] text-white font-bold px-4 py-2.5 rounded-xl text-sm transition-colors">
           <Plus className="w-4 h-4" />
           Nuevo producto
         </Link>
