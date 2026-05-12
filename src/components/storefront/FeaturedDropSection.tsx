@@ -56,19 +56,19 @@ export async function FeaturedDropSection() {
   const progressPct = Math.min(100, Math.round((totalReservations / TOTAL_UNITS) * 100));
 
   return (
-    <section id="drops" className="relative overflow-hidden bg-[#09090b] scroll-mt-28">
+    <section id="drops" className="relative overflow-hidden bg-[#F5F5F3] scroll-mt-28">
       <div className="relative max-w-6xl mx-auto px-4 py-20 sm:py-28">
         {/* Live indicator */}
         <div className="flex items-center gap-2 mb-5">
-          <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-          <span className="text-green-400 text-[10px] font-black uppercase tracking-[0.5em]">
+          <span className="w-2 h-2 rounded-full bg-[#556B5D] animate-pulse" />
+          <span className="text-[#556B5D] text-[10px] font-black uppercase tracking-[0.5em]">
             Drop activo · Reservas abiertas
           </span>
         </div>
 
         {/* Title */}
         <h2
-          className="text-[48px] sm:text-[68px] md:text-[84px] text-white leading-none tracking-tight mb-4"
+          className="text-[48px] sm:text-[68px] md:text-[84px] text-[#111111] leading-none tracking-tight mb-4"
           style={{ fontFamily: "'Anton', sans-serif" }}
         >
           DROP 001
@@ -77,15 +77,12 @@ export async function FeaturedDropSection() {
 
         {/* Progress bar */}
         <div className="mb-8 max-w-md">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
-              {totalReservations} / {TOTAL_UNITS} lugares reservados
-            </span>
-            <span className="text-[10px] font-black text-green-400">{progressPct}%</span>
+          <div className="flex items-center justify-end mb-2">
+            <span className="text-[10px] font-black text-[#556B5D]">{progressPct}% RESERVADO</span>
           </div>
-          <div className="h-2 w-full bg-white/10 rounded-full overflow-hidden">
+          <div className="h-2 w-full bg-[#111111]/10 rounded-full overflow-hidden">
             <div
-              className="h-full bg-green-500 rounded-full transition-all duration-700"
+              className="h-full bg-[#556B5D] rounded-full transition-all duration-700"
               style={{ width: `${progressPct}%` }}
             />
           </div>
@@ -106,10 +103,10 @@ export async function FeaturedDropSection() {
               <Link
                 key={drop.id}
                 href={`/drop/${drop.id}`}
-                className="group flex gap-4 bg-black/50 border border-white/10 hover:border-green-500/50 transition-all p-3 backdrop-blur-sm"
+                className="group flex gap-4 bg-white border border-[#111111]/10 hover:border-[#556B5D]/50 transition-all p-3"
               >
                 {/* Thumbnail */}
-                <div className="w-20 h-20 flex-shrink-0 overflow-hidden bg-white/5">
+                <div className="w-20 h-20 flex-shrink-0 overflow-hidden bg-[#E7E7E4]">
                   {img ? (
                     <img
                       src={img}
@@ -117,17 +114,17 @@ export async function FeaturedDropSection() {
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                   ) : (
-                    <div className="w-full h-full bg-white/10" />
+                    <div className="w-full h-full bg-[#E7E7E4]" />
                   )}
                 </div>
                 {/* Info */}
                 <div className="flex-1 min-w-0 flex flex-col justify-between py-0.5">
-                  <p className="text-white text-sm font-bold leading-tight line-clamp-2">{drop.title}</p>
+                  <p className="text-[#111111] text-sm font-bold leading-tight line-clamp-2">{drop.title}</p>
                   <div className="flex items-center justify-between mt-2">
-                    <span className="text-gray-500 text-[10px]">
+                    <span className="text-[#B8B8B8] text-[10px]">
                       {drop.reservations} {drop.reservations === 1 ? "reserva" : "reservas"}
                     </span>
-                    <span className="text-green-400 text-[10px] font-black uppercase tracking-wider group-hover:translate-x-0.5 transition-transform">
+                    <span className="text-[#556B5D] text-[10px] font-black uppercase tracking-wider group-hover:translate-x-0.5 transition-transform">
                       Reservar →
                     </span>
                   </div>
@@ -140,7 +137,7 @@ export async function FeaturedDropSection() {
         {/* Main CTA */}
         <Link
           href={`/drop/${hero.id}`}
-          className="inline-flex items-center gap-3 bg-green-500 hover:bg-green-400 text-black font-black text-sm uppercase tracking-[0.2em] px-8 py-4 transition-colors"
+          className="inline-flex items-center gap-3 bg-[#556B5D] hover:bg-[#4a5f52] text-white font-black text-sm uppercase tracking-[0.2em] px-8 py-4 transition-colors"
         >
           RESERVAR AHORA
           <span className="text-lg">→</span>

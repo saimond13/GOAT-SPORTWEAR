@@ -31,89 +31,83 @@ export function ProductCard({ product }: { product: Product }) {
 
   return (
     <motion.div
-      className="product-card bg-[#111113] border border-white/[0.06] overflow-hidden group rounded-xl"
+      className="product-card bg-white border border-[#111111]/10 overflow-hidden group rounded-xl"
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-40px" }}
     >
-      {/* Image — molde fijo 3:4, click → página de producto */}
       <Link href={`/productos/${product.id}`} className="block">
-      <div className="relative overflow-hidden bg-[#1a1a1e] aspect-[3/4] rounded-t-xl">
-        {product.image_url ? (
-          <img
-            src={product.image_url}
-            alt={product.name}
-            className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-600"
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center bg-[#1a1a1e]">
-            <div className="text-center">
-              <div className="w-12 h-12 border border-white/10 mx-auto mb-2 flex items-center justify-center">
-                <ShoppingCart className="w-5 h-5 text-white/20" />
+        <div className="relative overflow-hidden bg-[#E7E7E4] aspect-[3/4] rounded-t-xl">
+          {product.image_url ? (
+            <img
+              src={product.image_url}
+              alt={product.name}
+              className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-600"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center bg-[#E7E7E4]">
+              <div className="text-center">
+                <div className="w-12 h-12 border border-[#111111]/10 mx-auto mb-2 flex items-center justify-center">
+                  <ShoppingCart className="w-5 h-5 text-[#B8B8B8]" />
+                </div>
+                <span className="text-[#B8B8B8] text-[10px] uppercase tracking-widest">Sin imagen</span>
               </div>
-              <span className="text-white/15 text-[10px] uppercase tracking-widest">Sin imagen</span>
             </div>
-          </div>
-        )}
+          )}
 
-        {/* Badge */}
-        {product.badge && (
-          <div className="absolute top-3 left-3">
-            <span
-              className="bg-green-500 text-black text-[9px] font-black px-2 py-1 uppercase tracking-wider"
-              style={{ fontFamily: "'Anton', sans-serif" }}
-            >
-              {product.badge}
-            </span>
-          </div>
-        )}
+          {product.badge && (
+            <div className="absolute top-3 left-3">
+              <span
+                className="bg-[#556B5D] text-white text-[9px] font-black px-2 py-1 uppercase tracking-wider"
+                style={{ fontFamily: "'Anton', sans-serif" }}
+              >
+                {product.badge}
+              </span>
+            </div>
+          )}
 
-        {/* Discount */}
-        {discount > 0 && (
-          <div className="absolute top-3 right-3">
-            <span className="bg-white text-black text-[9px] font-black px-2 py-1">
-              -{discount}%
-            </span>
-          </div>
-        )}
+          {discount > 0 && (
+            <div className="absolute top-3 right-3">
+              <span className="bg-[#111111] text-white text-[9px] font-black px-2 py-1">
+                -{discount}%
+              </span>
+            </div>
+          )}
 
-        {/* Quick add button */}
-        <button
-          onClick={(e) => { e.preventDefault(); e.stopPropagation(); setExpanded(!expanded); }}
-          className="absolute bottom-3 right-3 w-9 h-9 rounded-full bg-white text-black flex items-center justify-center md:opacity-0 md:group-hover:opacity-100 transition-all duration-200 hover:bg-green-500 shadow-md hover:shadow-green-500/40 hover:scale-110 active:scale-95"
-        >
-          <Plus className="w-4 h-4" strokeWidth={2.5} />
-        </button>
-      </div>
+          <button
+            onClick={(e) => { e.preventDefault(); e.stopPropagation(); setExpanded(!expanded); }}
+            className="absolute bottom-3 right-3 w-9 h-9 rounded-full bg-[#111111] text-white flex items-center justify-center md:opacity-0 md:group-hover:opacity-100 transition-all duration-200 hover:bg-[#556B5D] shadow-md hover:scale-110 active:scale-95"
+          >
+            <Plus className="w-4 h-4" strokeWidth={2.5} />
+          </button>
+        </div>
       </Link>
 
-      {/* Info */}
       <div className="p-4">
-        <p className="text-[9px] font-bold text-gray-400 uppercase tracking-[0.3em] mb-1">
+        <p className="text-[9px] font-bold text-[#B8B8B8] uppercase tracking-[0.3em] mb-1">
           {product.category}
         </p>
         <Link href={`/productos/${product.id}`}>
-          <h3 className="font-bold text-white text-sm leading-tight mb-2 line-clamp-2 hover:text-green-400 transition-colors">
+          <h3 className="font-bold text-[#111111] text-sm leading-tight mb-2 line-clamp-2 hover:text-[#556B5D] transition-colors">
             {product.name}
           </h3>
         </Link>
         <div className="flex items-center gap-2 mb-1">
-          <span className="font-black text-white text-base">{formatPrice(product.price)}</span>
+          <span className="font-black text-[#111111] text-base">{formatPrice(product.price)}</span>
           {product.original_price && (
-            <span className="text-gray-400 text-xs line-through">
+            <span className="text-[#B8B8B8] text-xs line-through">
               {formatPrice(product.original_price)}
             </span>
           )}
         </div>
 
-        {/* Stock urgency */}
         {(() => {
           if (!product.stock_by_size || !product.sizes?.length) return null;
           const total = product.sizes.reduce((acc, s) => acc + (product.stock_by_size?.[s] ?? 0), 0);
           if (total <= 0) return null;
           if (total <= 5) {
             return (
-              <p className="text-[10px] font-black text-orange-400 uppercase tracking-wider mb-2">
+              <p className="text-[10px] font-black text-orange-500 uppercase tracking-wider mb-2">
                 ¡Últimas {total} unidades!
               </p>
             );
@@ -121,23 +115,19 @@ export function ProductCard({ product }: { product: Product }) {
           return null;
         })()}
 
-        {/* Expanded options */}
         {expanded && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
-            className="space-y-3 border-t border-white/[0.06] pt-3 mb-3 overflow-hidden"
+            className="space-y-3 border-t border-[#111111]/10 pt-3 mb-3 overflow-hidden"
           >
-            {/* Sizes */}
             {needsSize && <div>
               <div className="flex items-center justify-between mb-1.5">
-                <p className="text-[9px] font-bold text-gray-400 uppercase tracking-[0.3em]">
-                  Talle
-                </p>
+                <p className="text-[9px] font-bold text-[#B8B8B8] uppercase tracking-[0.3em]">Talle</p>
                 {product.size_chart_image && (
                   <button
                     onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowSizeChart(true); }}
-                    className="flex items-center gap-1 text-[9px] text-green-400 hover:text-green-300 font-bold uppercase tracking-wider"
+                    className="flex items-center gap-1 text-[9px] text-[#556B5D] hover:text-[#4a5f52] font-bold uppercase tracking-wider"
                   >
                     <Ruler className="w-2.5 h-2.5" /> Ver tabla
                   </button>
@@ -150,8 +140,8 @@ export function ProductCard({ product }: { product: Product }) {
                     onClick={() => setSelectedSize(s)}
                     className={`px-3 py-1.5 text-xs font-bold border transition-all ${
                       selectedSize === s
-                        ? "bg-green-500 text-black border-green-500"
-                        : "border-white/10 text-gray-400 hover:border-white/30 hover:text-white"
+                        ? "bg-[#556B5D] text-white border-[#556B5D]"
+                        : "border-[#111111]/10 text-[#2B2B2B] hover:border-[#111111]/30 hover:text-[#111111]"
                     }`}
                   >
                     {s}
@@ -160,33 +150,29 @@ export function ProductCard({ product }: { product: Product }) {
               </div>
             </div>}
 
-            {/* Quantity */}
             <div>
-              <p className="text-[9px] font-bold text-gray-400 uppercase tracking-[0.3em] mb-1.5">
-                Cantidad
-              </p>
+              <p className="text-[9px] font-bold text-[#B8B8B8] uppercase tracking-[0.3em] mb-1.5">Cantidad</p>
               <div className="flex items-center gap-3">
                 <button
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="w-9 h-9 border border-white/10 flex items-center justify-center hover:border-white/30 text-gray-400 hover:text-white transition-colors"
+                  className="w-9 h-9 border border-[#111111]/10 flex items-center justify-center hover:border-[#111111]/30 text-[#2B2B2B] hover:text-[#111111] transition-colors"
                 >
                   <Minus className="w-3.5 h-3.5" />
                 </button>
-                <span className="font-black text-white text-sm w-5 text-center">{quantity}</span>
+                <span className="font-black text-[#111111] text-sm w-5 text-center">{quantity}</span>
                 <button
                   onClick={() => setQuantity(quantity + 1)}
-                  className="w-9 h-9 border border-white/10 flex items-center justify-center hover:border-white/30 text-gray-400 hover:text-white transition-colors"
+                  className="w-9 h-9 border border-[#111111]/10 flex items-center justify-center hover:border-[#111111]/30 text-[#2B2B2B] hover:text-[#111111] transition-colors"
                 >
                   <Plus className="w-3.5 h-3.5" />
                 </button>
               </div>
             </div>
 
-            {/* MP badge */}
             <div className="flex items-center gap-1.5 bg-[#009EE3]/10 border border-[#009EE3]/20 rounded px-2.5 py-1.5">
               <div className="w-2 h-2 rounded-full bg-[#009EE3] flex-shrink-0" />
               <span className="text-[10px] font-bold text-[#009EE3]">Mercado Pago</span>
-              <span className="text-[9px] text-gray-500 ml-auto hidden sm:block">💳 débito · crédito · cuenta</span>
+              <span className="text-[9px] text-[#B8B8B8] ml-auto hidden sm:block">💳 débito · crédito · cuenta</span>
             </div>
           </motion.div>
         )}
@@ -196,16 +182,17 @@ export function ProductCard({ product }: { product: Product }) {
           disabled={expanded && needsSize && !selectedSize}
           className={`w-full py-2.5 text-xs font-black flex items-center justify-center gap-2 transition-all uppercase tracking-[0.15em] ${
             added
-              ? "bg-green-500 text-black"
+              ? "bg-[#556B5D] text-white"
               : expanded && needsSize && !selectedSize
-              ? "bg-white/5 text-gray-400 cursor-not-allowed"
-              : "bg-white text-black hover:bg-green-500 hover:text-black"
+              ? "bg-[#111111]/5 text-[#B8B8B8] cursor-not-allowed"
+              : "bg-[#111111] text-white hover:bg-[#556B5D]"
           }`}
         >
           <ShoppingCart className="w-3.5 h-3.5" />
           {added ? "¡Agregado!" : expanded ? "Agregar al carrito" : "Seleccionar"}
         </button>
       </div>
+
       {showSizeChart && product.size_chart_image && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center px-4 bg-black/80 backdrop-blur-sm"
@@ -214,7 +201,7 @@ export function ProductCard({ product }: { product: Product }) {
           <div className="relative max-w-sm w-full" onClick={(e) => e.stopPropagation()}>
             <button
               onClick={() => setShowSizeChart(false)}
-              className="absolute -top-10 right-0 text-gray-400 hover:text-white flex items-center gap-1 text-xs"
+              className="absolute -top-10 right-0 text-[#B8B8B8] hover:text-white flex items-center gap-1 text-xs"
             >
               <X className="w-4 h-4" /> Cerrar
             </button>

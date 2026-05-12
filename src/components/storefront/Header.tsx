@@ -46,7 +46,6 @@ export function Header() {
     setMenuOpen(false);
     setInfoOpen(false);
     if (pathname !== "/") {
-      // Navigate to homepage with anchor — browser handles the scroll
       window.location.href = `/#${id}`;
       return;
     }
@@ -62,22 +61,17 @@ export function Header() {
 
   return (
     <header
-      className={`fixed top-9 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled
-          ? "bg-[#09090b]/95 backdrop-blur-md border-b border-white/[0.07]"
-          : "bg-gradient-to-b from-black/70 to-transparent border-b border-transparent"
+      className={`fixed top-9 left-0 right-0 z-50 bg-[#F5F5F3] transition-all duration-300 ${
+        scrolled ? "border-b border-[#111111]/10 shadow-sm" : "border-b border-[#111111]/5"
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
 
-          {/* Logo — just "GOAT" text, clean and readable small */}
-          <button
-            className="flex items-center"
-            onClick={() => scrollTo("hero")}
-          >
+          {/* Logo */}
+          <button className="flex items-center" onClick={() => scrollTo("hero")}>
             <span
-              className="text-white text-2xl leading-none tracking-tight"
+              className="text-[#111111] text-2xl leading-none tracking-tight"
               style={{ fontFamily: "'Anton', sans-serif" }}
             >
               GOAT
@@ -90,7 +84,7 @@ export function Header() {
               <button
                 key={item.id}
                 onClick={() => scrollTo(item.id)}
-                className="text-xs font-semibold text-gray-300 hover:text-white uppercase tracking-[0.15em] transition-colors duration-200"
+                className="text-xs font-semibold text-[#2B2B2B] hover:text-[#111111] uppercase tracking-[0.15em] transition-colors duration-200"
               >
                 {item.label}
               </button>
@@ -100,12 +94,10 @@ export function Header() {
             <div ref={infoRef} className="relative">
               <button
                 onClick={() => setInfoOpen(!infoOpen)}
-                className="flex items-center gap-1 text-xs font-semibold text-gray-300 hover:text-white uppercase tracking-[0.15em] transition-colors duration-200"
+                className="flex items-center gap-1 text-xs font-semibold text-[#2B2B2B] hover:text-[#111111] uppercase tracking-[0.15em] transition-colors duration-200"
               >
                 Info
-                <ChevronDown
-                  className={`w-3 h-3 transition-transform ${infoOpen ? "rotate-180" : ""}`}
-                />
+                <ChevronDown className={`w-3 h-3 transition-transform ${infoOpen ? "rotate-180" : ""}`} />
               </button>
               <AnimatePresence>
                 {infoOpen && (
@@ -114,14 +106,14 @@ export function Header() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 6 }}
                     transition={{ duration: 0.15 }}
-                    className="absolute top-full right-0 mt-2 w-52 bg-[#111113] border border-white/[0.08] py-1"
+                    className="absolute top-full right-0 mt-2 w-52 bg-[#F5F5F3] border border-[#111111]/10 py-1 shadow-md"
                   >
                     {infoLinks.map((item) => (
                       <Link
                         key={item.slug}
                         href={`/info/${item.slug}`}
                         onClick={() => setInfoOpen(false)}
-                        className="block w-full text-left px-4 py-2.5 text-sm text-gray-300 hover:text-white hover:bg-white/5 transition-colors"
+                        className="block w-full text-left px-4 py-2.5 text-sm text-[#2B2B2B] hover:text-[#111111] hover:bg-[#E7E7E4] transition-colors"
                       >
                         {item.label}
                       </Link>
@@ -136,21 +128,21 @@ export function Header() {
           <div className="flex items-center gap-2">
             <button
               onClick={() => setSearchOpen(true)}
-              className="w-10 h-10 flex items-center justify-center text-gray-400 hover:text-white transition-colors"
+              className="w-10 h-10 flex items-center justify-center text-[#2B2B2B] hover:text-[#111111] transition-colors"
             >
               <Search className="w-5 h-5" />
             </button>
             <button
               onClick={() => setIsOpen(true)}
-              className="relative flex items-center justify-center w-10 h-10 hover:bg-white/5 transition-colors"
+              className="relative flex items-center justify-center w-10 h-10 hover:bg-[#E7E7E4] transition-colors"
             >
-              <ShoppingCart className="w-5 h-5 text-white" />
+              <ShoppingCart className="w-5 h-5 text-[#111111]" />
               {itemCount > 0 && (
                 <motion.span
                   key={itemCount}
                   initial={{ scale: 0.5, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
-                  className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-green-500 text-black text-[10px] font-black flex items-center justify-center"
+                  className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-[#556B5D] text-white text-[10px] font-black flex items-center justify-center"
                 >
                   {itemCount}
                 </motion.span>
@@ -158,7 +150,7 @@ export function Header() {
             </button>
             <button
               onClick={() => setMenuOpen(!menuOpen)}
-              className="md:hidden w-10 h-10 flex items-center justify-center text-white hover:text-green-500 transition-colors"
+              className="md:hidden w-10 h-10 flex items-center justify-center text-[#111111] hover:text-[#556B5D] transition-colors"
             >
               {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
@@ -175,26 +167,26 @@ export function Header() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-[#09090b] border-t border-white/[0.07] overflow-hidden"
+            className="md:hidden bg-[#F5F5F3] border-t border-[#111111]/10 overflow-hidden"
           >
             <div className="px-4 py-3 space-y-1">
               {navLinks.map((item) => (
                 <button
                   key={item.id}
                   onClick={() => scrollTo(item.id)}
-                  className="block w-full text-left text-sm font-semibold text-gray-300 hover:text-white uppercase tracking-[0.2em] py-3 border-b border-white/[0.05] last:border-0 transition-colors"
+                  className="block w-full text-left text-sm font-semibold text-[#2B2B2B] hover:text-[#111111] uppercase tracking-[0.2em] py-3 border-b border-[#111111]/[0.05] last:border-0 transition-colors"
                 >
                   {item.label}
                 </button>
               ))}
-              <div className="pt-1 pb-2 border-b border-white/[0.05]">
-                <p className="text-[10px] font-bold text-gray-600 uppercase tracking-widest mb-2">Info</p>
+              <div className="pt-1 pb-2 border-b border-[#111111]/[0.05]">
+                <p className="text-[10px] font-bold text-[#B8B8B8] uppercase tracking-widest mb-2">Info</p>
                 {infoLinks.map((item) => (
                   <Link
                     key={item.slug}
                     href={`/info/${item.slug}`}
                     onClick={() => setMenuOpen(false)}
-                    className="block w-full text-left text-sm text-gray-400 hover:text-white py-2 transition-colors"
+                    className="block w-full text-left text-sm text-[#2B2B2B] hover:text-[#111111] py-2 transition-colors"
                   >
                     {item.label}
                   </Link>

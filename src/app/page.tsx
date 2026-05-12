@@ -16,7 +16,7 @@ export const dynamic = "force-dynamic";
 export default async function StorePage() {
   let products: Product[] = [];
   let campaigns: Campaign[] = [];
-  let activeDrop: { id: string; title: string; depositPercentage?: number } | null = null;
+  let activeDrop: { id: string; title: string; depositPercentage?: number; reservationPct?: number } | null = null;
 
   try {
     const { createClient } = await import("@/lib/supabase/server");
@@ -37,7 +37,20 @@ export default async function StorePage() {
 
     const drop = campaigns.find((c) => c.is_preventa);
     if (drop) {
-      activeDrop = { id: drop.id, title: drop.title, depositPercentage: drop.deposit_percentage };
+      const { count } = await supabase
+        .from("preventa_registrations")
+        .select("id", { count: "exact", head: true })
+        .eq("campaign_id", drop.id)
+        .neq("status", "cancelled");
+
+      const TOTAL = 30;
+      const reservationPct = Math.min(100, Math.round(((count ?? 0) / TOTAL) * 100));
+      activeDrop = {
+        id: drop.id,
+        title: drop.title,
+        depositPercentage: drop.deposit_percentage,
+        reservationPct,
+      };
     }
   } catch {
     // Supabase not configured yet — show empty state
@@ -46,7 +59,7 @@ export default async function StorePage() {
   return (
     <ProductsProvider products={products}>
       <AnnouncementBar activeDrop={activeDrop} />
-      <div className="min-h-screen bg-[#09090b]">
+      <div className="min-h-screen bg-[#F5F5F3]">
         <Header />
         <main>
           <GoatHero activeDrop={activeDrop} />

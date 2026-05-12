@@ -16,7 +16,7 @@ export function Footer() {
 
   return (
     <footer id="contact" className="bg-[#060608] border-t border-white/5 scroll-mt-28">
-      <div className="h-[1px] bg-gradient-to-r from-transparent via-green-500/40 to-transparent" />
+      <div className="h-[1px] bg-gradient-to-r from-transparent via-[#556B5D]/40 to-transparent" />
 
       <div className="max-w-7xl mx-auto px-4 py-10 md:py-16">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-12">
@@ -37,7 +37,7 @@ export function Footer() {
 
             <div className="space-y-2 mb-6">
               <div className="flex items-start gap-2 text-gray-300 text-sm">
-                <MapPin className="w-3.5 h-3.5 text-green-500 flex-shrink-0 mt-0.5" />
+                <MapPin className="w-3.5 h-3.5 text-[#556B5D] flex-shrink-0 mt-0.5" />
                 <div>
                   <span>25 de Mayo 115, S3011 Sa Pereira</span>
                   <br />
@@ -74,7 +74,7 @@ export function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={s.label}
-                  className="w-9 h-9 border border-white/10 flex items-center justify-center text-gray-400 hover:border-green-500/50 hover:text-green-500 transition-all"
+                  className="w-9 h-9 border border-white/10 flex items-center justify-center text-gray-400 hover:border-[#556B5D]/50 hover:text-[#556B5D] transition-all"
                 >
                   {s.icon}
                 </a>

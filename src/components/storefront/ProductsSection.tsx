@@ -83,7 +83,7 @@ export function ProductsSection({ products }: { products: Product[] }) {
   const hasMore = paginated.length < filtered.length;
 
   return (
-    <section id="products" className="bg-[#09090b] py-24 scroll-mt-28">
+    <section id="products" className="bg-[#F5F5F3] py-24 scroll-mt-28">
       <div className="max-w-7xl mx-auto px-4">
         {/* Header */}
         <motion.div
@@ -92,54 +92,53 @@ export function ProductsSection({ products }: { products: Product[] }) {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
         >
-          <p className="text-xs font-bold tracking-[0.4em] text-gray-400 uppercase mb-4">
+          <p className="text-xs font-bold tracking-[0.4em] text-[#B8B8B8] uppercase mb-4">
             Catálogo
           </p>
           <h2
-            className="text-[38px] sm:text-[60px] md:text-[80px] text-white tracking-tight leading-none"
+            className="text-[38px] sm:text-[60px] md:text-[80px] text-[#111111] tracking-tight leading-none"
             style={{ fontFamily: "'Anton', sans-serif" }}
           >
             NUESTROS
             <br />
-            <span className="text-green-500">PRODUCTOS</span>
+            <span className="text-[#556B5D]">PRODUCTOS</span>
           </h2>
         </motion.div>
 
-        {/* Toolbar: filters + sort */}
+        {/* Toolbar */}
         <div className="flex items-center justify-between mb-6 gap-3 flex-wrap">
           <div className="flex items-center gap-2">
             <button
               onClick={() => setFiltersOpen(!filtersOpen)}
               className={`flex items-center gap-2 px-3 py-2 text-xs font-bold border uppercase tracking-[0.15em] transition-all ${
                 filtersOpen || hasFilters
-                  ? "bg-green-500/10 border-green-500 text-green-400"
-                  : "border-white/10 text-gray-500 hover:border-white/30 hover:text-white"
+                  ? "bg-[#556B5D]/10 border-[#556B5D] text-[#556B5D]"
+                  : "border-[#111111]/10 text-[#B8B8B8] hover:border-[#111111]/30 hover:text-[#111111]"
               }`}
             >
               <SlidersHorizontal className="w-3.5 h-3.5" />
               Filtros
               {hasFilters && (
-                <span className="w-4 h-4 bg-green-500 text-black text-[9px] font-black rounded-full flex items-center justify-center">
+                <span className="w-4 h-4 bg-[#556B5D] text-white text-[9px] font-black rounded-full flex items-center justify-center">
                   {selectedSizes.length + (priceMax !== null ? 1 : 0) + (activeGender !== "Todos" ? 1 : 0) + (activeCategory !== "Todos" ? 1 : 0)}
                 </span>
               )}
             </button>
             {hasFilters && (
-              <button onClick={clearFilters} className="text-[10px] text-gray-600 hover:text-red-400 transition-colors flex items-center gap-1">
+              <button onClick={clearFilters} className="text-[10px] text-[#B8B8B8] hover:text-red-400 transition-colors flex items-center gap-1">
                 <X className="w-3 h-3" /> Limpiar
               </button>
             )}
-            <span className="text-[11px] text-gray-600">
+            <span className="text-[11px] text-[#B8B8B8]">
               {filtered.length} producto{filtered.length !== 1 ? "s" : ""}
               {hasMore && ` · mostrando ${paginated.length}`}
             </span>
           </div>
 
-          {/* Sort */}
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
-            className="bg-[#111113] border border-white/10 text-gray-400 text-xs px-3 py-2 focus:outline-none focus:border-green-500 cursor-pointer"
+            className="bg-[#E7E7E4] border border-[#111111]/10 text-[#2B2B2B] text-xs px-3 py-2 focus:outline-none focus:border-[#556B5D] cursor-pointer"
           >
             {SORT_OPTIONS.map((o) => (
               <option key={o.value} value={o.value}>{o.label}</option>
@@ -147,7 +146,7 @@ export function ProductsSection({ products }: { products: Product[] }) {
           </select>
         </div>
 
-        {/* Advanced filters panel */}
+        {/* Filters panel */}
         <AnimatePresence>
           {filtersOpen && (
             <motion.div
@@ -156,10 +155,9 @@ export function ProductsSection({ products }: { products: Product[] }) {
               exit={{ opacity: 0, height: 0 }}
               className="overflow-hidden"
             >
-              <div className="border border-white/10 rounded-xl p-5 mb-6 bg-[#111113] space-y-5">
-                {/* Gender */}
+              <div className="border border-[#111111]/10 rounded-xl p-5 mb-6 bg-[#E7E7E4] space-y-5">
                 <div>
-                  <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-3">Género</p>
+                  <p className="text-[10px] font-bold text-[#B8B8B8] uppercase tracking-widest mb-3">Género</p>
                   <div className="flex flex-wrap gap-2">
                     {["Todos", ...GENDERS].map((g) => (
                       <button
@@ -167,8 +165,8 @@ export function ProductsSection({ products }: { products: Product[] }) {
                         onClick={() => { setActiveGender(g); resetPage(); }}
                         className={`px-4 py-1.5 text-xs font-bold border uppercase tracking-[0.15em] transition-all rounded-full ${
                           activeGender === g
-                            ? "bg-white text-black border-white"
-                            : "border-white/10 text-gray-400 hover:border-white/30 hover:text-white"
+                            ? "bg-[#111111] text-white border-[#111111]"
+                            : "border-[#111111]/10 text-[#2B2B2B] hover:border-[#111111]/30 hover:text-[#111111]"
                         }`}
                       >
                         {g}
@@ -177,9 +175,8 @@ export function ProductsSection({ products }: { products: Product[] }) {
                   </div>
                 </div>
 
-                {/* Category */}
                 <div>
-                  <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-3">Categoría</p>
+                  <p className="text-[10px] font-bold text-[#B8B8B8] uppercase tracking-widest mb-3">Categoría</p>
                   <div className="flex flex-wrap gap-2">
                     {["Todos", ...CATEGORIES].map((cat) => (
                       <button
@@ -187,8 +184,8 @@ export function ProductsSection({ products }: { products: Product[] }) {
                         onClick={() => { setActiveCategory(cat); resetPage(); }}
                         className={`px-4 py-1.5 text-xs font-bold border uppercase tracking-[0.15em] transition-all rounded-lg ${
                           activeCategory === cat
-                            ? "bg-green-500 text-black border-green-500"
-                            : "border-white/10 text-gray-400 hover:border-white/30 hover:text-white"
+                            ? "bg-[#556B5D] text-white border-[#556B5D]"
+                            : "border-[#111111]/10 text-[#2B2B2B] hover:border-[#111111]/30 hover:text-[#111111]"
                         }`}
                       >
                         {cat}
@@ -197,9 +194,8 @@ export function ProductsSection({ products }: { products: Product[] }) {
                   </div>
                 </div>
 
-                {/* Sizes */}
                 <div>
-                  <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-3">Talle</p>
+                  <p className="text-[10px] font-bold text-[#B8B8B8] uppercase tracking-widest mb-3">Talle</p>
                   <div className="flex flex-wrap gap-2">
                     {SIZES.map((s) => (
                       <button
@@ -207,8 +203,8 @@ export function ProductsSection({ products }: { products: Product[] }) {
                         onClick={() => toggleSize(s)}
                         className={`px-3 py-1.5 text-xs font-bold border transition-all ${
                           selectedSizes.includes(s)
-                            ? "bg-green-500 text-black border-green-500"
-                            : "border-white/10 text-gray-400 hover:border-white/30"
+                            ? "bg-[#556B5D] text-white border-[#556B5D]"
+                            : "border-[#111111]/10 text-[#2B2B2B] hover:border-[#111111]/30"
                         }`}
                       >
                         {s}
@@ -217,13 +213,12 @@ export function ProductsSection({ products }: { products: Product[] }) {
                   </div>
                 </div>
 
-                {/* Price range — min / max editable */}
                 {maxPrice > 0 && (
                   <div>
-                    <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-2">Rango de precio</p>
+                    <p className="text-[10px] font-bold text-[#B8B8B8] uppercase tracking-widest mb-2">Rango de precio</p>
                     <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
                       <div className="flex-1">
-                        <p className="text-[9px] text-gray-600 mb-1">Mínimo</p>
+                        <p className="text-[9px] text-[#B8B8B8] mb-1">Mínimo</p>
                         <input
                           type="number"
                           min={0}
@@ -232,12 +227,12 @@ export function ProductsSection({ products }: { products: Product[] }) {
                           value={priceMin ?? ""}
                           onChange={(e) => setPriceMin(e.target.value === "" ? null : Math.max(0, parseInt(e.target.value)))}
                           placeholder="$0"
-                          className="w-full bg-white/5 border border-white/10 rounded-lg px-2 py-2 text-white text-sm focus:outline-none focus:border-green-500 placeholder-gray-600"
+                          className="w-full bg-white border border-[#111111]/10 rounded-lg px-2 py-2 text-[#111111] text-sm focus:outline-none focus:border-[#556B5D] placeholder-[#B8B8B8]"
                         />
                       </div>
-                      <span className="hidden sm:block text-gray-600 text-xs mt-4">—</span>
+                      <span className="hidden sm:block text-[#B8B8B8] text-xs mt-4">—</span>
                       <div className="flex-1">
-                        <p className="text-[9px] text-gray-600 mb-1">Máximo</p>
+                        <p className="text-[9px] text-[#B8B8B8] mb-1">Máximo</p>
                         <input
                           type="number"
                           min={priceMin ?? 0}
@@ -245,7 +240,7 @@ export function ProductsSection({ products }: { products: Product[] }) {
                           value={priceMax ?? ""}
                           onChange={(e) => setPriceMax(e.target.value === "" ? null : Math.max(0, parseInt(e.target.value)))}
                           placeholder={`$${maxPrice.toLocaleString("es-AR")}`}
-                          className="w-full bg-white/5 border border-white/10 rounded-lg px-2 py-2 text-white text-sm focus:outline-none focus:border-green-500 placeholder-gray-600"
+                          className="w-full bg-white border border-[#111111]/10 rounded-lg px-2 py-2 text-[#111111] text-sm focus:outline-none focus:border-[#556B5D] placeholder-[#B8B8B8]"
                         />
                       </div>
                     </div>
@@ -256,19 +251,18 @@ export function ProductsSection({ products }: { products: Product[] }) {
           )}
         </AnimatePresence>
 
-        {/* Divider */}
-        <div className="h-px w-full bg-gradient-to-r from-transparent via-green-500/30 to-transparent mb-10" />
+        <div className="h-px w-full bg-gradient-to-r from-transparent via-[#556B5D]/30 to-transparent mb-10" />
 
         {/* Grid */}
         {products.length === 0 ? (
           <div className="text-center py-32">
-            <p className="text-gray-400 text-base font-medium uppercase tracking-widest">
+            <p className="text-[#B8B8B8] text-base font-medium uppercase tracking-widest">
               Catálogo en preparación
             </p>
-            <p className="text-gray-700 text-sm mt-2">Volvé pronto</p>
+            <p className="text-[#B8B8B8]/60 text-sm mt-2">Volvé pronto</p>
           </div>
         ) : filtered.length === 0 ? (
-          <div className="text-center py-16 text-gray-400 text-sm uppercase tracking-widest">
+          <div className="text-center py-16 text-[#B8B8B8] text-sm uppercase tracking-widest">
             Sin productos con estos filtros
           </div>
         ) : (
@@ -283,11 +277,11 @@ export function ProductsSection({ products }: { products: Product[] }) {
               <div className="flex flex-col items-center gap-3 mt-10">
                 <button
                   onClick={() => setPage((p) => p + 1)}
-                  className="px-10 py-4 border border-white/20 hover:border-green-500 text-white hover:text-green-400 text-xs font-black uppercase tracking-[0.2em] transition-colors"
+                  className="px-10 py-4 border border-[#111111]/20 hover:border-[#556B5D] text-[#111111] hover:text-[#556B5D] text-xs font-black uppercase tracking-[0.2em] transition-colors"
                 >
                   Ver más productos ({filtered.length - paginated.length} restantes)
                 </button>
-                <p className="text-gray-700 text-[10px]">
+                <p className="text-[#B8B8B8] text-[10px]">
                   {paginated.length} de {filtered.length}
                 </p>
               </div>

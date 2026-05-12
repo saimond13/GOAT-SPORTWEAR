@@ -4,7 +4,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, ExternalLink, Timer } from "lucide-react";
 import type { Campaign } from "@/types/admin";
 
-/* ── Countdown hook ─────────────────────────────────────────────────── */
 function useCountdown(target?: string) {
   const calc = () => {
     if (!target) return null;
@@ -25,7 +24,6 @@ function useCountdown(target?: string) {
   return time;
 }
 
-/* ── Image carousel ─────────────────────────────────────────────────── */
 function ImageCarousel({ images, title }: { images: string[]; title: string }) {
   const [idx, setIdx] = useState(0);
   if (!images.length) return null;
@@ -34,46 +32,44 @@ function ImageCarousel({ images, title }: { images: string[]; title: string }) {
   const next = () => setIdx((i) => (i + 1) % images.length);
 
   return (
-    <div className="relative overflow-hidden h-52 sm:h-72 bg-[#0a0a0c]">
+    <div className="relative overflow-hidden h-52 sm:h-72 bg-[#E7E7E4]">
       <AnimatePresence mode="wait">
         <motion.img
           key={idx}
           src={images[idx]}
           alt={`${title} ${idx + 1}`}
-          className="w-full h-full object-cover opacity-55 group-hover:opacity-70 transition-opacity duration-300"
+          className="w-full h-full object-cover opacity-80 group-hover:opacity-95 transition-opacity duration-300"
           initial={{ opacity: 0, scale: 1.04 }}
-          animate={{ opacity: 0.55, scale: 1 }}
+          animate={{ opacity: 0.8, scale: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.35 }}
         />
       </AnimatePresence>
 
-      <div className="absolute inset-0 bg-gradient-to-t from-[#111113] via-[#111113]/30 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-t from-white via-white/10 to-transparent" />
 
-      {/* Arrows — only show if >1 image */}
       {images.length > 1 && (
         <>
           <button
             onClick={(e) => { e.stopPropagation(); prev(); }}
-            className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 bg-black/50 hover:bg-black/80 text-white flex items-center justify-center transition-colors"
+            className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 bg-[#F5F5F3]/80 hover:bg-[#F5F5F3] text-[#111111] flex items-center justify-center transition-colors"
           >
             <ChevronLeft className="w-4 h-4" />
           </button>
           <button
             onClick={(e) => { e.stopPropagation(); next(); }}
-            className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 bg-black/50 hover:bg-black/80 text-white flex items-center justify-center transition-colors"
+            className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 bg-[#F5F5F3]/80 hover:bg-[#F5F5F3] text-[#111111] flex items-center justify-center transition-colors"
           >
             <ChevronRight className="w-4 h-4" />
           </button>
 
-          {/* Dots */}
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5">
             {images.map((_, i) => (
               <button
                 key={i}
                 onClick={(e) => { e.stopPropagation(); setIdx(i); }}
                 className={`w-1.5 h-1.5 rounded-full transition-all ${
-                  i === idx ? "bg-green-500 w-4" : "bg-white/30"
+                  i === idx ? "bg-[#556B5D] w-4" : "bg-[#111111]/30"
                 }`}
               />
             ))}
@@ -84,15 +80,14 @@ function ImageCarousel({ images, title }: { images: string[]; title: string }) {
   );
 }
 
-/* ── Countdown display ──────────────────────────────────────────────── */
 function Countdown({ target }: { target: string }) {
   const time = useCountdown(target);
   if (!time) return null;
   const pad = (n: number) => String(n).padStart(2, "0");
   return (
     <div className="flex items-center gap-1 mt-3 mb-1">
-      <Timer className="w-3 h-3 text-orange-400 flex-shrink-0" />
-      <div className="flex items-center gap-1 text-orange-400">
+      <Timer className="w-3 h-3 text-orange-500 flex-shrink-0" />
+      <div className="flex items-center gap-1 text-orange-500">
         {time.d > 0 && (
           <span className="text-xs font-black" style={{ fontFamily: "'Anton', sans-serif" }}>
             {time.d}d
@@ -106,30 +101,28 @@ function Countdown({ target }: { target: string }) {
   );
 }
 
-/* ── Main component ─────────────────────────────────────────────────── */
 export function CampaignsBanner({ campaigns }: { campaigns: Campaign[] }) {
   if (!campaigns.length) return null;
 
   return (
-    <section id="campaigns" className="bg-[#09090b] py-24 border-t border-white/5 scroll-mt-28">
+    <section id="campaigns" className="bg-[#F5F5F3] py-24 border-t border-[#111111]/5 scroll-mt-28">
       <div className="max-w-7xl mx-auto px-4">
-        {/* Section header */}
         <motion.div
           className="mb-14"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
         >
-          <p className="text-xs font-bold tracking-[0.4em] text-gray-400 uppercase mb-4">
+          <p className="text-xs font-bold tracking-[0.4em] text-[#B8B8B8] uppercase mb-4">
             Lanzamientos
           </p>
           <h2
-            className="text-[38px] sm:text-[60px] md:text-[80px] text-white tracking-tight leading-none"
+            className="text-[38px] sm:text-[60px] md:text-[80px] text-[#111111] tracking-tight leading-none"
             style={{ fontFamily: "'Anton', sans-serif" }}
           >
             NOVEDADES
             <br />
-            <span className="text-green-500">& DROPS</span>
+            <span className="text-[#556B5D]">& DROPS</span>
           </h2>
         </motion.div>
 
@@ -140,68 +133,62 @@ export function CampaignsBanner({ campaigns }: { campaigns: Campaign[] }) {
             return (
               <motion.div
                 key={c.id}
-                className="relative overflow-hidden bg-[#111113] border border-white/[0.06] group flex flex-col"
+                className="relative overflow-hidden bg-white border border-[#111111]/10 group flex flex-col"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
               >
-                {/* Image carousel */}
                 {allImages.length > 0 && (
                   <ImageCarousel images={allImages} title={c.title} />
                 )}
 
-                {/* Content */}
                 <div className="p-4 sm:p-6 flex flex-col flex-1">
-                  <span className="text-green-500 text-[9px] font-bold uppercase tracking-[0.4em] mb-3">
+                  <span className="text-[#556B5D] text-[9px] font-bold uppercase tracking-[0.4em] mb-3">
                     Drop
                   </span>
                   <h3
-                    className="text-white text-2xl sm:text-3xl md:text-4xl leading-tight"
+                    className="text-[#111111] text-2xl sm:text-3xl md:text-4xl leading-tight"
                     style={{ fontFamily: "'Anton', sans-serif" }}
                   >
                     {c.title}
                   </h3>
 
-                  {/* Countdown */}
                   {c.countdown_ends_at && <Countdown target={c.countdown_ends_at} />}
 
                   {c.description && (
-                    <p className="text-gray-500 text-sm leading-relaxed mt-3 max-w-sm">
+                    <p className="text-[#2B2B2B] text-sm leading-relaxed mt-3 max-w-sm">
                       {c.description}
                     </p>
                   )}
 
                   <div className="flex items-center gap-3 mt-4 flex-wrap">
                     {c.target_category && (
-                      <span className="border border-white/10 text-gray-500 text-[9px] uppercase tracking-[0.3em] px-3 py-1">
+                      <span className="border border-[#111111]/10 text-[#B8B8B8] text-[9px] uppercase tracking-[0.3em] px-3 py-1">
                         {c.target_category}
                       </span>
                     )}
 
-                    {/* Preventa badge + CTA */}
                     {c.is_preventa && c.unit_price && c.unit_price > 0 && (
-                      <span className="bg-green-500/10 border border-green-500/20 text-green-400 text-[9px] uppercase tracking-[0.25em] px-3 py-1">
+                      <span className="bg-[#556B5D]/10 border border-[#556B5D]/20 text-[#556B5D] text-[9px] uppercase tracking-[0.25em] px-3 py-1">
                         Seña {c.deposit_percentage}%
                       </span>
                     )}
 
-                    {/* Drop page CTA */}
                     <a
                       href={`/drop/${c.id}`}
-                      className="flex items-center gap-2 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-[0.15em] px-4 py-2 transition-colors"
+                      className="flex items-center gap-2 bg-[#556B5D] hover:bg-[#4a5f52] text-white font-black text-xs uppercase tracking-[0.15em] px-4 py-2 transition-colors"
                       onClick={(e) => e.stopPropagation()}
                     >
                       {c.is_preventa && c.unit_price && c.unit_price > 0 ? "RESERVAR LUGAR" : (c.cta_label ?? "Ver más")}
                     </a>
 
-                    {/* External CTA if set and not preventa */}
                     {c.cta_url && !c.is_preventa && (
                       <a
                         href={c.cta_url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center gap-2 border border-white/15 text-gray-400 hover:text-white text-xs uppercase tracking-[0.15em] px-4 py-2 transition-colors"
+                        className="flex items-center gap-2 border border-[#111111]/15 text-[#2B2B2B] hover:text-[#111111] text-xs uppercase tracking-[0.15em] px-4 py-2 transition-colors"
                         onClick={(e) => e.stopPropagation()}
                       >
                         <ExternalLink className="w-3 h-3" />
@@ -210,8 +197,7 @@ export function CampaignsBanner({ campaigns }: { campaigns: Campaign[] }) {
                   </div>
                 </div>
 
-                {/* Bottom accent line on hover */}
-                <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-green-500 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
+                <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-[#556B5D] scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
               </motion.div>
             );
           })}

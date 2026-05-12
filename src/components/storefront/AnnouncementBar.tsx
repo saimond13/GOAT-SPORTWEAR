@@ -52,7 +52,7 @@ export function AnnouncementBar({ activeDrop }: Props) {
   return (
     <div
       className={`fixed top-0 left-0 right-0 z-[60] h-9 overflow-hidden flex items-center justify-center transition-colors ${
-        isDropMessage ? "bg-white text-black" : "bg-green-600 text-black"
+        isDropMessage ? "bg-[#556B5D] text-white" : "bg-[#556B5D] text-white"
       }`}
     >
       {isDropMessage && activeDrop ? (
