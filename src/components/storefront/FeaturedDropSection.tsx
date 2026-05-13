@@ -120,10 +120,7 @@ export async function FeaturedDropSection() {
                 {/* Info */}
                 <div className="flex-1 min-w-0 flex flex-col justify-between py-0.5">
                   <p className="text-[#111111] text-sm font-bold leading-tight line-clamp-2">{drop.title}</p>
-                  <div className="flex items-center justify-between mt-2">
-                    <span className="text-[#B8B8B8] text-[10px]">
-                      {drop.reservations} {drop.reservations === 1 ? "reserva" : "reservas"}
-                    </span>
+                  <div className="flex items-center justify-end mt-2">
                     <span className="text-[#556B5D] text-[10px] font-black uppercase tracking-wider group-hover:translate-x-0.5 transition-transform">
                       Reservar →
                     </span>

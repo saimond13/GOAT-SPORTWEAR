@@ -3,7 +3,6 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { LayoutDashboard, Package, ShoppingBag, Megaphone, Mail, Users, LogOut, X, Boxes, Bookmark, Truck } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
-import { GoatLogo } from "@/components/ui/GoatLogo";
 import { cn } from "@/lib/utils";
 
 const navItems = [
@@ -33,7 +32,7 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
       {/* Header */}
       <div className="flex items-center justify-between px-5 py-5 border-b border-white/10">
         <div className="flex items-center gap-2.5">
-          <GoatLogo size={80} variant="white" />
+          <img src="/logo.jpg" alt="GOAT" className="h-8 w-auto object-contain" />
           <p className="text-[#556B5D] text-[9px] font-bold tracking-[0.2em] uppercase">Admin</p>
         </div>
         {onClose && (

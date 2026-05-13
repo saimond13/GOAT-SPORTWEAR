@@ -158,20 +158,20 @@ export function GoatHero({
 
       {/* ── Text content ── */}
       <div className="relative z-10 flex-1 flex flex-col justify-center">
-        <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 w-full py-20 lg:py-0">
+        <div className="max-w-7xl mx-auto px-5 sm:px-10 lg:px-16 w-full pt-24 pb-16 sm:pt-28 sm:pb-20 lg:pt-0 lg:pb-0">
           <div className="lg:max-w-[52%]">
 
             {/* Eyebrow */}
-            <motion.div className="flex items-center gap-2.5 mb-6" {...fadeUp(0.15)}>
+            <motion.div className="flex items-center gap-2.5 mb-6 overflow-hidden" {...fadeUp(0.15)}>
               <span className="w-2 h-2 rounded-full bg-[#556B5D] animate-pulse flex-shrink-0" />
-              <span className="text-[#556B5D] text-[11px] font-black uppercase tracking-[0.5em]">
+              <span className="text-[#556B5D] text-[10px] sm:text-[11px] font-black uppercase tracking-[0.15em] sm:tracking-[0.4em] truncate">
                 {eyebrow}
               </span>
             </motion.div>
 
             {/* Title */}
             <h1
-              className="text-[52px] sm:text-[72px] lg:text-[80px] xl:text-[96px] text-white leading-[0.88] tracking-tight font-black uppercase mb-6 select-none"
+              className="text-[44px] sm:text-[72px] lg:text-[80px] xl:text-[96px] text-white leading-[0.88] tracking-tight font-black uppercase mb-5 sm:mb-6 select-none"
               style={{ fontFamily: "'Anton', sans-serif" }}
             >
               {lines.map((line, i) => (
@@ -257,10 +257,6 @@ export function GoatHero({
               )}
             </motion.div>
 
-            {/* Microcopy */}
-            <motion.p className="text-gray-600 text-[11px] uppercase tracking-widest" {...fadeUp(0.95)}>
-              📍 Local en Sa Pereira, Santa Fe
-            </motion.p>
           </div>
         </div>
       </div>
@@ -277,13 +273,13 @@ export function GoatHero({
             {BENEFITS.map(({ icon: Icon, label }, i) => (
               <motion.div
                 key={label}
-                className="flex items-center gap-3 px-4 sm:px-6 py-4"
+                className="flex items-center gap-2 sm:gap-3 px-3 sm:px-6 py-3.5 sm:py-4"
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: 1.15 + i * 0.08 }}
               >
-                <Icon className="w-4 h-4 text-[#556B5D] flex-shrink-0" />
-                <span className="text-gray-300 text-[11px] sm:text-xs font-bold uppercase tracking-[0.15em] leading-tight">
+                <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#556B5D] flex-shrink-0" />
+                <span className="text-gray-300 text-[10px] sm:text-xs font-bold uppercase tracking-[0.08em] sm:tracking-[0.15em] leading-tight">
                   {label}
                 </span>
               </motion.div>
