@@ -70,7 +70,7 @@ export function Header() {
 
           {/* Logo */}
           <button className="flex items-center" onClick={() => scrollTo("hero")}>
-            <img src="/assets/logo.png" alt="GOAT" className="h-8 w-auto object-contain" />
+            <img src="/assets/logo2.png" alt="GOAT" className="h-8 w-auto object-contain" />
           </button>
 
           {/* Desktop nav */}
