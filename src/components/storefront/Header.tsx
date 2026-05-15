@@ -70,12 +70,7 @@ export function Header() {
 
           {/* Logo */}
           <button className="flex items-center" onClick={() => scrollTo("hero")}>
-            <span
-              className="text-[#111111] text-2xl leading-none tracking-tight"
-              style={{ fontFamily: "'Anton', sans-serif" }}
-            >
-              GOAT
-            </span>
+            <img src="/assets/logo.png" alt="GOAT" className="h-8 w-auto object-contain" />
           </button>
 
           {/* Desktop nav */}

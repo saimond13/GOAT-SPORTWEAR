@@ -23,12 +23,7 @@ export function Footer() {
           {/* Brand */}
           <div className="md:col-span-2">
             <div className="mb-6">
-              <span
-                className="text-white text-4xl leading-none tracking-tight"
-                style={{ fontFamily: "'Anton', sans-serif" }}
-              >
-                GOAT
-              </span>
+              <img src="/assets/logo-white.png" alt="GOAT" className="h-10 w-auto object-contain" />
             </div>
 
             <p className="text-gray-300 text-sm leading-relaxed max-w-xs mb-6">
