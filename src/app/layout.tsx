@@ -10,8 +10,8 @@ export const metadata: Metadata = {
   title: "GOAT SPORTWEAR | Tienda Online",
   description: "Ropa deportiva premium. Local en Sa Pereira. Envíos a todo el país por Correo Argentino.",
   icons: {
-    icon: "/logo.jpg",
-    apple: "/logo.jpg",
+    icon: "/assets/logo.png",
+    apple: "/assets/logo.png",
   },
   openGraph: {
     title: "GOAT SPORTWEAR | Tienda Online",

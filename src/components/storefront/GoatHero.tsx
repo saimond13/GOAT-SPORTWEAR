@@ -37,9 +37,9 @@ export function GoatHero({
   primaryCtaHref = "#products",
   secondaryCtaLabel = "DROPS",
   secondaryCtaHref = "#drops",
-  imageSrc = "/hero-model.png",
+  imageSrc = "/assets/hero-model.png",
   imageAlt = "GOAT Sportwear",
-  logoWatermarkSrc = "/logo.jpg",
+  logoWatermarkSrc = "/assets/logo.png",
   activeDrop,
 }: GoatHeroProps) {
   const eyebrow = activeDrop
