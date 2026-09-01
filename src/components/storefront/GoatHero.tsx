@@ -32,50 +32,43 @@ const fadeUp = (delay: number, duration = 0.6) => ({
   transition: { duration, delay, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] },
 });
 
-/* Feathered mask so the video never shows a hard rectangle against the hero. */
-const VIDEO_FEATHER = [
-  "linear-gradient(to right,  transparent 0%, #000 9%,  #000 91%, transparent 100%)",
-  "linear-gradient(to bottom, transparent 0%, #000 6%,  #000 94%, transparent 100%)",
-].join(", ");
+/* Elliptical mask centred on the model: dissolves the video's light studio
+   background (and the corner watermark) into the dark hero — no hard rectangle. */
+const VIDEO_MASK =
+  "radial-gradient(ellipse 74% 88% at 50% 44%, #000 0%, #000 44%, rgba(0,0,0,0.55) 70%, transparent 90%)";
 
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 
 /**
  * Pure mapping: scroll progress (0..1) -> style values for each hero layer.
- * Phases mirror the brief: 0-15% untouched · 15-40% headline recedes ·
- * 40-80% video takes over · 80-100% video is the protagonist.
+ * Phases: 0-14% untouched · 14-42% headline + copy clear out completely ·
+ * 42-100% the model video is the sole protagonist and glides to centre stage.
  */
 function computeFrame(p: number, mobile: boolean) {
   const s = (a: number, b: number) => Math.min(1, Math.max(0, (p - a) / (b - a)));
 
-  // Headline group (eyebrow + H1)
-  let headlineOpacity: number;
-  if (p < 0.15) headlineOpacity = 1;
-  else if (p < 0.4) headlineOpacity = lerp(1, 0.32, s(0.15, 0.4));
-  else if (p < 0.8) headlineOpacity = lerp(0.32, 0.06, s(0.4, 0.8));
-  else headlineOpacity = lerp(0.06, 0, s(0.8, 1));
+  // Headline group (eyebrow + H1) — fades fully to 0, never lingers as ghost text
+  const headlineOpacity = 1 - s(0.14, 0.4);
+  const headlineX = lerp(0, mobile ? -22 : -56, s(0.14, 0.42));
+  const headlineY = -(p * (mobile ? 8 : 20));
 
-  const headlineX =
-    lerp(0, mobile ? -18 : -50, s(0.15, 0.4)) + lerp(0, mobile ? -10 : -28, s(0.4, 1));
-  const headlineY = -(p * (mobile ? 10 : 30));
-
-  // Secondary group (subtitle + progress + CTAs)
-  let secondaryOpacity: number;
-  if (p < 0.12) secondaryOpacity = 1;
-  else if (p < 0.35) secondaryOpacity = lerp(1, 0.25, s(0.12, 0.35));
-  else secondaryOpacity = lerp(0.25, 0, s(0.35, 0.62));
-  const secondaryX = lerp(0, mobile ? -12 : -34, s(0.12, 0.5));
-  const secondaryY = -(p * (mobile ? 6 : 16));
+  // Secondary group (subtitle + progress + CTAs) — clears out first
+  const secondaryOpacity = 1 - s(0.1, 0.3);
+  const secondaryX = lerp(0, mobile ? -14 : -38, s(0.1, 0.34));
+  const secondaryY = -(p * (mobile ? 5 : 12));
 
   // Benefits bar
-  const benefitsOpacity = p < 0.1 ? 1 : lerp(1, 0, s(0.1, 0.26));
-  const benefitsY = lerp(0, 26, s(0.1, 0.3));
+  const benefitsOpacity = 1 - s(0.08, 0.24);
+  const benefitsY = s(0.08, 0.26) * 24;
 
-  // Video / model
-  const videoScale =
-    p < 0.4 ? lerp(1, 1.03, s(0, 0.4)) : lerp(1.03, mobile ? 1.07 : 1.12, s(0.4, 0.85));
-  const videoX = lerp(0, mobile ? -6 : -13, s(0.4, 0.85));
-  const videoY = p * (mobile ? 4 : 8);
+  // Video / model — scale is capped at 1 (object-contain would crop the head
+  // otherwise); it "grows in" from slightly small, then eases off the right edge
+  // toward centre stage once the copy has cleared.
+  const videoScale = lerp(0.96, 1, s(0, 0.55));
+  const videoX = lerp(0, mobile ? -4 : -13, s(0.2, 0.8));
+  // On mobile the model sits low at rest (copy above it) and rises gently as the
+  // copy clears; desktop keeps it anchored.
+  const videoY = mobile ? -(s(0.1, 0.62) * 120) : 0;
 
   return {
     headlineOpacity,
@@ -284,12 +277,12 @@ export function GoatHero({
     <div
       ref={trackRef}
       id="hero"
-      className="hero-scroll-track relative w-full h-[240vh] lg:h-[320vh]"
+      className="hero-scroll-track relative w-full h-[210vh] lg:h-[280vh]"
     >
       <div className="sticky top-0 h-[100svh] w-full overflow-hidden bg-[#09090b] flex flex-col">
         {/* ── Background layer ── */}
         <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute right-0 top-1/4 w-[600px] h-[600px] rounded-full bg-[#556B5D]/[0.07] blur-[160px]" />
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[680px] h-[680px] rounded-full bg-[#556B5D]/[0.10] blur-[170px]" />
           <div className="absolute -bottom-20 left-1/3 w-[400px] h-[300px] rounded-full bg-[#556B5D]/[0.05] blur-[100px]" />
           <div
             className="absolute right-0 bottom-0 w-1/2 h-full"
@@ -308,12 +301,12 @@ export function GoatHero({
 
         {/* Logo watermark */}
         {logoWatermarkSrc && (
-          <div className="absolute inset-0 flex items-center justify-end pointer-events-none select-none overflow-hidden">
+          <div className="absolute inset-0 flex items-center justify-center lg:justify-end lg:pr-[6%] pointer-events-none select-none overflow-hidden">
             <img
               src={logoWatermarkSrc}
               alt=""
               aria-hidden
-              className="w-[260px] sm:w-[380px] md:w-[500px] lg:w-[580px] opacity-[0.04] object-contain"
+              className="w-[280px] sm:w-[420px] md:w-[540px] lg:w-[620px] opacity-[0.05] object-contain"
               style={{ filter: "invert(1)" }}
             />
           </div>
@@ -335,43 +328,69 @@ export function GoatHero({
         </div>
 
         {/* ── Model video (scroll-scrubbed) ── */}
+        {/* top-[104px] clears the fixed announcement bar (36px) + header (64px) so
+            the model's head is never hidden behind the chrome or cropped. */}
         <div
           ref={videoWrapRef}
-          className="absolute inset-0 z-[5] lg:left-[42%] lg:right-0"
+          className="absolute left-0 right-0 top-[45%] bottom-0 z-[5] lg:top-[104px]"
           style={{ willChange: "transform" }}
         >
-          <video
-            ref={videoRef}
-            src={videoSrc}
-            poster={posterSrc}
-            preload="auto"
-            muted
-            playsInline
-            disablePictureInPicture
-            controls={false}
-            aria-label={imageAlt}
-            tabIndex={-1}
-            className="absolute inset-0 h-full w-full"
-            style={{
-              objectFit: "contain",
-              objectPosition: "center bottom",
-              WebkitMaskImage: VIDEO_FEATHER,
-              maskImage: VIDEO_FEATHER,
-              WebkitMaskComposite: "destination-in",
-              maskComposite: "intersect",
-              filter: "drop-shadow(-8px 0 32px rgba(9,9,11,0.9)) drop-shadow(0 24px 48px rgba(9,9,11,0.7))",
-            }}
-            {...({ "webkit-playsinline": "true" } as Record<string, string>)}
-          />
+          {/* Desktop: box locked to the video's aspect ratio so the mask fades the
+              model's real edges. Mobile: fills the lower area, cropped to the torso. */}
+          <div className="absolute inset-0 lg:inset-y-0 lg:left-[62%] lg:right-auto lg:h-full lg:aspect-[720/1291] lg:-translate-x-1/2 lg:max-w-[94vw]">
+            <video
+              ref={videoRef}
+              src={videoSrc}
+              poster={posterSrc}
+              preload="auto"
+              muted
+              playsInline
+              disablePictureInPicture
+              controls={false}
+              aria-label={imageAlt}
+              tabIndex={-1}
+              className="absolute inset-0 h-full w-full object-cover"
+              style={{
+                objectPosition: "center 8%",
+                WebkitMaskImage: VIDEO_MASK,
+                maskImage: VIDEO_MASK,
+                filter: "brightness(0.95) contrast(1.03)",
+              }}
+              {...({ "webkit-playsinline": "true" } as Record<string, string>)}
+            />
+            {/* Vignette: pushes the light studio background toward the hero black
+                at the edges so the video reads as part of the scene, not a panel. */}
+            <div
+              className="absolute inset-0 pointer-events-none"
+              style={{
+                background:
+                  "radial-gradient(ellipse 66% 78% at 50% 43%, transparent 30%, rgba(9,9,11,0.45) 60%, #09090b 86%)",
+              }}
+            />
+            {/* Belt-and-suspenders cover for the source watermark in the corner. */}
+            <div
+              className="absolute inset-0 pointer-events-none"
+              style={{
+                background:
+                  "radial-gradient(ellipse 40% 14% at 100% 100%, #09090b 0%, #09090b 60%, transparent 100%)",
+              }}
+            />
+          </div>
         </div>
 
-        {/* Legibility scrim over the video */}
-        <div className="absolute inset-0 z-[6] pointer-events-none bg-gradient-to-t from-[#09090b] via-[#09090b]/60 to-[#09090b]/10 lg:hidden" />
+        {/* Legibility scrim over the video (fades the light left edge into the copy) */}
+        <div
+          className="absolute inset-0 z-[6] pointer-events-none lg:hidden"
+          style={{
+            background:
+              "linear-gradient(180deg, #09090b 0%, rgba(9,9,11,0.72) 30%, rgba(9,9,11,0.18) 55%, rgba(9,9,11,0.4) 80%, #09090b 100%)",
+          }}
+        />
         <div
           className="absolute inset-0 z-[6] pointer-events-none hidden lg:block"
           style={{
             background:
-              "linear-gradient(100deg, #09090b 0%, rgba(9,9,11,0.9) 34%, rgba(9,9,11,0.25) 56%, transparent 70%)",
+              "linear-gradient(100deg, #09090b 0%, rgba(9,9,11,0.82) 30%, rgba(9,9,11,0.2) 54%, transparent 66%)",
           }}
         />
 
