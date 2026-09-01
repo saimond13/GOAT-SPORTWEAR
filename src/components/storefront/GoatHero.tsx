@@ -212,7 +212,7 @@ export function GoatHero({
       return;
     }
 
-    const EASE = 0.12;
+    const EASE = 0.16;
     const FRAME_MS = 1000 / 60;
 
     const tick = (now: number) => {
@@ -277,7 +277,7 @@ export function GoatHero({
     <div
       ref={trackRef}
       id="hero"
-      className="hero-scroll-track relative w-full h-[210vh] lg:h-[280vh]"
+      className="hero-scroll-track relative w-full h-[150vh] lg:h-[195vh]"
     >
       <div className="sticky top-0 h-[100svh] w-full overflow-hidden bg-[#09090b] flex flex-col">
         {/* ── Background layer ── */}
