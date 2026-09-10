@@ -25,10 +25,15 @@ const fadeUp = (delay: number, duration = 0.6) => ({
   transition: { duration, delay, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] },
 });
 
-/* Soft white feather so the multiply-blended video never shows a hard edge.
-   Pure white multiplies to the exact page colour, so edges vanish. */
-const WHITE_FEATHER =
-  "radial-gradient(ellipse 78% 92% at 50% 44%, transparent 46%, rgba(255,255,255,0.6) 72%, #ffffff 92%)";
+/* Gentle mask that only dissolves the extreme edges/corners of the frame
+   (pure studio background) — it never reaches the model's body or hands. */
+const EDGE_MASK =
+  "radial-gradient(ellipse 88% 108% at 50% 45%, #000 72%, transparent 100%)";
+
+/* Tiny white patch over the source watermark in the bottom-right corner.
+   White multiplies to the exact page colour, so it disappears into the bg. */
+const WATERMARK_PATCH =
+  "radial-gradient(ellipse 20% 7% at 100% 100%, #ffffff 0%, #ffffff 35%, transparent 100%)";
 
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 
@@ -295,20 +300,14 @@ export function GoatHero({
               className="absolute inset-0 h-full w-full object-cover"
               style={{
                 objectPosition: "center 6%",
-                filter: "brightness(1.24) contrast(1.14) saturate(1.06)",
+                filter: "brightness(1.22) contrast(1.05) saturate(0.9)",
+                WebkitMaskImage: EDGE_MASK,
+                maskImage: EDGE_MASK,
               }}
               {...({ "webkit-playsinline": "true" } as Record<string, string>)}
             />
-            {/* Feather the residual studio-light edges into the page */}
-            <div className="absolute inset-0 pointer-events-none" style={{ background: WHITE_FEATHER }} />
-            {/* Cover the source watermark in the corner */}
-            <div
-              className="absolute inset-0 pointer-events-none"
-              style={{
-                background:
-                  "radial-gradient(ellipse 42% 15% at 100% 100%, #ffffff 0%, #ffffff 60%, transparent 100%)",
-              }}
-            />
+            {/* Cover the source watermark in the corner only */}
+            <div className="absolute inset-0 pointer-events-none" style={{ background: WATERMARK_PATCH }} />
           </div>
         </div>
 
@@ -319,14 +318,14 @@ export function GoatHero({
           style={{
             willChange: "opacity",
             background:
-              "linear-gradient(180deg, #F5F5F3 0%, #F5F5F3 40%, rgba(245,245,243,0.85) 52%, rgba(245,245,243,0.12) 66%, rgba(245,245,243,0.5) 88%, #F5F5F3 100%)",
+              "linear-gradient(180deg, #F5F5F3 0%, #F5F5F3 43%, rgba(245,245,243,0.55) 55%, rgba(245,245,243,0.06) 70%, rgba(245,245,243,0.3) 90%, #F5F5F3 100%)",
           }}
         />
         <div
           className="absolute inset-0 z-[5] pointer-events-none hidden lg:block"
           style={{
             background:
-              "linear-gradient(100deg, #F5F5F3 0%, rgba(245,245,243,0.7) 30%, rgba(245,245,243,0.05) 52%, transparent 64%)",
+              "linear-gradient(100deg, #F5F5F3 6%, rgba(245,245,243,0.5) 34%, transparent 66%)",
           }}
         />
 
