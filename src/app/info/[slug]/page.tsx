@@ -8,6 +8,7 @@ import { Cart } from "@/components/storefront/Cart";
 export const dynamic = "force-dynamic";
 
 const infoLinks = [
+  { label: "Nosotros", slug: "nosotros" },
   { label: "Cómo comprar", slug: "como-comprar" },
   { label: "Métodos de pago", slug: "metodos-de-pago" },
   { label: "Envíos y plazos", slug: "envios-y-plazos" },

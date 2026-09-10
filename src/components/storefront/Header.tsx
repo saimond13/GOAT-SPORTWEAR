@@ -52,10 +52,11 @@ export function Header() {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
   };
 
-  const navLinks = [
+  const navLinks: { label: string; id?: string; href?: string }[] = [
     { label: "Inicio", id: "hero" },
     { label: "Productos", id: "products" },
     { label: "Drops", id: "campaigns" },
+    { label: "Nosotros", href: "/info/nosotros" },
     { label: "Contacto", id: "contact" },
   ];
 
@@ -75,15 +76,25 @@ export function Header() {
 
           {/* Desktop nav */}
           <nav className="hidden md:flex items-center gap-7">
-            {navLinks.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => scrollTo(item.id)}
-                className="text-xs font-semibold text-[#2B2B2B] hover:text-[#111111] uppercase tracking-[0.15em] transition-colors duration-200"
-              >
-                {item.label}
-              </button>
-            ))}
+            {navLinks.map((item) =>
+              item.href ? (
+                <Link
+                  key={item.label}
+                  href={item.href}
+                  className="text-xs font-semibold text-[#2B2B2B] hover:text-[#111111] uppercase tracking-[0.15em] transition-colors duration-200"
+                >
+                  {item.label}
+                </Link>
+              ) : (
+                <button
+                  key={item.label}
+                  onClick={() => scrollTo(item.id!)}
+                  className="text-xs font-semibold text-[#2B2B2B] hover:text-[#111111] uppercase tracking-[0.15em] transition-colors duration-200"
+                >
+                  {item.label}
+                </button>
+              )
+            )}
 
             {/* Info dropdown */}
             <div ref={infoRef} className="relative">
@@ -165,15 +176,26 @@ export function Header() {
             className="md:hidden bg-[#F5F5F3] border-t border-[#111111]/10 overflow-hidden"
           >
             <div className="px-4 py-3 space-y-1">
-              {navLinks.map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => scrollTo(item.id)}
-                  className="block w-full text-left text-sm font-semibold text-[#2B2B2B] hover:text-[#111111] uppercase tracking-[0.2em] py-3 border-b border-[#111111]/[0.05] last:border-0 transition-colors"
-                >
-                  {item.label}
-                </button>
-              ))}
+              {navLinks.map((item) =>
+                item.href ? (
+                  <Link
+                    key={item.label}
+                    href={item.href}
+                    onClick={() => setMenuOpen(false)}
+                    className="block w-full text-left text-sm font-semibold text-[#2B2B2B] hover:text-[#111111] uppercase tracking-[0.2em] py-3 border-b border-[#111111]/[0.05] last:border-0 transition-colors"
+                  >
+                    {item.label}
+                  </Link>
+                ) : (
+                  <button
+                    key={item.label}
+                    onClick={() => scrollTo(item.id!)}
+                    className="block w-full text-left text-sm font-semibold text-[#2B2B2B] hover:text-[#111111] uppercase tracking-[0.2em] py-3 border-b border-[#111111]/[0.05] last:border-0 transition-colors"
+                  >
+                    {item.label}
+                  </button>
+                )
+              )}
               <div className="pt-1 pb-2 border-b border-[#111111]/[0.05]">
                 <p className="text-[10px] font-bold text-[#B8B8B8] uppercase tracking-widest mb-2">Info</p>
                 {infoLinks.map((item) => (

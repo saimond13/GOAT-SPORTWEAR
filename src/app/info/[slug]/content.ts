@@ -4,6 +4,32 @@ export interface InfoSection {
 }
 
 export const INFO_CONTENT: Record<string, InfoSection> = {
+  nosotros: {
+    title: "Nosotros",
+    content: [
+      {
+        heading: "Más que ropa, una actitud",
+        body: "GOAT SPORTWEAR nace de la disciplina: entrenar, competir y no conformarse. Diseñamos gymwear y streetwear oversize para quienes hacen del esfuerzo un estilo de vida, no una moda pasajera.",
+      },
+      {
+        heading: "Calidad sin vueltas",
+        body: "Cada prenda se elige y se prueba pensando en el uso real: telas que aguantan el entrenamiento, calces oversize que sientan bien y terminaciones que duran. Trabajamos con proveedores de confianza y todos nuestros productos son 100% originales.",
+      },
+      {
+        heading: "Drops limitados",
+        body: "No producimos en masa. Lanzamos drops en cantidades limitadas para mantener el nivel y que cada pieza tenga sentido. Cuando se agota, se agota.",
+      },
+      {
+        heading: "Local en Sa Pereira",
+        body: "Estamos en 25 de Mayo 115, S3011 Sa Pereira, Santa Fe. Podés pasar a ver y probarte las prendas, o comprar online con envíos a todo el país por Correo Argentino.",
+      },
+      {
+        heading: "Hablá con nosotros",
+        body: "Atendemos todos los días de 9 a 21 hs por WhatsApp al +54 9 3491 406188 y por Instagram @goatsportwear_. Si tenés una duda sobre talles, materiales o tu pedido, escribinos.",
+      },
+    ],
+  },
+
   "como-comprar": {
     title: "Cómo comprar",
     content: [
