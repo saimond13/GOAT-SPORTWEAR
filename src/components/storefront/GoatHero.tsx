@@ -25,10 +25,12 @@ const fadeUp = (delay: number, duration = 0.6) => ({
   transition: { duration, delay, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] },
 });
 
-/* Gentle mask that only dissolves the extreme edges/corners of the frame
-   (pure studio background) — it never reaches the model's body or hands. */
-const EDGE_MASK =
-  "radial-gradient(ellipse 88% 108% at 50% 45%, #000 72%, transparent 100%)";
+/* Side + top feather only — never fades the bottom, so the hands and legs
+   that reach the frame edge stay solid. Applied as a mask on the <video>. */
+const EDGE_MASK = [
+  "linear-gradient(to right, transparent 0%, #000 13%, #000 87%, transparent 100%)",
+  "linear-gradient(to bottom, transparent 0%, #000 5%, #000 100%)",
+].join(", ");
 
 /* Tiny white patch over the source watermark in the bottom-right corner.
    White multiplies to the exact page colour, so it disappears into the bg. */
@@ -300,9 +302,11 @@ export function GoatHero({
               className="absolute inset-0 h-full w-full object-cover"
               style={{
                 objectPosition: "center 6%",
-                filter: "brightness(1.22) contrast(1.05) saturate(0.9)",
+                filter: "brightness(1.2) contrast(1.32) saturate(0.85)",
                 WebkitMaskImage: EDGE_MASK,
+                WebkitMaskComposite: "source-in",
                 maskImage: EDGE_MASK,
+                maskComposite: "intersect",
               }}
               {...({ "webkit-playsinline": "true" } as Record<string, string>)}
             />
