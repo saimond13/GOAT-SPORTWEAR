@@ -12,9 +12,9 @@ type GoatHeroProps = {
 };
 
 const TRUST = [
-  { icon: ShoppingBag, title: "Envíos a todo el país", short: "Envío nacional", sub: "Rápido y seguro" },
-  { icon: CreditCard, title: "3 cuotas sin interés", short: "3 cuotas", sub: "Todas las tarjetas" },
-  { icon: ShieldCheck, title: "Compra segura", short: "Compra segura", sub: "Datos protegidos" },
+  { icon: ShoppingBag, title: "Envíos a todo el país", sub: "Rápido y seguro" },
+  { icon: CreditCard, title: "3 cuotas sin interés", sub: "Todas las tarjetas" },
+  { icon: ShieldCheck, title: "Compra segura", sub: "Datos protegidos" },
 ];
 
 const STEPS = ["01", "02", "03", "04"];
@@ -41,30 +41,29 @@ const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 
 /**
  * Pure mapping: scroll progress (0..1) -> style values for each hero layer.
+ * Desktop (lg+) only — mobile/tablet render a static hero with no scroll
+ * dependency (see the component below).
  * 0-14% untouched · 14-42% headline + copy clear out · 42-100% the model video
  * is the sole protagonist and eases toward centre stage.
  */
-function computeFrame(p: number, mobile: boolean) {
+function computeFrame(p: number) {
   const s = (a: number, b: number) => Math.min(1, Math.max(0, (p - a) / (b - a)));
 
   const headlineOpacity = 1 - s(0.14, 0.4);
-  const headlineX = lerp(0, mobile ? -22 : -56, s(0.14, 0.42));
-  const headlineY = -(p * (mobile ? 8 : 20));
+  const headlineX = lerp(0, -56, s(0.14, 0.42));
+  const headlineY = -(p * 20);
 
   const secondaryOpacity = 1 - s(0.1, 0.3);
-  const secondaryX = lerp(0, mobile ? -14 : -38, s(0.1, 0.34));
-  const secondaryY = -(p * (mobile ? 5 : 12));
+  const secondaryX = lerp(0, -38, s(0.1, 0.34));
+  const secondaryY = -(p * 12);
 
   const trustOpacity = 1 - s(0.08, 0.24);
   const trustY = s(0.08, 0.26) * 24;
 
   const hintOpacity = 1 - s(0.03, 0.14);
 
-  const videoScale = lerp(0.96, mobile ? 1.04 : 1, s(0, 0.55));
-  const videoX = lerp(0, mobile ? -3 : -13, s(0.2, 0.8));
-  const videoY = mobile ? -(s(0.08, 0.55) * 165) : 0;
-  // Mobile: the wash keeps the copy readable at rest, then lifts as it clears.
-  const washOpacity = mobile ? 1 - s(0.12, 0.48) : 1;
+  const videoScale = lerp(0.96, 1, s(0, 0.55));
+  const videoX = lerp(0, -13, s(0.2, 0.8));
 
   return {
     headlineOpacity,
@@ -74,8 +73,7 @@ function computeFrame(p: number, mobile: boolean) {
     trustOpacity,
     trustTransform: `translate3d(0, ${trustY.toFixed(2)}px, 0)`,
     hintOpacity,
-    washOpacity,
-    videoTransform: `translate3d(${videoX.toFixed(3)}%, ${videoY.toFixed(2)}px, 0) scale(${videoScale.toFixed(4)})`,
+    videoTransform: `translate3d(${videoX.toFixed(3)}%, 0, 0) scale(${videoScale.toFixed(4)})`,
     step: Math.min(STEPS.length - 1, Math.max(0, Math.floor(p * STEPS.length))),
   };
 }
@@ -91,7 +89,7 @@ export function GoatHero({
   const scrollTo = (id: string) =>
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
 
-  // ── Scroll-scrubbing wiring ──────────────────────────────────────────────
+  // ── Scroll-scrubbing wiring (desktop only — see the mobile branch below) ──
   const trackRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const videoWrapRef = useRef<HTMLDivElement>(null);
@@ -100,7 +98,6 @@ export function GoatHero({
   const trustRef = useRef<HTMLDivElement>(null);
   const hintRef = useRef<HTMLDivElement>(null);
   const stepsRef = useRef<HTMLDivElement>(null);
-  const washRef = useRef<HTMLDivElement>(null);
 
   const targetProgress = useRef(0);
   const currentProgress = useRef(0);
@@ -108,7 +105,6 @@ export function GoatHero({
   const lastTs = useRef<number | null>(null);
   const lastSeek = useRef(-1);
   const lastStep = useRef(-1);
-  const isMobile = useRef(false);
 
   useEffect(() => {
     const track = trackRef.current;
@@ -116,10 +112,32 @@ export function GoatHero({
 
     const reduceMQL = window.matchMedia("(prefers-reduced-motion: reduce)");
     const mobileMQL = window.matchMedia("(max-width: 1023px)");
-    isMobile.current = mobileMQL.matches;
+
+    const v0 = videoRef.current;
+    if (v0) {
+      v0.defaultMuted = true;
+      v0.muted = true;
+    }
+
+    // Mobile/tablet: the scroll-driven scrub was unreliable on some devices
+    // (video decode/seek timing varies a lot on phones and tablets, and the
+    // absolute-overlay layout it needs doesn't fit every screen height), so
+    // there the hero is a plain static stack and the clip just plays as a
+    // normal ambient loop — nothing scroll-dependent that can fail to load.
+    if (!reduceMQL.matches && mobileMQL.matches && v0) {
+      v0.loop = true;
+      v0.play().catch(() => {
+        try {
+          v0.currentTime = 0.04;
+        } catch {
+          /* not ready */
+        }
+      });
+      return;
+    }
 
     const applyFrame = (p: number) => {
-      const f = computeFrame(p, isMobile.current);
+      const f = computeFrame(p);
 
       const h = headlineRef.current;
       if (h) {
@@ -139,8 +157,6 @@ export function GoatHero({
       }
       const hint = hintRef.current;
       if (hint) hint.style.opacity = f.hintOpacity.toFixed(3);
-      const wash = washRef.current;
-      if (wash) wash.style.opacity = f.washOpacity.toFixed(3);
 
       const vw = videoWrapRef.current;
       if (vw) vw.style.transform = f.videoTransform;
@@ -174,8 +190,6 @@ export function GoatHero({
     // Prime Safari's decoder so the first seek actually paints a frame.
     const v = videoRef.current;
     if (v) {
-      v.defaultMuted = true;
-      v.muted = true;
       const prime = () => {
         try {
           v.currentTime = 0.04;
@@ -251,20 +265,15 @@ export function GoatHero({
       kick();
     };
 
-    const onResize = () => {
-      isMobile.current = mobileMQL.matches;
-      onScroll();
-    };
-
     window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onResize);
+    window.addEventListener("resize", onScroll);
 
     onScroll();
     applyFrame(currentProgress.current);
 
     return () => {
       window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onResize);
+      window.removeEventListener("resize", onScroll);
       if (rafId.current != null) cancelAnimationFrame(rafId.current);
       rafId.current = null;
       lastTs.current = null;
@@ -272,101 +281,15 @@ export function GoatHero({
   }, []);
 
   return (
-    <div
-      ref={trackRef}
-      id="hero"
-      className="hero-scroll-track relative w-full h-[150vh] lg:h-[195vh]"
-    >
-      <div className="sticky top-0 h-[100svh] w-full overflow-hidden bg-[#F5F5F3] flex flex-col">
+    <div ref={trackRef} id="hero" className="hero-scroll-track relative w-full lg:h-[195vh]">
+      <div className="lg:sticky lg:top-0 h-auto lg:h-[100svh] w-full overflow-hidden bg-[#F5F5F3] flex flex-col">
         {/* Hairline top accent */}
         <div className="absolute top-0 left-0 right-0 h-px bg-[#111111]/10 z-30" />
 
-        {/* ── Model video (scroll-scrubbed, multiply-blended into the cream bg) ── */}
-        <div
-          ref={videoWrapRef}
-          className="absolute left-0 right-0 top-[58%] bottom-0 z-[4] lg:top-[104px]"
-          style={{ willChange: "transform", mixBlendMode: "multiply" }}
-        >
-          <div className="absolute inset-0 lg:inset-y-0 lg:left-[66%] lg:right-auto lg:h-full lg:aspect-[720/1291] lg:-translate-x-1/2 lg:max-w-[94vw]">
-            <video
-              ref={videoRef}
-              src={videoSrc}
-              poster={posterSrc}
-              preload="auto"
-              muted
-              playsInline
-              disablePictureInPicture
-              controls={false}
-              aria-label={imageAlt}
-              tabIndex={-1}
-              className="absolute inset-0 h-full w-full object-cover"
-              style={{
-                objectPosition: "center 6%",
-                filter: "brightness(1.2) contrast(1.32) saturate(0.85)",
-                WebkitMaskImage: EDGE_MASK,
-                WebkitMaskComposite: "source-in",
-                maskImage: EDGE_MASK,
-                maskComposite: "intersect",
-              }}
-              {...({ "webkit-playsinline": "true" } as Record<string, string>)}
-            />
-            {/* Cover the source watermark in the corner only */}
-            <div className="absolute inset-0 pointer-events-none" style={{ background: WATERMARK_PATCH }} />
-          </div>
-        </div>
-
-        {/* Mobile legibility wash — keeps the copy readable over the model */}
-        <div
-          ref={washRef}
-          className="absolute inset-0 z-[5] pointer-events-none lg:hidden"
-          style={{
-            willChange: "opacity",
-            background:
-              "linear-gradient(180deg, #F5F5F3 0%, #F5F5F3 43%, rgba(245,245,243,0.55) 55%, rgba(245,245,243,0.06) 70%, rgba(245,245,243,0.3) 90%, #F5F5F3 100%)",
-          }}
-        />
-        <div
-          className="absolute inset-0 z-[5] pointer-events-none hidden lg:block"
-          style={{
-            background:
-              "linear-gradient(100deg, #F5F5F3 6%, rgba(245,245,243,0.5) 34%, transparent 66%)",
-          }}
-        />
-
-        {/* Vertical caption — right edge */}
-        <div className="absolute right-4 lg:right-8 bottom-28 lg:bottom-32 hidden md:block z-20 pointer-events-none">
-          <span
-            className="text-[9px] lg:text-[10px] tracking-[0.4em] uppercase text-[#111111]/35 font-semibold"
-            style={{ writingMode: "vertical-rl" }}
-          >
-            Disciplina en cada detalle
-          </span>
-        </div>
-
-        {/* Step indicator — right edge */}
-        <div
-          ref={stepsRef}
-          className="absolute right-4 lg:right-8 top-1/2 -translate-y-1/2 hidden md:flex flex-col gap-4 lg:gap-5 z-20 pointer-events-none"
-        >
-          {STEPS.map((n, i) => (
-            <div
-              key={n}
-              className="flex items-center gap-2 justify-end transition-opacity duration-300"
-              style={{ opacity: i === 0 ? 1 : 0.28 }}
-            >
-              <span
-                className="h-px bg-[#111111] transition-all duration-300"
-                style={{ width: i === 0 ? "26px" : "8px" }}
-              />
-              <span className="text-[11px] font-black tracking-widest text-[#111111] tabular-nums">
-                {n}
-              </span>
-            </div>
-          ))}
-        </div>
-
-        {/* ── Copy ── */}
-        <div className="relative z-10 flex-1 flex flex-col justify-center">
+        {/* ── Copy ──
+            Mobile/tablet: plain top-anchored block, normal document flow.
+            Desktop: centred over the video via the scroll-scrub track above. */}
+        <div className="relative z-10 pt-20 pb-8 sm:pt-24 lg:pt-0 lg:pb-0 lg:flex-1 lg:flex lg:flex-col lg:justify-center">
           <div className="max-w-7xl mx-auto px-5 sm:px-10 lg:px-16 w-full">
             <div className="lg:max-w-[56%]">
               <div ref={headlineRef} style={{ willChange: "transform, opacity" }}>
@@ -421,7 +344,7 @@ export function GoatHero({
                 </motion.p>
 
                 <motion.p
-                  className="hidden sm:block text-[#111111]/60 text-sm sm:text-[15px] leading-relaxed max-w-[380px] mb-7"
+                  className="text-[#111111]/60 text-sm sm:text-[15px] leading-relaxed max-w-[380px] mb-7"
                   {...fadeUp(0.58)}
                 >
                   Prendas diseñadas para quienes entrenan, compiten y nunca se conforman.
@@ -469,7 +392,7 @@ export function GoatHero({
                         scrollTo("drops");
                       }
                     }}
-                    className="inline-flex items-center justify-center gap-2 border border-[#111111] bg-[#F5F5F3]/80 sm:bg-transparent hover:bg-[#111111] hover:text-white text-[#111111] font-bold text-xs uppercase tracking-[0.2em] px-8 py-4 transition-all w-full sm:w-auto backdrop-blur-[2px] sm:backdrop-blur-0"
+                    className="inline-flex items-center justify-center gap-2 border border-[#111111] hover:bg-[#111111] hover:text-white text-[#111111] font-bold text-xs uppercase tracking-[0.2em] px-8 py-4 transition-all w-full sm:w-auto"
                   >
                     {activeDrop ? "Ver drop" : "Nuevo drop"}
                   </Link>
@@ -479,10 +402,89 @@ export function GoatHero({
           </div>
         </div>
 
-        {/* Scroll hint — bottom left */}
+        {/* ── Model video ──
+            Mobile/tablet: normal block, own box, plays as a plain ambient loop.
+            Desktop: absolute overlay, scroll-scrubbed, multiply-blended into
+            the cream bg so the studio background dissolves into the page. */}
+        <div
+          ref={videoWrapRef}
+          className="relative w-full aspect-[4/5] sm:aspect-[16/10] mt-2 lg:mt-0 z-[4] lg:absolute lg:left-0 lg:right-0 lg:top-[104px] lg:bottom-0 lg:aspect-auto lg:w-auto"
+          style={{ willChange: "transform", mixBlendMode: "multiply" }}
+        >
+          <div className="absolute inset-0 lg:inset-y-0 lg:left-[66%] lg:right-auto lg:h-full lg:aspect-[720/1291] lg:-translate-x-1/2 lg:max-w-[94vw]">
+            <video
+              ref={videoRef}
+              src={videoSrc}
+              poster={posterSrc}
+              preload="auto"
+              muted
+              playsInline
+              disablePictureInPicture
+              controls={false}
+              aria-label={imageAlt}
+              tabIndex={-1}
+              className="absolute inset-0 h-full w-full object-cover"
+              style={{
+                objectPosition: "center 6%",
+                filter: "brightness(1.2) contrast(1.32) saturate(0.85)",
+                WebkitMaskImage: EDGE_MASK,
+                WebkitMaskComposite: "source-in",
+                maskImage: EDGE_MASK,
+                maskComposite: "intersect",
+              }}
+              {...({ "webkit-playsinline": "true" } as Record<string, string>)}
+            />
+            {/* Cover the source watermark in the corner only */}
+            <div className="absolute inset-0 pointer-events-none" style={{ background: WATERMARK_PATCH }} />
+          </div>
+        </div>
+
+        {/* Desktop-only legibility gradient: the copy sits on top of the
+            video there, so the left side needs to stay readable. */}
+        <div
+          className="absolute inset-0 z-[5] pointer-events-none hidden lg:block"
+          style={{
+            background:
+              "linear-gradient(100deg, #F5F5F3 6%, rgba(245,245,243,0.5) 34%, transparent 66%)",
+          }}
+        />
+
+        {/* Vertical caption — right edge (desktop only: it's tied to the scroll-scrub) */}
+        <div className="absolute right-4 lg:right-8 bottom-28 lg:bottom-32 hidden lg:block z-20 pointer-events-none">
+          <span
+            className="text-[9px] lg:text-[10px] tracking-[0.4em] uppercase text-[#111111]/35 font-semibold"
+            style={{ writingMode: "vertical-rl" }}
+          >
+            Disciplina en cada detalle
+          </span>
+        </div>
+
+        {/* Step indicator — right edge (desktop only: it tracks scroll progress) */}
+        <div
+          ref={stepsRef}
+          className="absolute right-4 lg:right-8 top-1/2 -translate-y-1/2 hidden lg:flex flex-col gap-4 lg:gap-5 z-20 pointer-events-none"
+        >
+          {STEPS.map((n, i) => (
+            <div
+              key={n}
+              className="flex items-center gap-2 justify-end transition-opacity duration-300"
+              style={{ opacity: i === 0 ? 1 : 0.28 }}
+            >
+              <span
+                className="h-px bg-[#111111] transition-all duration-300"
+                style={{ width: i === 0 ? "26px" : "8px" }}
+              />
+              <span className="text-[11px] font-black tracking-widest text-[#111111] tabular-nums">
+                {n}
+              </span>
+            </div>
+          ))}
+        </div>
+
+        {/* Scroll hint — bottom left (desktop only: nothing to "scrub" below lg) */}
         <div
           ref={hintRef}
-          className="absolute left-5 sm:left-10 lg:left-16 bottom-28 z-10 hidden sm:flex items-center gap-3 pointer-events-none"
+          className="absolute left-5 sm:left-10 lg:left-16 bottom-28 z-10 hidden lg:flex items-center gap-3 pointer-events-none"
           style={{ willChange: "opacity" }}
         >
           <span className="h-px w-9 bg-[#111111]/30" />
@@ -499,10 +501,10 @@ export function GoatHero({
         >
           <div className="max-w-7xl mx-auto px-4 sm:px-10 lg:px-16">
             <div className="grid grid-cols-3 divide-x divide-[#111111]/10">
-              {TRUST.map(({ icon: Icon, title, short, sub }, i) => (
+              {TRUST.map(({ icon: Icon, title, sub }, i) => (
                 <motion.div
                   key={title}
-                  className="flex flex-col sm:flex-row items-center gap-1.5 sm:gap-3 px-1.5 sm:px-6 py-3 sm:py-5 text-center sm:text-left"
+                  className="flex flex-col sm:flex-row items-center gap-1.5 sm:gap-3 px-1.5 sm:px-6 py-3.5 sm:py-5 text-center sm:text-left"
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.4, delay: 0.9 + i * 0.08 }}
@@ -510,10 +512,9 @@ export function GoatHero({
                   <Icon className="w-4 h-4 sm:w-5 sm:h-5 text-[#556B5D] flex-shrink-0" strokeWidth={1.75} />
                   <div className="leading-tight">
                     <p className="text-[#111111] text-[9px] sm:text-xs font-black uppercase tracking-[0.08em] sm:tracking-[0.1em]">
-                      <span className="sm:hidden">{short}</span>
-                      <span className="hidden sm:inline">{title}</span>
+                      {title}
                     </p>
-                    <p className="hidden sm:block text-[#111111]/45 text-[10px] font-bold uppercase tracking-[0.12em]">
+                    <p className="text-[#111111]/45 text-[8px] sm:text-[10px] font-bold uppercase tracking-[0.1em] sm:tracking-[0.12em] mt-0.5">
                       {sub}
                     </p>
                   </div>

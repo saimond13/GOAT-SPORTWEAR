@@ -11,9 +11,13 @@
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 
-/* Hero scroll-scrubbing: collapse the tall track when motion is not wanted. */
+/* Hero scroll-scrubbing (desktop only, >=1024px): collapse the tall track
+   when motion is not wanted. Below that the hero is already a plain static
+   stack with no track height to collapse. */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
+}
+@media (prefers-reduced-motion: reduce) and (min-width: 1024px) {
   .hero-scroll-track { height: 100svh; }
 }
 
