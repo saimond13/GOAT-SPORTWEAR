@@ -110,7 +110,6 @@ export function GoatHero({
     const track = trackRef.current;
     if (!track) return;
 
-    const reduceMQL = window.matchMedia("(prefers-reduced-motion: reduce)");
     const mobileMQL = window.matchMedia("(max-width: 1023px)");
 
     const v0 = videoRef.current;
@@ -119,20 +118,13 @@ export function GoatHero({
       v0.muted = true;
     }
 
-    // Mobile/tablet: the scroll-driven scrub was unreliable on some devices
-    // (video decode/seek timing varies a lot on phones and tablets, and the
-    // absolute-overlay layout it needs doesn't fit every screen height), so
-    // there the hero is a plain static stack and the clip just plays as a
-    // normal ambient loop — nothing scroll-dependent that can fail to load.
-    if (!reduceMQL.matches && mobileMQL.matches && v0) {
-      v0.loop = true;
-      v0.play().catch(() => {
-        try {
-          v0.currentTime = 0.04;
-        } catch {
-          /* not ready */
-        }
-      });
+    // Mobile/tablet: the model video is not shown, so drop its source to
+    // avoid downloading ~14MB for nothing. The hero is a plain static stack.
+    if (mobileMQL.matches) {
+      if (v0) {
+        v0.removeAttribute("src");
+        v0.load();
+      }
       return;
     }
 
@@ -202,23 +194,6 @@ export function GoatHero({
       };
       if (v.readyState >= 1) prime();
       else v.addEventListener("loadedmetadata", prime, { once: true });
-    }
-
-    if (reduceMQL.matches) {
-      applyFrame(0);
-      const setStatic = () => {
-        const vv = videoRef.current;
-        if (vv && Number.isFinite(vv.duration) && vv.duration > 0) {
-          try {
-            vv.currentTime = 0.04;
-          } catch {
-            /* not ready */
-          }
-        }
-      };
-      if (v && v.readyState >= 1) setStatic();
-      else if (v) v.addEventListener("loadedmetadata", setStatic, { once: true });
-      return;
     }
 
     const EASE = 0.16;
@@ -403,12 +378,12 @@ export function GoatHero({
         </div>
 
         {/* ── Model video ──
-            Mobile/tablet: normal block, own box, plays as a plain ambient loop.
+            Mobile/tablet: hidden (no model image).
             Desktop: absolute overlay, scroll-scrubbed, multiply-blended into
             the cream bg so the studio background dissolves into the page. */}
         <div
           ref={videoWrapRef}
-          className="relative w-full aspect-[4/5] sm:aspect-[16/10] mt-2 lg:mt-0 z-[4] lg:absolute lg:left-0 lg:right-0 lg:top-[104px] lg:bottom-0 lg:aspect-auto lg:w-auto"
+          className="hidden lg:block relative w-full z-[4] lg:absolute lg:left-0 lg:right-0 lg:top-[104px] lg:bottom-0 lg:aspect-auto lg:w-auto"
           style={{ willChange: "transform", mixBlendMode: "multiply" }}
         >
           <div className="absolute inset-0 lg:inset-y-0 lg:left-[66%] lg:right-auto lg:h-full lg:aspect-[720/1291] lg:-translate-x-1/2 lg:max-w-[94vw]">
